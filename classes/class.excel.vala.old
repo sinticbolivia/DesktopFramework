@@ -1,0 +1,125 @@
+using GLib;
+using Xml;
+
+namespace SinticBolivia.Office
+{
+	protected	TextWriter workbook;
+	
+	public class SBExcel : Object
+	{
+		public SBExcel()
+		{
+			
+		}
+		public void CreateWorkBook(string filename)
+		{
+			
+		}
+		
+	}
+	public class SBExcelCell : Object
+	{
+		public string 	Content;
+		public string 	Type 	= "string";
+		public int 		Row 		= 0;
+		public string 	Column = "A";
+		
+		public SBExcelCell()
+		{
+		}
+		public SBExcelCell.with_data(string txt, string type, int row, string column)
+		{
+			this.Content = txt;
+			this.Type		= type;
+			this.Row 		= row;
+			this.Column		= column;
+		}
+		protected void Build()
+		{
+			
+		}
+		public string GetXml()
+		{
+			string xml = "<Cell><Data Type=\"%s\">%s</Data></Cell>".printf(this.Type, this.Content);
+		}
+		
+	}
+	public class SBExcelWorkSheet : Object
+	{
+		protected	SBExcelWorkBook workbook;
+		
+		public SBExcelWorkSheet(SBExcelWorkBook workbook, string name)
+		{
+			this.workbook = workbook;
+			this.workbook.Writer.start_element_ns (this.workbook.Ns, "Worksheet", "http://www.example.org/test/ns");
+			this.workbook.Writer.write_attribute_ns(this.workbook.Ns, "Name", "", name);
+			this.workbook.Writer.start_element_ns(this.workbook.Ns, "Table", "");
+		}
+		public void Close()
+		{
+			this.Writer.workbook.end_element();//close table
+			this.Writer.workbook.end_element(); //close worksheet
+		}
+		public void AddCell(string x, int y, string val)
+		{
+		}
+		
+	}
+	public class SBExcelWorkBook : Object
+	{
+		protected	TextWriter 	workbook;
+		protected	string		ns_prefix = "";
+		protected	string 		ns_url = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+		protected	string 		ns_url_msexcel = "urn:schemas-microsoft-com:office:spreadsheet";
+		
+		public string Ns
+		{
+			get{return this.ns_prefix;}
+		}
+		public string NsUrl
+		{
+			get{return this.ns_url;}
+		}
+		public TextWriter Writer
+		{
+			get{return this.workbook;}
+		}
+		public SBExcelWorkBook(string filename)
+		{
+			this.workbook = new TextWriter.filename(filename);
+			this.workbook.set_indent(true);
+			this.workbook.set_indent_string("\t");
+			
+			this.workbook.start_document();
+			this.workbook.start_element_ns(this.ns_prefix, "Workbook", this.ns_url);
+			
+			//this.workbook.start_attribute ("base64attribute");
+			//this.workbook.write_base64 ("test", 0, 4);
+			//this.workbook.end_attribute ();
+			//this.workbook.write_attribute ("alpha", "abcdef..");
+			/*
+			this.workbook.write_element ("element", "content");
+			this.workbook.write_element_ns ("ns", "elementWithNS", "http://www.example.org/test/ns", "contentNS");
+
+			this.workbook.write_comment ("My comment!");
+			this.workbook.format_element_ns ("ns", "elementWithFormattedContent", "http://www.example.org/test/ns", "One: %d", 10);
+
+			this.workbook.start_element("cdataContent");
+			this.workbook.start_cdata();
+			this.workbook.format_string("%s beer on the wall..", "One");
+			this.workbook.end_cdata();
+			this.workbook.end_element();
+			*/
+		}
+		public void Save()
+		{
+			this.workbook.end_element(); //close root element
+			this.workbook.end_document(); //close document
+			this.workbook.flush();
+		}
+		public SBExcelWorkSheet AddWorkSheet(string name = "Sheet1")
+		{
+			return new SBExcelWorkSheet(this);
+		}
+	}
+}

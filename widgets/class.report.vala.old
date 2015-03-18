@@ -1,0 +1,160 @@
+using GLib;
+using Gee;
+using Gtk;
+using SinticBolivia;
+
+namespace SinticBolivia.Gtk
+{
+	public class SBReport : Object
+	{
+		protected SBCairoTable	header;
+		protected SBCairoTable	body;
+		protected SBCairoTable	footer;
+		
+		protected	int 			lines_per_page;
+		protected	int				num_pages;
+		protected	PrintOperation 	operation;
+		protected	PrintSettings	settings;
+		protected	PageSetup		pageSetup;
+		//protected	double			fontSize;
+		
+		//##properties
+		public	SBCairoTable Header
+		{
+			get{return this.header;}
+			set{this.header = value;}
+		}
+		public	SBCairoTable Body
+		{
+			get{return this.body;}
+			set{this.body = value;}
+		}
+		//public bool Preview{get;set;}
+		public double FontSize{get;set;}
+		
+		
+		//##declare report objects
+		protected ArrayList<SBCairoObject> objects;
+		
+		public SBReport()
+		{
+			this.operation	= new PrintOperation();
+			this.settings	= new PrintSettings();
+			this.pageSetup	= new PageSetup();
+			
+			this.operation.set_print_settings(this.settings);
+			this.operation.default_page_setup = this.pageSetup;
+			
+			this.SetEvents();
+			this.objects	= new ArrayList<SBCairoObject>();
+		}
+		protected void SetEvents()
+		{
+			this.operation.begin_print.connect(this.OnBeginPrint);
+			this.operation.draw_page.connect(this.OnDrawPage);
+			this.operation.end_print.connect(this.OnEndPrint);
+			this.operation.preview.connect(this.OnPreview);
+			this.operation.use_full_page = false;
+			this.operation.unit = Unit.POINTS;
+			this.operation.embed_page_setup = true;
+		}
+		protected void OnBeginPrint(PrintContext context)
+		{
+			stdout.printf("total objects: %d\n", this.objects.size);
+			double height = context.get_height();
+			this.lines_per_page = (int)GLib.Math.floor(height / this.FontSize);
+			//string contents = "Hello World from vala printing!!!!\nSintic Bolivia";
+			//string[] lines = contents.split("\n");
+			int total_height = 0;
+			foreach(SBCairoObject obj in this.objects)
+			{
+				obj.Context 	= context.get_cairo_context();
+				obj.PangoLayout	= context.create_pango_layout();
+				obj.PageWidth 	= context.get_width();
+				obj.CalculateSize();
+				stdout.printf("obj, height:%d\n", obj.Height);
+				total_height += obj.Height;
+			}
+			
+			//this._num_lines = lines.length;
+			//this._num_pages = (this._num_lines - 1) / this._lines_per_page + 1;
+			this.num_pages = (int)Math.ceil(total_height / height);
+			stdout.printf("Report pages: %d\n", this.num_pages);
+			this.operation.n_pages = this.num_pages;
+		}
+		protected void OnDrawPage(PrintContext context, int page_nr)
+		{
+			stdout.printf("Page: %d\n", page_nr);
+			context.get_cairo_context().move_to(0, 0);
+			foreach(SBCairoObject obj in this.objects)
+			{
+				obj.Context 	= context.get_cairo_context();
+				obj.PangoLayout	= context.create_pango_layout();
+				obj.PageWidth 	= context.get_width();
+				obj.Draw();
+			}
+		}
+		protected void OnEndPrint(PrintContext context)
+		{
+		}
+		protected bool OnPreview(PrintOperationPreview preview, PrintContext context, Window parent)
+		{
+			var prv = new SBPrintPreview(this.operation, preview, context);
+			prv.show();
+			var dlg = new Dialog(){title = SBText.__("Report Preview"), modal = true};
+			dlg.set_size_request(400, 400);
+			dlg.get_content_area().add(prv);
+			prv.ClosedPreview.connect( () => 
+			{
+				dlg.dispose();
+				//parent.dispose();
+			});
+			prv.ButtonPrintClicked.connect( () =>
+			{
+				this.Print(parent);
+			});
+			dlg.show();
+			
+			return true;
+		}
+		public void Preview(Window window)
+		{
+			try
+			{
+				this.operation.run(PrintOperationAction.PREVIEW, window);
+			}
+			catch(GLib.Error e)
+			{
+				stdout.printf("ERROR: %s\n", e.message);
+			}
+		}
+		public void Print(Window window)
+		{
+			try
+			{
+				this.operation.run(PrintOperationAction.PRINT, window);
+			}
+			catch(GLib.Error e)
+			{
+				stderr.printf("ERROR PRINTING: %s\n", e.message);
+			}
+		}
+		public void AddParagraph(string text)
+		{
+			var p = new SBCairoParagraph(){Text = text};
+			this.objects.add(p);
+		}
+		public void AddObject(Value? obj, string type)
+		{
+			if( type == "paragraph" )
+			{
+				this.AddParagraph((string)obj);
+			}
+			else if( type == "table" )
+			{
+				
+			}
+		}
+	}
+}
+
