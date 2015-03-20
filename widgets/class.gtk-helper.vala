@@ -67,14 +67,18 @@ namespace SinticBolivia.Gtk
 				}
 				else if( cols[i, 1] == "toggle" )
 				{
+					int col_index = i;
+					stdout.printf("TOGGLE INDEX: %d\n", col_index);
 					cell = new CellRendererToggle();
 					ListStore model = (treeview.model as ListStore);
 					(cell as CellRendererToggle).toggled.connect( (_toggle, _path) => 
 					{
+						
+						stdout.printf("TOGGLED INDEX: %d\n", col_index);
 						TreePath tree_path = new TreePath.from_string (_path);
 						TreeIter iter;
 						model.get_iter (out iter, tree_path);
-						model.set (iter, i, !_toggle.active);
+						model.set (iter, col_index, !_toggle.active);
 					});
 				}
 				treeview.insert_column_with_attributes(i, 

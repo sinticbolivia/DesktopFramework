@@ -133,6 +133,24 @@ namespace SinticBolivia {
 			public string DateString { get; set; }
 		}
 		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBFixed : global::Gtk.Fixed {
+			public int FixedWidth;
+			public int Margin;
+			public int WidgetHeight;
+			public int WidgetWidth;
+			public int X;
+			public int Y;
+			protected int currentColumn;
+			protected int totalColumns;
+			protected int width;
+			public SBFixed ();
+			public void AddWidget (global::Gtk.Widget w);
+			protected void Build ();
+			protected void SetEvents ();
+			public void SetWidgetSize (int width, int height);
+			public int Width { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
 		public abstract class SBGtkModule : SinticBolivia.SBModule {
 			protected string _author;
 			protected string _description;

@@ -98,6 +98,17 @@ typedef struct _SinticBoliviaGtkDbTableTreeView SinticBoliviaGtkDbTableTreeView;
 typedef struct _SinticBoliviaGtkDbTableTreeViewClass SinticBoliviaGtkDbTableTreeViewClass;
 typedef struct _SinticBoliviaGtkDbTableTreeViewPrivate SinticBoliviaGtkDbTableTreeViewPrivate;
 
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED (sintic_bolivia_gtk_sb_fixed_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixed))
+#define SINTIC_BOLIVIA_GTK_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
+#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
+#define SINTIC_BOLIVIA_GTK_SB_FIXED_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
+
+typedef struct _SinticBoliviaGtkSBFixed SinticBoliviaGtkSBFixed;
+typedef struct _SinticBoliviaGtkSBFixedClass SinticBoliviaGtkSBFixedClass;
+typedef struct _SinticBoliviaGtkSBFixedPrivate SinticBoliviaGtkSBFixedPrivate;
+
 #define SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER (sintic_bolivia_gtk_gtk_helper_get_type ())
 #define SINTIC_BOLIVIA_GTK_GTK_HELPER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER, SinticBoliviaGtkGtkHelper))
 #define SINTIC_BOLIVIA_GTK_GTK_HELPER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER, SinticBoliviaGtkGtkHelperClass))
@@ -269,6 +280,24 @@ struct _SinticBoliviaGtkDbTableTreeViewClass {
 	GtkTreeViewClass parent_class;
 };
 
+struct _SinticBoliviaGtkSBFixed {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkSBFixedPrivate * priv;
+	gint FixedWidth;
+	gint width;
+	gint X;
+	gint Y;
+	gint Margin;
+	gint WidgetWidth;
+	gint WidgetHeight;
+	gint totalColumns;
+	gint currentColumn;
+};
+
+struct _SinticBoliviaGtkSBFixedClass {
+	GtkFixedClass parent_class;
+};
+
 struct _SinticBoliviaGtkGtkHelper {
 	GObject parent_instance;
 	SinticBoliviaGtkGtkHelperPrivate * priv;
@@ -419,6 +448,15 @@ void sintic_bolivia_gtk_db_table_tree_view_ParseColumns (SinticBoliviaGtkDbTable
 void sintic_bolivia_gtk_db_table_tree_view_BuildQuery (SinticBoliviaGtkDbTableTreeView* self);
 void sintic_bolivia_gtk_db_table_tree_view_Build (SinticBoliviaGtkDbTableTreeView* self);
 void sintic_bolivia_gtk_db_table_tree_view_Bind (SinticBoliviaGtkDbTableTreeView* self);
+GType sintic_bolivia_gtk_sb_fixed_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_new (void);
+SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_construct (GType object_type);
+void sintic_bolivia_gtk_sb_fixed_Build (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_SetEvents (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_SetWidgetSize (SinticBoliviaGtkSBFixed* self, gint width, gint height);
+void sintic_bolivia_gtk_sb_fixed_AddWidget (SinticBoliviaGtkSBFixed* self, GtkWidget* w);
+gint sintic_bolivia_gtk_sb_fixed_get_Width (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_set_Width (SinticBoliviaGtkSBFixed* self, gint value);
 GType sintic_bolivia_gtk_gtk_helper_get_type (void) G_GNUC_CONST;
 GtkBuilder* sintic_bolivia_gtk_gtk_helper_GetGladeUI (const gchar* glade_file);
 GdkPixbuf* sintic_bolivia_gtk_gtk_helper_GetPixbuf (const gchar* file, gint width, gint height);

@@ -3,11 +3,10 @@ using Gee;
 using SinticBolivia;
 using SinticBolivia.Database;
 
-namespace Woocommerce
+namespace SinticBolivia
 {
-	public class SBProduct : Object
+	public class SBProduct : SBDbObject
 	{
-		protected SBDBRow dbData;
 		public int Id
 		{
 			get{return int.parse(this.dbData.Get("product_id"));}
@@ -87,17 +86,20 @@ namespace Woocommerce
 			get{return this.categories;}
 		}
 		
-		protected ArrayList<string> 		images;
+		protected 	ArrayList<string> 		images;
 		public		ArrayList<SBDBRow>		Attachments;
-		protected ArrayList<int>			categoriesIds;
-		protected ArrayList<SBLCategory>	categories;
+		protected 	ArrayList<int>			categoriesIds;
+		protected 	ArrayList<SBLCategory>	categories;
+		public		HashMap<string, string> Meta;
 		
 		public SBProduct()
 		{
+			this.dbData = new SBDBRow();
 			this.images = new ArrayList<string>();
 			this.Attachments = new ArrayList<SBDBRow>();
 			this.categoriesIds = new ArrayList<int>();
 			this.categories		= new ArrayList<SBLCategory>();
+			this.Meta = new HashMap<string, string>();
 		}
 		public SBProduct.from_id(int id)
 				requires( id > 0 )
@@ -105,28 +107,37 @@ namespace Woocommerce
 			this();
 			//this.images = new ArrayList<string>();
 			this.GetDbData(id);
+			this.GetDbMeta();
 		}
 		public SBProduct.with_db_data(owned SBDBRow row)
 		{
 			this();
 			//this.images = new ArrayList<string>();
-			this.SetDbData(row);
+			this.dbData = row;
 			this.getCategories();
 			this.getImages();
 		}
 		public void GetDbData(int id)
 		{
-			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
 			string query = "SELECT * FROM products WHERE product_id = %d".printf(id);
-			if( dbh.Query(query) <= 0 )
+			var row = this.Dbh.GetRow(query);
+			if( row == null)
 				return;
-			this.dbData = dbh.Rows[0];
+			this.dbData = row;
 			this.getCategories();
 			this.getImages();
 		}
 		public void SetDbData(owned SBDBRow row)
 		{
 			this.dbData = row;
+		}
+		public void GetDbMeta()
+		{
+			this.Dbh.Select("*").From("product_meta").Where("product_id = %d".printf(this.Id));
+			foreach(var row in this.Dbh.GetResults(null))
+			{
+				this.Meta.set(row.Get("meta_key"), row.Get("meta_value"));
+			}
 		}
 		protected void getCategories()
 		{
@@ -146,15 +157,29 @@ namespace Woocommerce
 			string query = "SELECT * FROM attachments "+
 							"WHERE lower(object_type) = 'product' "+
 							"AND object_id = '%d' "+
-							"AND (type = 'image') "+
+							"AND (type = 'image' OR type = 'image_thumbnail') "+
 							"ORDER BY creation_date ASC";
 			query = query.printf(this.Id);
-			this.Attachments = (ArrayList<SBDBRow>)dbh.GetResults(query);
+			this.Attachments = dbh.GetResults(query);
 			foreach(SBDBRow row in this.Attachments)
 			{
 				this.images.add(row.Get("file"));
 			}
 			
+		}
+		public string GetThumbnail()
+		{
+			string thumb = "";
+			foreach(var row in this.Attachments)
+			{
+				if( row.Get("type") == "image_thumbnail" )
+				{
+					thumb = row.Get("file");
+					break;
+				}
+			}
+			
+			return thumb;
 		}
 		public static long AddMeta(int pid, string meta_key, Value meta_value)
 		{

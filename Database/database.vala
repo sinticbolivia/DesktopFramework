@@ -126,7 +126,7 @@ namespace SinticBolivia.Database
 			for(int i = 0; i < this._cells.length; i++)
 			{
 				var cell = (SBDBCell)this._cells.index(i);
-				data.set(cell.ColumnName, cell.TheValue);
+				data.set(cell.ColumnName, cell.TheValue == null ? "" : cell.TheValue);
 			}
 			
 			return data;
@@ -176,7 +176,7 @@ namespace SinticBolivia.Database
 		*/
 		public virtual long Insert(string table, HashMap<string, Value?> data)
 		{
-			string query = @"INSERT INTO $table (%s) VALUES(%s)";
+			string query = @"INSERT INTO $table(%s) VALUES(%s)";
 			string cols = "";
 			string values = "";
 			foreach(string key in data.keys)
@@ -263,9 +263,7 @@ namespace SinticBolivia.Database
 				{
 					query += "%s = ".printf(key);
 				}
-				//check for value type
-				//Value val = data.get(key);
-				
+								
 				//##build values
 				string gtype = data.get(key).type_name();
 				//stdout.printf("typeof => %s\n", gtype);
@@ -502,6 +500,16 @@ namespace SinticBolivia.Database
 		{
 			this.builtQuery += "WHERE %s ".printf(this.FormatCondition(cond));
 			
+			return this;
+		}
+		public virtual SBDatabase And(string cond)
+		{
+			this.builtQuery += "AND %s ".printf(this.FormatCondition(cond));
+			return this;
+		}
+		public virtual SBDatabase Or(string cond)
+		{
+			this.builtQuery += "OR %s ".printf(this.FormatCondition(cond));
 			return this;
 		}
 		public virtual SBDatabase OrderBy(string col, string desc_asc = "ASC")

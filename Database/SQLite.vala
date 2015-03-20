@@ -23,14 +23,6 @@ namespace SinticBolivia.Database
 		}
 		public override bool Open()
 		{
-			/*
-			if( !FileUtils.test(this._dbFile, FileTest.IS_REGULAR) )
-			{
-				stderr.printf("The database file (%s) does not exists\n", this._dbFile);
-				return false;
-			}
-			*/
-			
 			int res = Sqlite.Database.open(this._dbFile, out this._db);
 			if( res != Sqlite.OK )
 			{
@@ -70,35 +62,8 @@ namespace SinticBolivia.Database
 				stderr.printf("SQLite Query Error: %s, QUERY WAS:%s\n", this._db.errmsg (), q);
 				return 0;
 			}
-			/*
-			int cols = stmt.column_count();
-			do 
-			{
-				res = stmt.step();
-				switch (res) 
-				{
-					case Sqlite.DONE:
-						break;
-					case Sqlite.ROW:
-						SBDBRow row = new SBDBRow();
-						for (int col = 0; col < cols; col++) 
-						{
-							SBDBCell cell = new SBDBCell();
-							cell.ColumnName = stmt.column_name (col);
-							cell.TheValue = stmt.column_text(col);
-							row.Add(cell);
-						    //string txt = stmt.column_text(col);
-						    //print ("%s = %s\n", stmt.column_name (col), txt);
-						}
-						rows += row;
-						break;
-					default:
-						printerr ("Error: %d, %s\n", res, this._db.errmsg ());
-						break;
-				}
-			} while (res == Sqlite.ROW);
-			this._rows = rows;
-			*/
+			//stdout.printf("QUERY: %s\n", q);
+			
 			return 0;
 			
 		}
@@ -112,17 +77,8 @@ namespace SinticBolivia.Database
 		}
 		public override ArrayList<SBDBRow> GetResults(string? query)
 		{
-			//Statement stmt;
-			
 			ArrayList<SBDBRow> records = new ArrayList<SBDBRow>();
-			/*			
-			int res = this._db.prepare_v2(query, -1, out stmt, null);
-			if( res != Sqlite.OK )
-			{
-				stderr.printf("SQLite Query Error: %s, QUERY WAS:%s\n", this._db.errmsg (), query);
-				return records;
-			}
-			*/
+			
 			this.Query(query);
 			int cols = this.stmt.column_count();
 			int res = 0;
@@ -161,13 +117,16 @@ namespace SinticBolivia.Database
 			
 			if( res != Sqlite.OK )
 			{
+				stderr.printf("SQLITE ERROR: %s\n", this._db.errmsg());
 				throw new Error(Quark.from_string("SQLITE_ERROR"), -1, "SQLITE ERROR: %s, SQL (DML) WAS: %s\n".printf(error, sql));
 			}
+			//stdout.printf("QUERY: %s\n", sql);
 			if( sql.down().index_of("insert") != -1 )
 			{
 				this.LastInsertId = (int)this._db.last_insert_rowid();
 				return this.LastInsertId;
 			}
+			
 			return res;
 		}
 		public static int QueryCallback (int n_columns, string[] values, string[] column_names)

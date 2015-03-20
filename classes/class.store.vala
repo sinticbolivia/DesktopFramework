@@ -44,9 +44,11 @@ namespace SinticBolivia
 		{
 			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
 			string query = "SELECT * FROM stores WHERE store_id = %d".printf(store_id);
-			if( dbh.Query(query) <= 0 )
+			var row = dbh.GetRow(query);
+			if( row == null )
 				return;
-			this.dbData = (owned)dbh.Rows[0];
+				
+			this.dbData = row;
 		}
 		public void SetDbData(owned SBDBRow row)
 		{

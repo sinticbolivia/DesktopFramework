@@ -3,11 +3,10 @@ using Gee;
 using SinticBolivia;
 using SinticBolivia.Database;
 
-namespace Woocommerce
+namespace SinticBolivia
 {
-	public class SBLCategory : Object
+	public class SBLCategory : SBDbObject
 	{
-		protected SBDBRow	dbData;
 		protected ArrayList<SBLCategory> childs;
 		
 		public int Id
