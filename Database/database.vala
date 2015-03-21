@@ -181,24 +181,10 @@ namespace SinticBolivia.Database
 			string values = "";
 			foreach(string key in data.keys)
 			{
-				if( this._databaseType == "sqlite" || this._databaseType == "sqlite3" )
-				{
-					cols += "[%s],".printf(key);
-				}
-				else if( this._databaseType == "mysql" )
-				{
-					cols += "`%s`,".printf(key);
-				}
-				else
-				{
-					cols += "%s,".printf(key);
-				}
-				//Value the_value = (Value)data.get(key);
-				
+				cols += "%s%s%s,".printf(this.columnLeftWrap, key, this.columnRightWrap);
 				//##build values
 				string gtype = data.get(key).type_name();
-				//stdout.printf("typeof => %s\n", gtype);
-				
+							
 				if( gtype == "gint" )
 				{
 					values += "%d,".printf((int)data.get(key));
@@ -228,12 +214,12 @@ namespace SinticBolivia.Database
 					}
 					else
 					{
-						values += "'%s',".printf((string)data.get(key));
+						values += "'%s',".printf(this.EscapeString((string)data.get(key)));
 					}
 				}
 				else
 				{
-					values += "'%s',".printf((string)data.get(key));
+					values += "'%s',".printf(this.EscapeString((string)data.get(key)));
 				}
 				
 			}
@@ -251,23 +237,10 @@ namespace SinticBolivia.Database
 			
 			foreach(string key in data.keys)
 			{
-				if( this._databaseType == "sqlite" || this._databaseType == "sqlite3" )
-				{
-					query += "[%s] = ".printf(key);
-				}
-				else if( this._databaseType == "mysql" )
-				{
-					query += "`%s` = ".printf(key);
-				}
-				else
-				{
-					query += "%s = ".printf(key);
-				}
-								
+				query += "%s%s%s = ".printf(this.columnLeftWrap, key, this.columnRightWrap);
 				//##build values
 				string gtype = data.get(key).type_name();
-				//stdout.printf("typeof => %s\n", gtype);
-				
+								
 				if( gtype == "gint" )
 				{
 					query += "%d,".printf((int)data.get(key));
@@ -291,34 +264,21 @@ namespace SinticBolivia.Database
 				}
 				else if( gtype == "gchararray" )
 				{
-					query += "'%s',".printf((string)data.get(key));
+					query += "'%s',".printf(this.EscapeString((string)data.get(key)));
 				}
 				else
 				{
-					query += "'%s',".printf((string)data.get(key));
+					query += "'%s',".printf(this.EscapeString((string)data.get(key)));
 				}
 			}
 			query = query.substring(0, query.length - 1);
 			//##build where
 			foreach(string key in w.keys)
 			{
-				if( this._databaseType == "sqlite" || this._databaseType == "sqlite3" )
-				{
-					where_str += "[%s] = ".printf(key);
-				}
-				else if( this._databaseType == "mysql" )
-				{
-					where_str += "`%s` = ".printf(key);
-				}
-				else
-				{
-					where_str += "%s = ".printf(key);
-				}
-
+				where_str += "%s%s%s = ".printf(this.columnLeftWrap, key, this.columnRightWrap);
 				//##build values
 				string gtype = w.get(key).type_name();
-				//stdout.printf("typeof => %s\n", gtype);
-				
+							
 				if( gtype == "gint" )
 				{
 					where_str += "%d AND ".printf((int)w.get(key));
@@ -342,11 +302,11 @@ namespace SinticBolivia.Database
 				}
 				else if( gtype == "gchararray" )
 				{
-					where_str += "'%s' AND ".printf((string)w.get(key));
+					where_str += "'%s' AND ".printf(this.EscapeString((string)w.get(key)));
 				}
 				else
 				{
-					where_str += "'%s' AND ".printf((string)w.get(key));
+					where_str += "'%s' AND ".printf(this.EscapeString((string)w.get(key)));
 				}
 			}
 			where_str = where_str.substring(0, where_str.length - 4);
@@ -529,6 +489,23 @@ namespace SinticBolivia.Database
 			this.builtQuery += "ON %s ".printf(this.FormatCondition(on.strip()));
 			
 			return this;
+		}
+		public virtual string EscapeString(string str)
+		{
+			string striped = "";
+			try
+			{
+				//var regex = new Regex("[']");
+				//var regex = new Regex("'");
+				//striped = regex.replace(str.strip(), str.strip().length, 0, "\\'");
+				striped = str.replace("'", "\\'");
+			}
+			catch(RegexError e)
+			{
+				stderr.printf("RRROR: %s\n", e.message);
+				striped = str.strip();
+			}
+			return striped;
 		}
 	}
 

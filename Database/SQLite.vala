@@ -152,5 +152,9 @@ namespace SinticBolivia.Database
 			//stdout.printf("\n");
 			return 0;
 		}
+		public override string EscapeString(string str)
+		{
+			return str.replace("'", "''");
+		}
 	}
 }

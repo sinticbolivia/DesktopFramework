@@ -105,14 +105,12 @@ namespace SinticBolivia
 				requires( id > 0 )
 		{
 			this();
-			//this.images = new ArrayList<string>();
 			this.GetDbData(id);
 			this.GetDbMeta();
 		}
 		public SBProduct.with_db_data(owned SBDBRow row)
 		{
 			this();
-			//this.images = new ArrayList<string>();
 			this.dbData = row;
 			this.getCategories();
 			this.getImages();
@@ -141,9 +139,8 @@ namespace SinticBolivia
 		}
 		protected void getCategories()
 		{
-			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
 			string query = "SELECT category_id FROM product2category WHERE product_id = %d".printf(this.Id);
-			var records = dbh.GetResults(query);
+			var records = this.Dbh.GetResults(query);
 			foreach(var row in records)
 			{
 				var cat = new SBLCategory.from_id( int.parse(row.Get("category_id")) );
@@ -153,14 +150,13 @@ namespace SinticBolivia
 		}
 		protected void getImages()
 		{
-			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
 			string query = "SELECT * FROM attachments "+
 							"WHERE lower(object_type) = 'product' "+
 							"AND object_id = '%d' "+
 							"AND (type = 'image' OR type = 'image_thumbnail') "+
 							"ORDER BY creation_date ASC";
 			query = query.printf(this.Id);
-			this.Attachments = dbh.GetResults(query);
+			this.Attachments = this.Dbh.GetResults(query);
 			foreach(SBDBRow row in this.Attachments)
 			{
 				this.images.add(row.Get("file"));
@@ -181,10 +177,11 @@ namespace SinticBolivia
 			
 			return thumb;
 		}
-		public static long AddMeta(int pid, string meta_key, Value meta_value)
+		public static long AddMeta(int pid, string meta_key, Value meta_value, SBDatabase? _dbh = null)
 		{
+			var dbh = (_dbh != null) ? _dbh : (SBDatabase)SBGlobals.GetVar("dbh");
 			string cdate = new DateTime.now_local().format("%Y-%m-%d %H:%M-%S");
-			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
+			
 			var data = new HashMap<string, Value?>();
 			data.set("product_id", pid);
 			data.set("meta_key", meta_key);
@@ -193,15 +190,16 @@ namespace SinticBolivia
 			data.set("creation_date", cdate);
 			return dbh.Insert("product_meta", data);
 		}
-		public static string? GetMeta(int pid, string meta_key)
+		public static string? GetMeta(int pid, string meta_key, SBDatabase? _dbh = null)
 		{
-			var dbh = (SBDatabase)SBGlobals.GetVar("dbh");
+			var dbh = (_dbh != null) ? _dbh : (SBDatabase)SBGlobals.GetVar("dbh");
+			
 			string query = @"SELECT * FROM product_meta WHERE product_id = $pid AND meta_key = '$meta_key' LIMIT 1";
-			var recs = (ArrayList<SBDBRow>)dbh.GetResults(query);
-			if( recs.size <= 0 )
+			var recs = dbh.GetRow(query);
+			if( recs == null )
 				return null;
 			
-			return recs.get(0).Get("meta_value");
+			return recs.Get("meta_value");
 		}
 		public static bool UpdateMeta(int pid, string meta_key, Value meta_value)
 		{
