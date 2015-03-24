@@ -41,5 +41,15 @@ namespace SinticBolivia
 			}
 			return data;
 		}
+		public static string FillCeros(int number, int ceros_length)
+		{
+			string str = "";
+			for(int i = 0; i < ceros_length; i++)
+			{
+				str += "0";
+			}
+			
+			return "%s%d".printf(str, number);
+		}
 	}
 }

@@ -5,10 +5,8 @@ using SinticBolivia.Database;
 
 namespace SinticBolivia
 {
-	public class SBTransaction : Object
+	public class SBTransaction : SBDbObject
 	{
-		protected SBDBRow dbData;
-		
 		public int Id
 		{
 			get{return this.dbData.GetInt("transaction_id");}
@@ -34,6 +32,11 @@ namespace SinticBolivia
 		{
 			get{return this.dbData.GetInt("user_id");}
 			set{this.dbData.Set("user_id", value.to_string());}
+		}
+		protected	SBUser		user;
+		public 		SBUser		User
+		{
+			get{ return this.user;}
 		}
 		public int CustomerId
 		{
@@ -107,6 +110,10 @@ namespace SinticBolivia
 			if( row == null )
 				return;
 			this.dbData = row;
+			if( this.UserId > 0 )
+			{
+				this.user = new SBUser.from_id(this.UserId);
+			}
 			this.GetDbItems();
 		}
 		protected void GetDbItems()

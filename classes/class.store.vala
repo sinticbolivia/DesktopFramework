@@ -24,7 +24,18 @@ namespace SinticBolivia
 		{
 			get{return this.dbData.Get("store_address");}
 		}
-		
+		public 	int		PurchaseTransactionTypeId
+		{
+			get{return this.dbData.GetInt("purchase_transaction_type_id");}
+		}
+		public 	int		SalesTransactionTypeId
+		{
+			get{return this.dbData.GetInt("sales_transaction_type_id");}
+		}
+		public 	int		RefundTransactionTypeId
+		{
+			get{return this.dbData.GetInt("refund_transaction_type_id");}
+		}
 		public SBStore()
 		{
 			this.dbData = new SBDBRow();

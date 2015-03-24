@@ -42,9 +42,9 @@ namespace SinticBolivia
 		public static bool UpdateMeta(string table, string meta_key, string meta_value, string object_id_col, long object_id, SBDatabase? _dbh = null)
 		{
 			var dbh = (_dbh != null) ? _dbh : (SBDatabase)SBGlobals.GetVar("dbh");
-			if( SBMeta.GetMetaRow(table, meta_key, object_id_col, object_id) == null )
+			if( SBMeta.GetMetaRow(table, meta_key, object_id_col, object_id, dbh) == null )
 			{
-				SBMeta.AddMeta(table, meta_key, object_id_col, object_id, meta_value);
+				SBMeta.AddMeta(table, meta_key, object_id_col, object_id, meta_value, dbh);
 				return true;
 			}
 			string query = @"UPDATE $table SET meta_value = '$meta_value' WHERE meta_key = '$meta_key' AND ";

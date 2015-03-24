@@ -137,7 +137,7 @@ namespace SinticBolivia
 			string module_symbol = "sb_get_module_%s_type".printf(module_name.down().strip().replace(".dll", "").replace(".so", ""));
 			//##we call a generic functions into module and we get the function into a pointer
 			//module.symbol("sb_get_module_type", out function);
-			stdout.printf("finding module symbol: %s\n", module_symbol);
+			//stdout.printf("finding module symbol: %s\n", module_symbol);
 			module.symbol(module_symbol, out function);
 			//##we cast the pointer to delegate
 			unowned GetModuleObjectType get_module_type = (GetModuleObjectType)function;

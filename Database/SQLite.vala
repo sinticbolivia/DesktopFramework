@@ -20,6 +20,7 @@ namespace SinticBolivia.Database
 			this.columnLeftWrap = "[";
 			this.columnRightWrap = "]";
 			this._dbFile = SinticBolivia.SBFileHelper.SanitizePath(db_file.strip());
+			Sqlite.config(Sqlite.Config.MULTITHREAD);
 		}
 		public override bool Open()
 		{
@@ -54,7 +55,6 @@ namespace SinticBolivia.Database
 			this.stmt = null;
 			//Statement stmt;
 			//string error = "";
-			//SBDBRow[] rows = {};
 			string q = query != null ? query : this.builtQuery;
 			int res = this._db.prepare_v2(q, -1, out this.stmt, null);
 			if( res != Sqlite.OK )
@@ -62,7 +62,7 @@ namespace SinticBolivia.Database
 				stderr.printf("SQLite Query Error: %s, QUERY WAS:%s\n", this._db.errmsg (), q);
 				return 0;
 			}
-			//stdout.printf("QUERY: %s\n", q);
+			//this.stmt = null;
 			
 			return 0;
 			
@@ -107,11 +107,13 @@ namespace SinticBolivia.Database
 						break;
 				}
 			} while (res == Sqlite.ROW);
+			this.stmt = null;
 			
 			return records;
 		}
 		public override long Execute(string sql)
 		{
+			this.stmt = null;
 			string error;
 			int res = this._db.exec(sql, null, out error);
 			
@@ -126,7 +128,7 @@ namespace SinticBolivia.Database
 				this.LastInsertId = (int)this._db.last_insert_rowid();
 				return this.LastInsertId;
 			}
-			
+			this.stmt = null;
 			return res;
 		}
 		public static int QueryCallback (int n_columns, string[] values, string[] column_names)

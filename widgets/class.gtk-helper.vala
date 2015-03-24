@@ -60,6 +60,10 @@ namespace SinticBolivia.Gtk
 						wrap_width = int.parse(cols[i, 2])
 						
 					};
+					if( cols[i, 4] == "editable" )
+					{
+						(cell as CellRendererText).editable = true;
+					}
 				}
 				else if( cols[i, 1] == "pixbuf" )
 				{
