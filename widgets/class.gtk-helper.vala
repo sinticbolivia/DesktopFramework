@@ -85,10 +85,22 @@ namespace SinticBolivia.Gtk
 						model.set (iter, col_index, !_toggle.active);
 					});
 				}
+				else if( cols[i, 1] == "combo" )
+				{
+					cell = new CellRendererCombo();
+					if( cols[i, 4] == "editable" )
+						(cell as CellRendererCombo).editable = true;
+				}
+				string attr = cols[i, 1];
+				if( attr == "toggle" )
+					attr = "active";
+				if( attr == "combo" )
+					attr = "text";
+					
 				treeview.insert_column_with_attributes(i, 
 					cols[i, 0],
 					cell,
-					(cols[i, 1] == "toggle") ? "active" : cols[i, 1],
+					attr,//(cols[i, 1] == "toggle") ? "active" : cols[i, 1],
 					i
 				);
 			}

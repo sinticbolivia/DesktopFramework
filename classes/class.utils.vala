@@ -22,14 +22,16 @@ namespace SinticBolivia
 		}
 		public static HashMap<string,string> JsonDecode(string json)
 		{
-			var parser = new Json.Parser ();
 			var data = new HashMap<string,string>();
+			if( json.length <= 0 )
+				return data;
+				
+			var parser = new Json.Parser ();
 			try
 			{
 				parser.load_from_data(json, -1);
 				var main_obj = parser.get_root().get_object();
 			
-				
 				foreach(string member in main_obj.get_members())
 				{
 					data.set(member, main_obj.get_string_member(member));
@@ -41,10 +43,11 @@ namespace SinticBolivia
 			}
 			return data;
 		}
-		public static string FillCeros(int number, int ceros_length)
+		public static string FillCeros(int number, int ceros_length = 6)
 		{
+			string number_str = number.to_string();
 			string str = "";
-			for(int i = 0; i < ceros_length; i++)
+			for(int i = 0; i < (ceros_length - number_str.length); i++)
 			{
 				str += "0";
 			}

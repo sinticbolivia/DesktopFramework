@@ -120,7 +120,6 @@ namespace SinticBolivia {
 		}
 		[CCode (cheader_filename = "GtkSinticBolivia.h")]
 		public class SBDatePicker : global::Gtk.Fixed {
-			protected global::Gtk.Button buttonSelectDate;
 			protected global::Gtk.Calendar calendar;
 			protected global::Gtk.Entry entryDate;
 			protected global::Gtk.Dialog popup;
@@ -128,9 +127,9 @@ namespace SinticBolivia {
 			protected void OnButtonSelectDateClicked ();
 			protected void OnDateSelected ();
 			protected void OnDaySelectedDoubleClick ();
-			public void SetButtonImage (global::Gtk.Image img);
 			protected void SetEvents ();
 			public string DateString { get; set; }
+			public Gdk.Pixbuf Icon { set; }
 		}
 		[CCode (cheader_filename = "GtkSinticBolivia.h")]
 		public class SBFixed : global::Gtk.Fixed {

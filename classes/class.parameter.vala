@@ -9,7 +9,7 @@ namespace SinticBolivia
 		public static string Get(string parameter, SBDatabase? _dbh = null)
 		{
 			var dbh = (_dbh != null) ? _dbh : (SBDatabase)SBGlobals.GetVar("dbh");
-			dbh.Select("*").From("parameters").Where("key = %s".printf(parameter));
+			dbh.Select("*").From("parameters").Where("key = '%s'".printf(parameter));
 			var row = dbh.GetRow(null);
 			
 			if( row == null )

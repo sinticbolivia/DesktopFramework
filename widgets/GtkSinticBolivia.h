@@ -339,7 +339,6 @@ struct _SinticBoliviaGtkSBDatePicker {
 	GtkFixed parent_instance;
 	SinticBoliviaGtkSBDatePickerPrivate * priv;
 	GtkEntry* entryDate;
-	GtkButton* buttonSelectDate;
 	GtkCalendar* calendar;
 	GtkDialog* popup;
 };
@@ -490,13 +489,13 @@ void sintic_bolivia_gtk_info_dialog_set_ButtonClose (SinticBoliviaGtkInfoDialog*
 GType sintic_bolivia_gtk_sb_date_picker_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_new (void);
 SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_construct (GType object_type);
-void sintic_bolivia_gtk_sb_date_picker_SetButtonImage (SinticBoliviaGtkSBDatePicker* self, GtkImage* img);
 void sintic_bolivia_gtk_sb_date_picker_SetEvents (SinticBoliviaGtkSBDatePicker* self);
 void sintic_bolivia_gtk_sb_date_picker_OnButtonSelectDateClicked (SinticBoliviaGtkSBDatePicker* self);
 void sintic_bolivia_gtk_sb_date_picker_OnDateSelected (SinticBoliviaGtkSBDatePicker* self);
 void sintic_bolivia_gtk_sb_date_picker_OnDaySelectedDoubleClick (SinticBoliviaGtkSBDatePicker* self);
 const gchar* sintic_bolivia_gtk_sb_date_picker_get_DateString (SinticBoliviaGtkSBDatePicker* self);
 void sintic_bolivia_gtk_sb_date_picker_set_DateString (SinticBoliviaGtkSBDatePicker* self, const gchar* value);
+void sintic_bolivia_gtk_sb_date_picker_set_Icon (SinticBoliviaGtkSBDatePicker* self, GdkPixbuf* value);
 GType sintic_bolivia_gtk_sb_print_preview_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_new (GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_construct (GType object_type, GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);

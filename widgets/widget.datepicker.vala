@@ -7,7 +7,7 @@ namespace SinticBolivia.Gtk
 	{
 		//protected	Fixed		fixed;
 		protected	Entry		entryDate;
-		protected	Button		buttonSelectDate;
+		//protected	Button		buttonSelectDate;
 		protected	Calendar	calendar;
 		//protected	Popover		popup;
 		protected	Dialog		popup;
@@ -16,6 +16,10 @@ namespace SinticBolivia.Gtk
 		{
 			set{this.entryDate.text = value;}
 			get{return this.entryDate.text;}
+		}
+		public		Gdk.Pixbuf		Icon
+		{
+			set{this.entryDate.secondary_icon_pixbuf = value;}
 		}
 		public SBDatePicker()
 		{
@@ -33,19 +37,19 @@ namespace SinticBolivia.Gtk
 			};
 			this.popup.set_size_request(210, 210);
 			this.entryDate = new Entry(){placeholder_text = "YYYY-mm-dd"};
-			this.buttonSelectDate = new Button();
+			//this.buttonSelectDate = new Button();
 			
 			this.calendar 	= new Calendar();
 			this.calendar.set_size_request(200, 200);
 			this.calendar.show();
 			
 			this.entryDate.show();
-			this.buttonSelectDate.show();
+			//this.buttonSelectDate.show();
 						
 			this.entryDate.width_request = 150;
 						
 			this.put(this.entryDate, 0, 0);
-			this.put(this.buttonSelectDate, 161, 0);
+			//this.put(this.buttonSelectDate, 161, 0);
 			(this.popup.get_content_area() as Box).add(this.calendar);
 			this.height_request = 30;
 			this.width_request = 200;
@@ -58,13 +62,22 @@ namespace SinticBolivia.Gtk
 			//this.calendar.margin_bottom = 200;
 			this.SetEvents();
 		}
+		/*
 		public void SetButtonImage(Image img)
 		{
 			this.buttonSelectDate.image = img;
 		}
+		*/
 		protected void SetEvents()
 		{
-			this.buttonSelectDate.clicked.connect(this.OnButtonSelectDateClicked);
+			//this.buttonSelectDate.clicked.connect(this.OnButtonSelectDateClicked);
+			this.entryDate.icon_release.connect( (icon, e) => 
+			{
+				if( icon == EntryIconPosition.SECONDARY )
+				{
+					this.OnButtonSelectDateClicked();
+				}
+			});
 			this.calendar.day_selected.connect(this.OnDateSelected);
 			this.calendar.day_selected_double_click.connect(this.OnDaySelectedDoubleClick);
 		}
@@ -88,11 +101,11 @@ namespace SinticBolivia.Gtk
 			//uint year,month,day;
 			
 			//this.calendar.get_date(out year, out month, out day);
-			this.entryDate.text = "%04d-%02d-%02d".printf(this.calendar.year, this.calendar.month, this.calendar.day);
+			this.entryDate.text = "%04d-%02d-%02d".printf(this.calendar.year, this.calendar.month + 1, this.calendar.day);
 		}
 		protected void OnDaySelectedDoubleClick()
 		{
-			this.entryDate.text = "%04d-%02d-%02d".printf(this.calendar.year, this.calendar.month, this.calendar.day);
+			this.entryDate.text = "%04d-%02d-%02d".printf(this.calendar.year, this.calendar.month + 1, this.calendar.day);
 			this.popup.visible = false;
 		}
 	}

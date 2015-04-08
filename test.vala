@@ -1,26 +1,11 @@
 using GLib;
-using Gee;
-using SinticBolivia.Database;
+using SinticBolivia;
 
-public class Test :  Object
+public int main(string[] args)
 {
-	public Test()
-	{
-	}
-	public static void main()
-	{
-		SBSQLite dbh = new SBSQLite("./mono_business.sqlite");
-		dbh.Open();
-		dbh.Query("SELECT * FROM categories");
-		stdout.printf("total rows: %d\n", dbh.Rows.length);
-		int i = 0;
-		foreach(SBDBRow row in dbh.Rows)
-		{
-			stdout.printf("row: %d\n", i);
-			stdout.printf("category_id => %s, category_name => %s, \n", row.Get("category_id"), row.Get("name"));
-			i++;
-		}
-		dbh.Close();
-		
-	}
+	var os = new SBOS();
+	string psn = os.GetProcessorSN();
+
+	stdout.printf("Processor S/N: %s\n", psn);
+	return 0;
 }
