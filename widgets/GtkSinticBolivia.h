@@ -153,6 +153,17 @@ typedef struct _SinticBoliviaGtkSBDatePicker SinticBoliviaGtkSBDatePicker;
 typedef struct _SinticBoliviaGtkSBDatePickerClass SinticBoliviaGtkSBDatePickerClass;
 typedef struct _SinticBoliviaGtkSBDatePickerPrivate SinticBoliviaGtkSBDatePickerPrivate;
 
+#define SINTIC_BOLIVIA_GTK_TYPE_TAG (sintic_bolivia_gtk_tag_get_type ())
+#define SINTIC_BOLIVIA_GTK_TAG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTag))
+#define SINTIC_BOLIVIA_GTK_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
+#define SINTIC_BOLIVIA_GTK_IS_TAG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG))
+#define SINTIC_BOLIVIA_GTK_IS_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG))
+#define SINTIC_BOLIVIA_GTK_TAG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
+
+typedef struct _SinticBoliviaGtkTag SinticBoliviaGtkTag;
+typedef struct _SinticBoliviaGtkTagClass SinticBoliviaGtkTagClass;
+typedef struct _SinticBoliviaGtkTagPrivate SinticBoliviaGtkTagPrivate;
+
 #define SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW (sintic_bolivia_gtk_sb_print_preview_get_type ())
 #define SINTIC_BOLIVIA_GTK_SB_PRINT_PREVIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW, SinticBoliviaGtkSBPrintPreview))
 #define SINTIC_BOLIVIA_GTK_SB_PRINT_PREVIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW, SinticBoliviaGtkSBPrintPreviewClass))
@@ -347,6 +358,17 @@ struct _SinticBoliviaGtkSBDatePickerClass {
 	GtkFixedClass parent_class;
 };
 
+struct _SinticBoliviaGtkTag {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkTagPrivate * priv;
+	GtkLabel* label1;
+	GtkButton* button1;
+};
+
+struct _SinticBoliviaGtkTagClass {
+	GtkFixedClass parent_class;
+};
+
 struct _SinticBoliviaGtkSBPrintPreview {
 	GtkBox parent_instance;
 	SinticBoliviaGtkSBPrintPreviewPrivate * priv;
@@ -496,6 +518,13 @@ void sintic_bolivia_gtk_sb_date_picker_OnDaySelectedDoubleClick (SinticBoliviaGt
 const gchar* sintic_bolivia_gtk_sb_date_picker_get_DateString (SinticBoliviaGtkSBDatePicker* self);
 void sintic_bolivia_gtk_sb_date_picker_set_DateString (SinticBoliviaGtkSBDatePicker* self, const gchar* value);
 void sintic_bolivia_gtk_sb_date_picker_set_Icon (SinticBoliviaGtkSBDatePicker* self, GdkPixbuf* value);
+GType sintic_bolivia_gtk_tag_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_new (void);
+SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_construct (GType object_type);
+void sintic_bolivia_gtk_tag_SetEvents (SinticBoliviaGtkTag* self);
+void sintic_bolivia_gtk_tag_OnButtonRemoveClicked (SinticBoliviaGtkTag* self);
+const gchar* sintic_bolivia_gtk_tag_get_Text (SinticBoliviaGtkTag* self);
+void sintic_bolivia_gtk_tag_set_Text (SinticBoliviaGtkTag* self, const gchar* value);
 GType sintic_bolivia_gtk_sb_print_preview_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_new (GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_construct (GType object_type, GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);

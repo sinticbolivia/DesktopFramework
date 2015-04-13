@@ -27,17 +27,29 @@ namespace SinticBolivia.Database
 			this.port				= db_port;
 			
 			this.dbh = new Mysql.Database();
+			
 		}
 		public override bool Open()
 		{
-			if( !this.dbh.real_connect(this.server, this.username, this.password, null, this.port) )
+			if( !this.dbh.real_connect(this.server, 
+										this.username, 
+										this.password, 
+										(this.databaseName != "") ? this.databaseName : null, 
+										this.port,
+										null,
+										0) 
+			)
 			{
 				stderr.printf("MYSQL ERROR: %s\n", SBText.__("Error trying to connect with mysql server"));
+				stderr.printf("MYSQL ERROR: Server: %s:%d, Database: %s, User: %s, Pass: %s\n",
+								this.server, this.port, this.databaseName, this.username, this.password
+				);
 				return false;
 			}
+			/*
 			if( this.databaseName != "" )
 				this.dbh.select_db(this.databaseName);
-			
+			*/
 			return true;
 		}
 		public override bool Close()
@@ -67,6 +79,10 @@ namespace SinticBolivia.Database
 		}
 		public override	SBDBRow? GetRow(string? query)
 		{
+			this.Query(query);
+			if( this.resultSet == null )
+				return null;
+				
 			string[]? row = this.resultSet.fetch_row();
 			
 			if( row == null )
@@ -84,6 +100,7 @@ namespace SinticBolivia.Database
 		}
 		public override	ArrayList<SBDBRow> GetResults(string? query)
 		{
+			this.Query(query);
 			var rows = new ArrayList<SBDBRow>();
 			Mysql.Field[] fields = this.resultSet.fetch_fields();
 			
@@ -103,8 +120,19 @@ namespace SinticBolivia.Database
 		}
 		public override	long Execute(string sql)
 		{
-			
-			return 0;
+			//stdout.printf("EXECUTE: %s\n", sql);
+			int res = this.dbh.query( sql );
+			if( res != 0 )
+			{
+				stderr.printf("MYSQL ERROR: %s\nQUERY WAS: %s\n", this.dbh.error(), sql);
+				return res;
+			}
+			if( sql.down().index_of("insert") != -1 )
+			{
+				this.LastInsertId = (int)this.dbh.insert_id();
+				return this.LastInsertId;
+			}
+			return res;
 		}
 		public override	void BeginTransaction(){}
 		public override	void EndTransaction(){}

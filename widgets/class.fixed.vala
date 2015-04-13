@@ -19,8 +19,8 @@ namespace SinticBolivia.Gtk
 		public	int		X = 0;
 		public	int		Y = 0;
 		public	int		Margin = 5;
-		public		int		WidgetWidth;
-		public		int 	WidgetHeight;
+		public		int		WidgetWidth = 0;
+		public		int 	WidgetHeight = 0;
 		protected	int		totalColumns;
 		protected	int 	currentColumn = 0;
 		

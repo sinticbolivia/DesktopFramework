@@ -238,5 +238,14 @@ namespace SinticBolivia {
 			public signal void ButtonPrintClicked ();
 			public signal void ClosedPreview ();
 		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class Tag : global::Gtk.Fixed {
+			protected global::Gtk.Button button1;
+			protected global::Gtk.Label label1;
+			public Tag ();
+			protected void OnButtonRemoveClicked ();
+			protected void SetEvents ();
+			public string Text { get; set; }
+		}
 	}
 }

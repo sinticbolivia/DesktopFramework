@@ -87,7 +87,7 @@ namespace SinticBolivia.Database
 			string? val = this.Get(column_name);
 			return (val == null) ? 0.0 : double.parse(val);
 		}
-		public void Set(string column_name, string the_value)
+		public void Set(string column_name, string? the_value)
 		{
 			int index = -1;
 			

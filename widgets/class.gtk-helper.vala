@@ -72,13 +72,13 @@ namespace SinticBolivia.Gtk
 				else if( cols[i, 1] == "toggle" )
 				{
 					int col_index = i;
-					stdout.printf("TOGGLE INDEX: %d\n", col_index);
+					//stdout.printf("TOGGLE INDEX: %d\n", col_index);
 					cell = new CellRendererToggle();
 					ListStore model = (treeview.model as ListStore);
 					(cell as CellRendererToggle).toggled.connect( (_toggle, _path) => 
 					{
 						
-						stdout.printf("TOGGLED INDEX: %d\n", col_index);
+						//stdout.printf("TOGGLED INDEX: %d\n", col_index);
 						TreePath tree_path = new TreePath.from_string (_path);
 						TreeIter iter;
 						model.get_iter (out iter, tree_path);
