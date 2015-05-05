@@ -1,5 +1,4 @@
 VFLAGS=-X -DGETTEXT_PACKAGE\
-		-X -D__LCC__\
 		-X -I..\
 		-X -I../../libs/libharu/libharu-RELEASE_2_2_0/include
 		
@@ -32,8 +31,8 @@ LIBRARY_NAME=SinticBoliviaReports
 all: $(SOURCES) $(DEST_LIBRARY)
 
 $(DEST_LIBRARY): $(SOURCES)
-	$(VC) -c -D __linux__ $(VFLAGS) $(VAPI) $(PKG) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC
-	gcc -o ../bin/$@ *.o $(VLIBS) -shared
+	@#	$(VC) -c -D __linux__ $(VFLAGS) $(VAPI) $(PKG) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC
+	@#gcc -o ../bin/$@ *.o $(VLIBS) -shared
 	@rm *.o
 clean:
 	rm -fv bin/$(DEST_LIBRARY) *.h *.c *.o

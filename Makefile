@@ -1,4 +1,5 @@
-VFLAGS=-X -DGETTEXT_PACKAGE --vapidir=../libs/libharu
+VFLAGS=-X -DGETTEXT_PACKAGE
+		
 VLIBS=--pkg gmodule-2.0\
 	--pkg mysql\
 	--pkg sqlite3\
@@ -7,9 +8,19 @@ VLIBS=--pkg gmodule-2.0\
 	--pkg posix\
 	--pkg libxml-2.0\
 	--pkg json-glib-1.0
+	
+CLIBS=`pkg-config gio-2.0 --libs`\
+		-lgmodule-2.0\
+		-ljson-glib-1.0\
+		-lxml2\
+		-lgee\
+		-lsqlite3\
+		-lmysqlclient
+		#-lintl
+
 VC=valac
 MACROS=-D __linux__
-SOURCES=$(wildcard *.vala) $(wildcard classes/*.vala) $(wildcard Database/*.vala)
+SOURCES=$(wildcard classes/*.vala) $(wildcard Database/*.vala)
 DEST_LIBRARY=libSinticBolivia.so
 LIBRARY_NAME=SinticBolivia
 #include Database/Makefile
@@ -17,7 +28,10 @@ LIBRARY_NAME=SinticBolivia
 all: $(SOURCES) $(DEST_LIBRARY)
 
 $(DEST_LIBRARY): $(SOURCES)
-	$(VC) $(MACROS) $(VFLAGS) $(VLIBS) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC -X -shared -o bin/$@
+	@#$(VC) $(MACROS) $(VFLAGS) $(VLIBS) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC -X -shared -o bin/$@
+	$(VC) -c $(MACROS) $(VFLAGS) $(VLIBS) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC
+	gcc -c ccode/cpuid.c -fPIC
+	gcc -o bin/$@ *.o $(CLIBS) -shared
 	
 	
 #$(OBJECTS): $(SOURCES)

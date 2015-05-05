@@ -2,7 +2,7 @@ using GLib;
 using Gee;
 using HPDF;
 
-namespace EPos
+namespace SinticBolivia.Reports
 {
 	public class PdfRow : Object
 	{
@@ -113,7 +113,8 @@ namespace EPos
 				cell.Height = this.Height;
 				cell.Draw();
 			}
-			this.Table.PdfCatalog.YPos -= this.Height;
+			//this.Table.PdfCatalog.YPos -= this.Height;
+			this.Table.Report.YPos -= this.Height;
 		}
 	}
 }
