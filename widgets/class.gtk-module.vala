@@ -36,7 +36,7 @@ namespace SinticBolivia.Gtk
 				stderr.printf("ERROR LOADING RESOURCE: %s\n", e.message);
 			}
 		}
-		public Builder GetGladeUi(string ui_file)
+		public Builder GetGladeUi(string ui_file, string t_domain = "")
 		{
 			
 			size_t ui_size;
@@ -54,6 +54,13 @@ namespace SinticBolivia.Gtk
 			ui_stream.read_all(data, out length);
 			
 			var gui = new Builder();
+			/*
+			if( t_domain == null )
+			{
+				t_domain = "";
+			}
+			*/
+			gui.translation_domain = t_domain;
 			gui.add_from_string((string)data, length);
 			
 			return gui;

@@ -6,6 +6,7 @@ namespace SinticBolivia
 	public class SBGlobals : Object
 	{
 		protected static HashMap _vars = null;
+		protected static HashMap<string, Value?>	values;
 		
 		protected SBGlobals(){}
 		public static void SetVar(string key, Object data)
@@ -34,6 +35,32 @@ namespace SinticBolivia
 				return (Object)(SBGlobals._vars as HashMap<string,Object>)[key];
 			}
 			return (Object)null;
+		}
+		public static void SetValue(string key, Value? the_value)
+		{
+			if( SBGlobals.values == null )
+			{
+				SBGlobals.values = new HashMap<string, Value?>();
+			}
+			if( SBGlobals.values.has_key(key) )
+			{
+				SBGlobals.values[key] = the_value;
+				return;
+			}
+			SBGlobals.values.set(key, the_value);
+		}
+		public static Value? GetValue(string key)
+		{
+			if( SBGlobals.values == null )
+			{
+				return null;
+			}
+			
+			if( !SBGlobals.values.has_key(key) )
+			{
+				return null;
+			}
+			return SBGlobals.values[key];
 		}
 	}
 }

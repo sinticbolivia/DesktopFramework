@@ -128,5 +128,26 @@ namespace SinticBolivia.Gtk
 			
 			return res;
 		}
+		public static InputStream GetInputStreamFromResource(GLib.Resource res, string file)
+		{
+			return res.open_stream(file, ResourceLookupFlags.NONE);
+		}
+		public static Builder GetGladeUIFromResource(GLib.Resource res, string glade_ui = "")
+		{
+			size_t ui_size;
+			uint32 flags;
+			
+			res.get_info(glade_ui, ResourceLookupFlags.NONE, out ui_size, out flags);
+			InputStream ui_stream = GtkHelper.GetInputStreamFromResource(res, glade_ui);						
+			
+			uint8[] data = new uint8[ui_size];
+			size_t length;
+			ui_stream.read_all(data, out length);
+			
+			var gui = new Builder();
+			gui.add_from_string((string)data, length);
+			
+			return gui;
+		}
 	}
 }

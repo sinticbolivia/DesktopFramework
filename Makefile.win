@@ -20,7 +20,8 @@ VLIBS= `pkg-config --libs gio-2.0`\
 		-lxml2\
 		-lgee\
 		-lsqlite3\
-		-lmysql
+		-lmysql\
+		-lintl
 		
 		
 VC=valac

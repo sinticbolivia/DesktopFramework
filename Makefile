@@ -1,12 +1,15 @@
 VFLAGS=-X -DGETTEXT_PACKAGE --vapidir=../libs/libharu
-VLIBS=--pkg gmodule-2.0 --pkg sqlite3 --pkg gee-1.0 --pkg posix --pkg libxml-2.0
+VLIBS=--pkg gmodule-2.0\
+	--pkg mysql\
+	--pkg sqlite3\
+	--pkg gee-1.0\
+	--pkg gio-2.0\
+	--pkg posix\
+	--pkg libxml-2.0\
+	--pkg json-glib-1.0
 VC=valac
 MACROS=-D __linux__
-SOURCES=Database/database.vala Database/SQLite.vala SBGlobals.vala ISBModule.vala SBModule.vala\
-		classes/class.file-helper.vala SBText.vala classes/class.meta.vala classes/class.user.vala classes/class.role.vala\
-		classes/class.transaction.vala classes/class.transaction-item.vala classes/class.transaction-type.vala\
-		classes/class.category.vala classes/class.product.vala classes/class.store.vala classes/class.datetime.vala\
-		classes/class.os.vala
+SOURCES=$(wildcard *.vala) $(wildcard classes/*.vala) $(wildcard Database/*.vala)
 DEST_LIBRARY=libSinticBolivia.so
 LIBRARY_NAME=SinticBolivia
 #include Database/Makefile
