@@ -1,0 +1,30 @@
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+	BLOCK "StringFileInfo"
+	{
+		BLOCK "040904E4"
+		{
+			VALUE "CompanyName", "Sintic Bolivia"
+			VALUE "FileDescription", "Sintic Bolivia Desktop Framework - Reports"
+			VALUE "FileVersion", "1.0.0.0"
+			VALUE "InternalName", "LIBSINTICBOLIVIAREPORTS"
+			VALUE "LegalCopyright", "(c) Sintic Bolivia 2006-2015, J. Marcelo Aviles Paco"
+			VALUE "LegalTrademarks", ""
+			VALUE "OriginalFilename", "libSinticBoliviaReports"
+			VALUE "ProductName", "SBReports"
+			VALUE "ProductVersion", "1.0.0.0"
+			VALUE "Comments", ""
+			VALUE "Aditional Notes", ""
+		}
+	}
+
+	BLOCK "VarFileInfo"
+	{
+		VALUE "Translation",0x0409,0x04E4
+	}
+}
+

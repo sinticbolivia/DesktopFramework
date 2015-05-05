@@ -1,0 +1,76 @@
+/usr/lib/gcc/i686-linux-gnu/4.9/../../../i386-linux-gnu/crt1.o: In function `_start':
+/build/buildd/glibc-2.19/csu/../sysdeps/i386/start.S:111: undefined reference to `main'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_construct':
+class.pdf-row.vala.c:(.text+0x29): undefined reference to `g_object_new'
+class.pdf-row.vala.c:(.text+0x34): undefined reference to `sintic_bolivia_reports_pdf_cell_get_type'
+class.pdf-row.vala.c:(.text+0x3e): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x45): undefined reference to `g_object_ref'
+class.pdf-row.vala.c:(.text+0x4c): undefined reference to `gee_array_list_new'
+class.pdf-row.vala.c:(.text+0x6b): undefined reference to `g_object_unref'
+class.pdf-row.vala.o: In function `_g_object_ref0':
+class.pdf-row.vala.c:(.text+0xec): undefined reference to `g_object_ref'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_construct_with_table':
+class.pdf-row.vala.c:(.text+0x150): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0x19b): undefined reference to `g_object_unref'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_AddCell':
+class.pdf-row.vala.c:(.text+0x332): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0x3e2): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0x4b2): undefined reference to `gee_abstract_list_get'
+class.pdf-row.vala.c:(.text+0x4f5): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x512): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x574): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0x5ce): undefined reference to `sintic_bolivia_reports_pdf_cell_new_with_row'
+class.pdf-row.vala.c:(.text+0x739): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0x803): undefined reference to `gee_abstract_list_get'
+class.pdf-row.vala.c:(.text+0x856): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x870): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x8a6): undefined reference to `gee_abstract_collection_add'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_SetXY':
+class.pdf-row.vala.c:(.text+0x902): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0x991): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0xa31): undefined reference to `gee_abstract_list_get'
+class.pdf-row.vala.c:(.text+0xa66): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0xa80): undefined reference to `g_object_unref'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_calculateRowSize':
+class.pdf-row.vala.c:(.text+0xabf): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0xb30): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0xbe0): undefined reference to `gee_abstract_list_get'
+class.pdf-row.vala.c:(.text+0xc4b): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0xc65): undefined reference to `g_object_unref'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_Draw':
+class.pdf-row.vala.c:(.text+0xd08): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0xd51): undefined reference to `HPDF_Page_GetCurrentFontSize'
+class.pdf-row.vala.c:(.text+0xd74): undefined reference to `HPDF_Page_SetFontAndSize'
+class.pdf-row.vala.c:(.text+0xdf1): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.c:(.text+0xeab): undefined reference to `gee_abstract_list_get'
+class.pdf-row.vala.c:(.text+0xee0): undefined reference to `sintic_bolivia_reports_pdf_cell_Draw'
+class.pdf-row.vala.c:(.text+0xef4): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0xf0e): undefined reference to `g_object_unref'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_get_Size':
+class.pdf-row.vala.c:(.text+0xfa4): undefined reference to `g_return_if_fail_warning'
+class.pdf-row.vala.c:(.text+0xfc2): undefined reference to `gee_abstract_collection_get_size'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_class_init':
+class.pdf-row.vala.c:(.text+0xff7): undefined reference to `g_type_class_peek_parent'
+class.pdf-row.vala.c:(.text+0x100d): undefined reference to `g_type_check_class_cast'
+class.pdf-row.vala.c:(.text+0x1028): undefined reference to `g_type_check_class_cast'
+class.pdf-row.vala.c:(.text+0x1064): undefined reference to `g_param_spec_int'
+class.pdf-row.vala.c:(.text+0x1076): undefined reference to `g_type_check_class_cast'
+class.pdf-row.vala.c:(.text+0x1085): undefined reference to `g_object_class_install_property'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_finalize':
+class.pdf-row.vala.c:(.text+0x10c1): undefined reference to `g_type_check_instance_cast'
+class.pdf-row.vala.c:(.text+0x10e0): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x1106): undefined reference to `g_object_unref'
+class.pdf-row.vala.c:(.text+0x1122): undefined reference to `g_free'
+class.pdf-row.vala.c:(.text+0x1140): undefined reference to `g_type_check_class_cast'
+class.pdf-row.vala.o: In function `sintic_bolivia_reports_pdf_row_get_type':
+class.pdf-row.vala.c:(.text+0x1181): undefined reference to `g_once_init_enter'
+class.pdf-row.vala.c:(.text+0x11af): undefined reference to `g_type_register_static'
+class.pdf-row.vala.c:(.text+0x11c7): undefined reference to `g_once_init_leave'
+class.pdf-row.vala.o: In function `_vala_sintic_bolivia_reports_pdf_row_get_property':
+class.pdf-row.vala.c:(.text+0x11f9): undefined reference to `g_type_check_instance_cast'
+class.pdf-row.vala.c:(.text+0x1221): undefined reference to `g_value_set_int'
+class.pdf-row.vala.c:(.text+0x1248): undefined reference to `g_type_name'
+class.pdf-row.vala.c:(.text+0x125d): undefined reference to `g_type_name'
+class.pdf-row.vala.c:(.text+0x128f): undefined reference to `g_log'
+collect2: error: ld returned 1 exit status
+make: *** [class.pdf-row.vala] Error 1
