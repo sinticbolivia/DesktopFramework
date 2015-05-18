@@ -5,87 +5,21 @@
 #define __GTKSINTICBOLIVIA_H__
 
 #include <glib.h>
-#include <SinticBolivia.h>
+#include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
 #include <float.h>
 #include <math.h>
-#include <gio/gio.h>
-#include <gtk/gtk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gee.h>
-#include <glib-object.h>
 #include <pango/pango.h>
 #include <cairo.h>
+#include <gtk/gtk.h>
+#include <SinticBolivia.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gio/gio.h>
+#include <gee.h>
 
 G_BEGIN_DECLS
 
-
-#define SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE (sintic_bolivia_gtk_sb_gtk_module_get_type ())
-#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModule))
-#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModuleClass))
-#define SINTIC_BOLIVIA_GTK_IS_SB_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE))
-#define SINTIC_BOLIVIA_GTK_IS_SB_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE))
-#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModuleClass))
-
-typedef struct _SinticBoliviaGtkSBGtkModule SinticBoliviaGtkSBGtkModule;
-typedef struct _SinticBoliviaGtkSBGtkModuleClass SinticBoliviaGtkSBGtkModuleClass;
-typedef struct _SinticBoliviaGtkSBGtkModulePrivate SinticBoliviaGtkSBGtkModulePrivate;
-
-#define SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK (sintic_bolivia_gtk_sb_notebook_get_type ())
-#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebook))
-#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
-#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
-#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
-#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
-
-typedef struct _SinticBoliviaGtkSBNotebook SinticBoliviaGtkSBNotebook;
-typedef struct _SinticBoliviaGtkSBNotebookClass SinticBoliviaGtkSBNotebookClass;
-typedef struct _SinticBoliviaGtkSBNotebookPrivate SinticBoliviaGtkSBNotebookPrivate;
-
-#define SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD (sintic_bolivia_gtk_sb_dashboard_get_type ())
-#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboard))
-#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
-#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
-#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
-#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
-
-typedef struct _SinticBoliviaGtkSBDashboard SinticBoliviaGtkSBDashboard;
-typedef struct _SinticBoliviaGtkSBDashboardClass SinticBoliviaGtkSBDashboardClass;
-typedef struct _SinticBoliviaGtkSBDashboardPrivate SinticBoliviaGtkSBDashboardPrivate;
-
-#define SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED (sintic_bolivia_gtk_sb_fixed_get_type ())
-#define SINTIC_BOLIVIA_GTK_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixed))
-#define SINTIC_BOLIVIA_GTK_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
-#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
-#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
-#define SINTIC_BOLIVIA_GTK_SB_FIXED_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
-
-typedef struct _SinticBoliviaGtkSBFixed SinticBoliviaGtkSBFixed;
-typedef struct _SinticBoliviaGtkSBFixedClass SinticBoliviaGtkSBFixedClass;
-typedef struct _SinticBoliviaGtkSBFixedPrivate SinticBoliviaGtkSBFixedPrivate;
-
-#define SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG (sintic_bolivia_gtk_info_dialog_get_type ())
-#define SINTIC_BOLIVIA_GTK_INFO_DIALOG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialog))
-#define SINTIC_BOLIVIA_GTK_INFO_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialogClass))
-#define SINTIC_BOLIVIA_GTK_IS_INFO_DIALOG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG))
-#define SINTIC_BOLIVIA_GTK_IS_INFO_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG))
-#define SINTIC_BOLIVIA_GTK_INFO_DIALOG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialogClass))
-
-typedef struct _SinticBoliviaGtkInfoDialog SinticBoliviaGtkInfoDialog;
-typedef struct _SinticBoliviaGtkInfoDialogClass SinticBoliviaGtkInfoDialogClass;
-typedef struct _SinticBoliviaGtkInfoDialogPrivate SinticBoliviaGtkInfoDialogPrivate;
-
-#define SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER (sintic_bolivia_gtk_sb_date_picker_get_type ())
-#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePicker))
-#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePickerClass))
-#define SINTIC_BOLIVIA_GTK_IS_SB_DATE_PICKER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER))
-#define SINTIC_BOLIVIA_GTK_IS_SB_DATE_PICKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER))
-#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePickerClass))
-
-typedef struct _SinticBoliviaGtkSBDatePicker SinticBoliviaGtkSBDatePicker;
-typedef struct _SinticBoliviaGtkSBDatePickerClass SinticBoliviaGtkSBDatePickerClass;
-typedef struct _SinticBoliviaGtkSBDatePickerPrivate SinticBoliviaGtkSBDatePickerPrivate;
 
 #define SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE (sintic_bolivia_gtk_sb_cairo_cell_table_get_type ())
 #define SINTIC_BOLIVIA_GTK_SB_CAIRO_CELL_TABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE, SinticBoliviaGtkSBCairoCellTable))
@@ -131,16 +65,16 @@ typedef struct _SinticBoliviaGtkSBCairoParagraph SinticBoliviaGtkSBCairoParagrap
 typedef struct _SinticBoliviaGtkSBCairoParagraphClass SinticBoliviaGtkSBCairoParagraphClass;
 typedef struct _SinticBoliviaGtkSBCairoParagraphPrivate SinticBoliviaGtkSBCairoParagraphPrivate;
 
-#define SINTIC_BOLIVIA_GTK_TYPE_TAG (sintic_bolivia_gtk_tag_get_type ())
-#define SINTIC_BOLIVIA_GTK_TAG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTag))
-#define SINTIC_BOLIVIA_GTK_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
-#define SINTIC_BOLIVIA_GTK_IS_TAG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG))
-#define SINTIC_BOLIVIA_GTK_IS_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG))
-#define SINTIC_BOLIVIA_GTK_TAG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD (sintic_bolivia_gtk_sb_dashboard_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboard))
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
 
-typedef struct _SinticBoliviaGtkTag SinticBoliviaGtkTag;
-typedef struct _SinticBoliviaGtkTagClass SinticBoliviaGtkTagClass;
-typedef struct _SinticBoliviaGtkTagPrivate SinticBoliviaGtkTagPrivate;
+typedef struct _SinticBoliviaGtkSBDashboard SinticBoliviaGtkSBDashboard;
+typedef struct _SinticBoliviaGtkSBDashboardClass SinticBoliviaGtkSBDashboardClass;
+typedef struct _SinticBoliviaGtkSBDashboardPrivate SinticBoliviaGtkSBDashboardPrivate;
 
 #define SINTIC_BOLIVIA_GTK_TYPE_DB_TABLE_TREE_VIEW (sintic_bolivia_gtk_db_table_tree_view_get_type ())
 #define SINTIC_BOLIVIA_GTK_DB_TABLE_TREE_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_DB_TABLE_TREE_VIEW, SinticBoliviaGtkDbTableTreeView))
@@ -153,6 +87,17 @@ typedef struct _SinticBoliviaGtkDbTableTreeView SinticBoliviaGtkDbTableTreeView;
 typedef struct _SinticBoliviaGtkDbTableTreeViewClass SinticBoliviaGtkDbTableTreeViewClass;
 typedef struct _SinticBoliviaGtkDbTableTreeViewPrivate SinticBoliviaGtkDbTableTreeViewPrivate;
 
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED (sintic_bolivia_gtk_sb_fixed_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixed))
+#define SINTIC_BOLIVIA_GTK_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
+#define SINTIC_BOLIVIA_GTK_IS_SB_FIXED_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED))
+#define SINTIC_BOLIVIA_GTK_SB_FIXED_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_FIXED, SinticBoliviaGtkSBFixedClass))
+
+typedef struct _SinticBoliviaGtkSBFixed SinticBoliviaGtkSBFixed;
+typedef struct _SinticBoliviaGtkSBFixedClass SinticBoliviaGtkSBFixedClass;
+typedef struct _SinticBoliviaGtkSBFixedPrivate SinticBoliviaGtkSBFixedPrivate;
+
 #define SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER (sintic_bolivia_gtk_gtk_helper_get_type ())
 #define SINTIC_BOLIVIA_GTK_GTK_HELPER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER, SinticBoliviaGtkGtkHelper))
 #define SINTIC_BOLIVIA_GTK_GTK_HELPER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_GTK_HELPER, SinticBoliviaGtkGtkHelperClass))
@@ -164,6 +109,61 @@ typedef struct _SinticBoliviaGtkGtkHelper SinticBoliviaGtkGtkHelper;
 typedef struct _SinticBoliviaGtkGtkHelperClass SinticBoliviaGtkGtkHelperClass;
 typedef struct _SinticBoliviaGtkGtkHelperPrivate SinticBoliviaGtkGtkHelperPrivate;
 
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE (sintic_bolivia_gtk_sb_gtk_module_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModule))
+#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModuleClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE))
+#define SINTIC_BOLIVIA_GTK_IS_SB_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE))
+#define SINTIC_BOLIVIA_GTK_SB_GTK_MODULE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_GTK_MODULE, SinticBoliviaGtkSBGtkModuleClass))
+
+typedef struct _SinticBoliviaGtkSBGtkModule SinticBoliviaGtkSBGtkModule;
+typedef struct _SinticBoliviaGtkSBGtkModuleClass SinticBoliviaGtkSBGtkModuleClass;
+typedef struct _SinticBoliviaGtkSBGtkModulePrivate SinticBoliviaGtkSBGtkModulePrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG (sintic_bolivia_gtk_info_dialog_get_type ())
+#define SINTIC_BOLIVIA_GTK_INFO_DIALOG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialog))
+#define SINTIC_BOLIVIA_GTK_INFO_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialogClass))
+#define SINTIC_BOLIVIA_GTK_IS_INFO_DIALOG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG))
+#define SINTIC_BOLIVIA_GTK_IS_INFO_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG))
+#define SINTIC_BOLIVIA_GTK_INFO_DIALOG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_INFO_DIALOG, SinticBoliviaGtkInfoDialogClass))
+
+typedef struct _SinticBoliviaGtkInfoDialog SinticBoliviaGtkInfoDialog;
+typedef struct _SinticBoliviaGtkInfoDialogClass SinticBoliviaGtkInfoDialogClass;
+typedef struct _SinticBoliviaGtkInfoDialogPrivate SinticBoliviaGtkInfoDialogPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK (sintic_bolivia_gtk_sb_notebook_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebook))
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
+#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
+
+typedef struct _SinticBoliviaGtkSBNotebook SinticBoliviaGtkSBNotebook;
+typedef struct _SinticBoliviaGtkSBNotebookClass SinticBoliviaGtkSBNotebookClass;
+typedef struct _SinticBoliviaGtkSBNotebookPrivate SinticBoliviaGtkSBNotebookPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER (sintic_bolivia_gtk_sb_date_picker_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePicker))
+#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePickerClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DATE_PICKER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DATE_PICKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER))
+#define SINTIC_BOLIVIA_GTK_SB_DATE_PICKER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DATE_PICKER, SinticBoliviaGtkSBDatePickerClass))
+
+typedef struct _SinticBoliviaGtkSBDatePicker SinticBoliviaGtkSBDatePicker;
+typedef struct _SinticBoliviaGtkSBDatePickerClass SinticBoliviaGtkSBDatePickerClass;
+typedef struct _SinticBoliviaGtkSBDatePickerPrivate SinticBoliviaGtkSBDatePickerPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_TAG (sintic_bolivia_gtk_tag_get_type ())
+#define SINTIC_BOLIVIA_GTK_TAG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTag))
+#define SINTIC_BOLIVIA_GTK_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
+#define SINTIC_BOLIVIA_GTK_IS_TAG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG))
+#define SINTIC_BOLIVIA_GTK_IS_TAG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_TAG))
+#define SINTIC_BOLIVIA_GTK_TAG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_TAG, SinticBoliviaGtkTagClass))
+
+typedef struct _SinticBoliviaGtkTag SinticBoliviaGtkTag;
+typedef struct _SinticBoliviaGtkTagClass SinticBoliviaGtkTagClass;
+typedef struct _SinticBoliviaGtkTagPrivate SinticBoliviaGtkTagPrivate;
+
 #define SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW (sintic_bolivia_gtk_sb_print_preview_get_type ())
 #define SINTIC_BOLIVIA_GTK_SB_PRINT_PREVIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW, SinticBoliviaGtkSBPrintPreview))
 #define SINTIC_BOLIVIA_GTK_SB_PRINT_PREVIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_PRINT_PREVIEW, SinticBoliviaGtkSBPrintPreviewClass))
@@ -174,93 +174,6 @@ typedef struct _SinticBoliviaGtkGtkHelperPrivate SinticBoliviaGtkGtkHelperPrivat
 typedef struct _SinticBoliviaGtkSBPrintPreview SinticBoliviaGtkSBPrintPreview;
 typedef struct _SinticBoliviaGtkSBPrintPreviewClass SinticBoliviaGtkSBPrintPreviewClass;
 typedef struct _SinticBoliviaGtkSBPrintPreviewPrivate SinticBoliviaGtkSBPrintPreviewPrivate;
-
-struct _SinticBoliviaGtkSBGtkModule {
-	SinticBoliviaSBModule parent_instance;
-	SinticBoliviaGtkSBGtkModulePrivate * priv;
-	gchar* _moduleId;
-	gchar* _name;
-	gchar* _description;
-	gchar* _author;
-	gdouble _version;
-	gchar* resourceFile;
-	gchar* resourceNs;
-	GResource* res_data;
-};
-
-struct _SinticBoliviaGtkSBGtkModuleClass {
-	SinticBoliviaSBModuleClass parent_class;
-};
-
-struct _SinticBoliviaGtkSBNotebook {
-	GtkNotebook parent_instance;
-	SinticBoliviaGtkSBNotebookPrivate * priv;
-	gint _totalPages;
-	GeeHashMap* _pages;
-};
-
-struct _SinticBoliviaGtkSBNotebookClass {
-	GtkNotebookClass parent_class;
-};
-
-struct _SinticBoliviaGtkSBDashboard {
-	GtkFixed parent_instance;
-	SinticBoliviaGtkSBDashboardPrivate * priv;
-	gint fixedWidth;
-	gint fixedHeight;
-	gint fixedX;
-	gint fixedY;
-	gint fixedRow;
-	gint fixedCol;
-	gint widgetHeight;
-	gint widgetWidth;
-	gint widgetMargin;
-};
-
-struct _SinticBoliviaGtkSBDashboardClass {
-	GtkFixedClass parent_class;
-};
-
-struct _SinticBoliviaGtkSBFixed {
-	GtkFixed parent_instance;
-	SinticBoliviaGtkSBFixedPrivate * priv;
-	gint FixedWidth;
-	gint width;
-	gint X;
-	gint Y;
-	gint Margin;
-	gint WidgetWidth;
-	gint WidgetHeight;
-	gint totalColumns;
-	gint currentColumn;
-};
-
-struct _SinticBoliviaGtkSBFixedClass {
-	GtkFixedClass parent_class;
-};
-
-struct _SinticBoliviaGtkInfoDialog {
-	GtkDialog parent_instance;
-	SinticBoliviaGtkInfoDialogPrivate * priv;
-	gchar* dlgType;
-	GtkEventBox* boxHeader;
-};
-
-struct _SinticBoliviaGtkInfoDialogClass {
-	GtkDialogClass parent_class;
-};
-
-struct _SinticBoliviaGtkSBDatePicker {
-	GtkFixed parent_instance;
-	SinticBoliviaGtkSBDatePickerPrivate * priv;
-	GtkEntry* entryDate;
-	GtkCalendar* calendar;
-	GtkDialog* popup;
-};
-
-struct _SinticBoliviaGtkSBDatePickerClass {
-	GtkFixedClass parent_class;
-};
 
 struct _SinticBoliviaGtkSBCairoCellTable {
 	GObject parent_instance;
@@ -333,14 +246,21 @@ struct _SinticBoliviaGtkSBCairoParagraphClass {
 	SinticBoliviaGtkSBCairoObjectClass parent_class;
 };
 
-struct _SinticBoliviaGtkTag {
+struct _SinticBoliviaGtkSBDashboard {
 	GtkFixed parent_instance;
-	SinticBoliviaGtkTagPrivate * priv;
-	GtkLabel* label1;
-	GtkButton* button1;
+	SinticBoliviaGtkSBDashboardPrivate * priv;
+	gint fixedWidth;
+	gint fixedHeight;
+	gint fixedX;
+	gint fixedY;
+	gint fixedRow;
+	gint fixedCol;
+	gint widgetHeight;
+	gint widgetWidth;
+	gint widgetMargin;
 };
 
-struct _SinticBoliviaGtkTagClass {
+struct _SinticBoliviaGtkSBDashboardClass {
 	GtkFixedClass parent_class;
 };
 
@@ -360,6 +280,24 @@ struct _SinticBoliviaGtkDbTableTreeViewClass {
 	GtkTreeViewClass parent_class;
 };
 
+struct _SinticBoliviaGtkSBFixed {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkSBFixedPrivate * priv;
+	gint FixedWidth;
+	gint width;
+	gint X;
+	gint Y;
+	gint Margin;
+	gint WidgetWidth;
+	gint WidgetHeight;
+	gint totalColumns;
+	gint currentColumn;
+};
+
+struct _SinticBoliviaGtkSBFixedClass {
+	GtkFixedClass parent_class;
+};
+
 struct _SinticBoliviaGtkGtkHelper {
 	GObject parent_instance;
 	SinticBoliviaGtkGtkHelperPrivate * priv;
@@ -367,6 +305,68 @@ struct _SinticBoliviaGtkGtkHelper {
 
 struct _SinticBoliviaGtkGtkHelperClass {
 	GObjectClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBGtkModule {
+	SinticBoliviaSBModule parent_instance;
+	SinticBoliviaGtkSBGtkModulePrivate * priv;
+	gchar* _moduleId;
+	gchar* _name;
+	gchar* _description;
+	gchar* _author;
+	gdouble _version;
+	gchar* resourceFile;
+	gchar* resourceNs;
+	GResource* res_data;
+};
+
+struct _SinticBoliviaGtkSBGtkModuleClass {
+	SinticBoliviaSBModuleClass parent_class;
+};
+
+struct _SinticBoliviaGtkInfoDialog {
+	GtkDialog parent_instance;
+	SinticBoliviaGtkInfoDialogPrivate * priv;
+	gchar* dlgType;
+	GtkEventBox* boxHeader;
+};
+
+struct _SinticBoliviaGtkInfoDialogClass {
+	GtkDialogClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBNotebook {
+	GtkNotebook parent_instance;
+	SinticBoliviaGtkSBNotebookPrivate * priv;
+	gint _totalPages;
+	GeeHashMap* _pages;
+};
+
+struct _SinticBoliviaGtkSBNotebookClass {
+	GtkNotebookClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBDatePicker {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkSBDatePickerPrivate * priv;
+	GtkEntry* entryDate;
+	GtkCalendar* calendar;
+	GtkDialog* popup;
+};
+
+struct _SinticBoliviaGtkSBDatePickerClass {
+	GtkFixedClass parent_class;
+};
+
+struct _SinticBoliviaGtkTag {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkTagPrivate * priv;
+	GtkLabel* label1;
+	GtkButton* button1;
+};
+
+struct _SinticBoliviaGtkTagClass {
+	GtkFixedClass parent_class;
 };
 
 struct _SinticBoliviaGtkSBPrintPreview {
@@ -414,61 +414,6 @@ struct _SinticBoliviaGtkSBPrintPreviewClass {
 };
 
 
-GType sintic_bolivia_gtk_sb_gtk_module_get_type (void) G_GNUC_CONST;
-void sintic_bolivia_gtk_sb_gtk_module_LoadResources (SinticBoliviaGtkSBGtkModule* self);
-GtkBuilder* sintic_bolivia_gtk_sb_gtk_module_GetGladeUi (SinticBoliviaGtkSBGtkModule* self, const gchar* ui_file, const gchar* t_domain);
-GInputStream* sintic_bolivia_gtk_sb_gtk_module_GetInputStream (SinticBoliviaGtkSBGtkModule* self, const gchar* file);
-GdkPixbuf* sintic_bolivia_gtk_sb_gtk_module_GetPixbuf (SinticBoliviaGtkSBGtkModule* self, const gchar* image, gint width, gint height);
-gchar** sintic_bolivia_gtk_sb_gtk_module_GetSQLFromResource (SinticBoliviaGtkSBGtkModule* self, const gchar* sql_file, int* result_length1);
-SinticBoliviaGtkSBGtkModule* sintic_bolivia_gtk_sb_gtk_module_construct (GType object_type);
-GType sintic_bolivia_gtk_sb_notebook_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_new (void);
-SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_construct (GType object_type);
-gint sintic_bolivia_gtk_sb_notebook_AddPage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id, const gchar* title, GtkWidget* content);
-gboolean sintic_bolivia_gtk_sb_notebook_RemovePage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
-GtkWidget* sintic_bolivia_gtk_sb_notebook_GetPage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
-void sintic_bolivia_gtk_sb_notebook_SetCurrentPageById (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
-GType sintic_bolivia_gtk_sb_dashboard_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_new (void);
-SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_construct (GType object_type);
-void sintic_bolivia_gtk_sb_dashboard_Add (SinticBoliviaGtkSBDashboard* self, GtkWidget* child);
-gint sintic_bolivia_gtk_sb_dashboard_get_Width (SinticBoliviaGtkSBDashboard* self);
-void sintic_bolivia_gtk_sb_dashboard_set_Width (SinticBoliviaGtkSBDashboard* self, gint value);
-GType sintic_bolivia_gtk_sb_fixed_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_new (void);
-SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_construct (GType object_type);
-void sintic_bolivia_gtk_sb_fixed_Build (SinticBoliviaGtkSBFixed* self);
-void sintic_bolivia_gtk_sb_fixed_SetEvents (SinticBoliviaGtkSBFixed* self);
-void sintic_bolivia_gtk_sb_fixed_SetWidgetSize (SinticBoliviaGtkSBFixed* self, gint width, gint height);
-void sintic_bolivia_gtk_sb_fixed_AddWidget (SinticBoliviaGtkSBFixed* self, GtkWidget* w);
-gint sintic_bolivia_gtk_sb_fixed_get_Width (SinticBoliviaGtkSBFixed* self);
-void sintic_bolivia_gtk_sb_fixed_set_Width (SinticBoliviaGtkSBFixed* self, gint value);
-GType sintic_bolivia_gtk_info_dialog_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkInfoDialog* sintic_bolivia_gtk_info_dialog_new (const gchar* type);
-SinticBoliviaGtkInfoDialog* sintic_bolivia_gtk_info_dialog_construct (GType object_type, const gchar* type);
-void sintic_bolivia_gtk_info_dialog_Build (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_SetEvents (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_OnButtonCloseClicked (SinticBoliviaGtkInfoDialog* self);
-const gchar* sintic_bolivia_gtk_info_dialog_get_Title (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_set_Title (SinticBoliviaGtkInfoDialog* self, const gchar* value);
-const gchar* sintic_bolivia_gtk_info_dialog_get_Message (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_set_Message (SinticBoliviaGtkInfoDialog* self, const gchar* value);
-GtkLabel* sintic_bolivia_gtk_info_dialog_get_LabelTitle (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_set_LabelTitle (SinticBoliviaGtkInfoDialog* self, GtkLabel* value);
-GtkLabel* sintic_bolivia_gtk_info_dialog_get_LabelMessage (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_set_LabelMessage (SinticBoliviaGtkInfoDialog* self, GtkLabel* value);
-GtkButton* sintic_bolivia_gtk_info_dialog_get_ButtonClose (SinticBoliviaGtkInfoDialog* self);
-void sintic_bolivia_gtk_info_dialog_set_ButtonClose (SinticBoliviaGtkInfoDialog* self, GtkButton* value);
-GType sintic_bolivia_gtk_sb_date_picker_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_new (void);
-SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_construct (GType object_type);
-void sintic_bolivia_gtk_sb_date_picker_SetEvents (SinticBoliviaGtkSBDatePicker* self);
-void sintic_bolivia_gtk_sb_date_picker_OnButtonSelectDateClicked (SinticBoliviaGtkSBDatePicker* self);
-void sintic_bolivia_gtk_sb_date_picker_OnDateSelected (SinticBoliviaGtkSBDatePicker* self);
-void sintic_bolivia_gtk_sb_date_picker_OnDaySelectedDoubleClick (SinticBoliviaGtkSBDatePicker* self);
-const gchar* sintic_bolivia_gtk_sb_date_picker_get_DateString (SinticBoliviaGtkSBDatePicker* self);
-void sintic_bolivia_gtk_sb_date_picker_set_DateString (SinticBoliviaGtkSBDatePicker* self, const gchar* value);
-void sintic_bolivia_gtk_sb_date_picker_set_Icon (SinticBoliviaGtkSBDatePicker* self, GdkPixbuf* value);
 GType sintic_bolivia_gtk_sb_cairo_cell_table_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkSBCairoCellTable* sintic_bolivia_gtk_sb_cairo_cell_table_new (cairo_t* cr, PangoLayout* layout);
 SinticBoliviaGtkSBCairoCellTable* sintic_bolivia_gtk_sb_cairo_cell_table_construct (GType object_type, cairo_t* cr, PangoLayout* layout);
@@ -504,13 +449,12 @@ SinticBoliviaGtkSBCairoParagraph* sintic_bolivia_gtk_sb_cairo_paragraph_construc
 void sintic_bolivia_gtk_sb_cairo_paragraph_SetText (SinticBoliviaGtkSBCairoParagraph* self, const gchar* str, const gchar* font, const gchar* align);
 const gchar* sintic_bolivia_gtk_sb_cairo_paragraph_get_Text (SinticBoliviaGtkSBCairoParagraph* self);
 void sintic_bolivia_gtk_sb_cairo_paragraph_set_Text (SinticBoliviaGtkSBCairoParagraph* self, const gchar* value);
-GType sintic_bolivia_gtk_tag_get_type (void) G_GNUC_CONST;
-SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_new (void);
-SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_construct (GType object_type);
-void sintic_bolivia_gtk_tag_SetEvents (SinticBoliviaGtkTag* self);
-void sintic_bolivia_gtk_tag_OnButtonRemoveClicked (SinticBoliviaGtkTag* self);
-const gchar* sintic_bolivia_gtk_tag_get_Text (SinticBoliviaGtkTag* self);
-void sintic_bolivia_gtk_tag_set_Text (SinticBoliviaGtkTag* self, const gchar* value);
+GType sintic_bolivia_gtk_sb_dashboard_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_new (void);
+SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_construct (GType object_type);
+void sintic_bolivia_gtk_sb_dashboard_Add (SinticBoliviaGtkSBDashboard* self, GtkWidget* child);
+gint sintic_bolivia_gtk_sb_dashboard_get_Width (SinticBoliviaGtkSBDashboard* self);
+void sintic_bolivia_gtk_sb_dashboard_set_Width (SinticBoliviaGtkSBDashboard* self, gint value);
 GType sintic_bolivia_gtk_db_table_tree_view_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkDbTableTreeView* sintic_bolivia_gtk_db_table_tree_view_new (const gchar* db_table, gchar** cols, int cols_length1, SinticBoliviaDatabaseSBDatabase* _dbh);
 SinticBoliviaGtkDbTableTreeView* sintic_bolivia_gtk_db_table_tree_view_construct (GType object_type, const gchar* db_table, gchar** cols, int cols_length1, SinticBoliviaDatabaseSBDatabase* _dbh);
@@ -518,6 +462,15 @@ void sintic_bolivia_gtk_db_table_tree_view_ParseColumns (SinticBoliviaGtkDbTable
 void sintic_bolivia_gtk_db_table_tree_view_BuildQuery (SinticBoliviaGtkDbTableTreeView* self);
 void sintic_bolivia_gtk_db_table_tree_view_Build (SinticBoliviaGtkDbTableTreeView* self);
 void sintic_bolivia_gtk_db_table_tree_view_Bind (SinticBoliviaGtkDbTableTreeView* self);
+GType sintic_bolivia_gtk_sb_fixed_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_new (void);
+SinticBoliviaGtkSBFixed* sintic_bolivia_gtk_sb_fixed_construct (GType object_type);
+void sintic_bolivia_gtk_sb_fixed_Build (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_SetEvents (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_SetWidgetSize (SinticBoliviaGtkSBFixed* self, gint width, gint height);
+void sintic_bolivia_gtk_sb_fixed_AddWidget (SinticBoliviaGtkSBFixed* self, GtkWidget* w);
+gint sintic_bolivia_gtk_sb_fixed_get_Width (SinticBoliviaGtkSBFixed* self);
+void sintic_bolivia_gtk_sb_fixed_set_Width (SinticBoliviaGtkSBFixed* self, gint value);
 GType sintic_bolivia_gtk_gtk_helper_get_type (void) G_GNUC_CONST;
 GtkBuilder* sintic_bolivia_gtk_gtk_helper_GetGladeUI (const gchar* glade_file);
 GdkPixbuf* sintic_bolivia_gtk_gtk_helper_GetPixbuf (const gchar* file, gint width, gint height);
@@ -527,6 +480,53 @@ GInputStream* sintic_bolivia_gtk_gtk_helper_GetInputStreamFromResource (GResourc
 GtkBuilder* sintic_bolivia_gtk_gtk_helper_GetGladeUIFromResource (GResource* res, const gchar* glade_ui);
 SinticBoliviaGtkGtkHelper* sintic_bolivia_gtk_gtk_helper_new (void);
 SinticBoliviaGtkGtkHelper* sintic_bolivia_gtk_gtk_helper_construct (GType object_type);
+GType sintic_bolivia_gtk_sb_gtk_module_get_type (void) G_GNUC_CONST;
+void sintic_bolivia_gtk_sb_gtk_module_LoadResources (SinticBoliviaGtkSBGtkModule* self);
+GtkBuilder* sintic_bolivia_gtk_sb_gtk_module_GetGladeUi (SinticBoliviaGtkSBGtkModule* self, const gchar* ui_file, const gchar* t_domain);
+GInputStream* sintic_bolivia_gtk_sb_gtk_module_GetInputStream (SinticBoliviaGtkSBGtkModule* self, const gchar* file);
+GdkPixbuf* sintic_bolivia_gtk_sb_gtk_module_GetPixbuf (SinticBoliviaGtkSBGtkModule* self, const gchar* image, gint width, gint height);
+gchar** sintic_bolivia_gtk_sb_gtk_module_GetSQLFromResource (SinticBoliviaGtkSBGtkModule* self, const gchar* sql_file, int* result_length1);
+SinticBoliviaGtkSBGtkModule* sintic_bolivia_gtk_sb_gtk_module_construct (GType object_type);
+GType sintic_bolivia_gtk_info_dialog_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkInfoDialog* sintic_bolivia_gtk_info_dialog_new (const gchar* type);
+SinticBoliviaGtkInfoDialog* sintic_bolivia_gtk_info_dialog_construct (GType object_type, const gchar* type);
+void sintic_bolivia_gtk_info_dialog_Build (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_SetEvents (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_OnButtonCloseClicked (SinticBoliviaGtkInfoDialog* self);
+const gchar* sintic_bolivia_gtk_info_dialog_get_Title (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_set_Title (SinticBoliviaGtkInfoDialog* self, const gchar* value);
+const gchar* sintic_bolivia_gtk_info_dialog_get_Message (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_set_Message (SinticBoliviaGtkInfoDialog* self, const gchar* value);
+GtkLabel* sintic_bolivia_gtk_info_dialog_get_LabelTitle (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_set_LabelTitle (SinticBoliviaGtkInfoDialog* self, GtkLabel* value);
+GtkLabel* sintic_bolivia_gtk_info_dialog_get_LabelMessage (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_set_LabelMessage (SinticBoliviaGtkInfoDialog* self, GtkLabel* value);
+GtkButton* sintic_bolivia_gtk_info_dialog_get_ButtonClose (SinticBoliviaGtkInfoDialog* self);
+void sintic_bolivia_gtk_info_dialog_set_ButtonClose (SinticBoliviaGtkInfoDialog* self, GtkButton* value);
+GType sintic_bolivia_gtk_sb_notebook_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_new (void);
+SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_construct (GType object_type);
+gint sintic_bolivia_gtk_sb_notebook_AddPage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id, const gchar* title, GtkWidget* content);
+gboolean sintic_bolivia_gtk_sb_notebook_RemovePage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
+GtkWidget* sintic_bolivia_gtk_sb_notebook_GetPage (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
+void sintic_bolivia_gtk_sb_notebook_SetCurrentPageById (SinticBoliviaGtkSBNotebook* self, const gchar* page_id);
+GType sintic_bolivia_gtk_sb_date_picker_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_new (void);
+SinticBoliviaGtkSBDatePicker* sintic_bolivia_gtk_sb_date_picker_construct (GType object_type);
+void sintic_bolivia_gtk_sb_date_picker_SetEvents (SinticBoliviaGtkSBDatePicker* self);
+void sintic_bolivia_gtk_sb_date_picker_OnButtonSelectDateClicked (SinticBoliviaGtkSBDatePicker* self);
+void sintic_bolivia_gtk_sb_date_picker_OnDateSelected (SinticBoliviaGtkSBDatePicker* self);
+void sintic_bolivia_gtk_sb_date_picker_OnDaySelectedDoubleClick (SinticBoliviaGtkSBDatePicker* self);
+const gchar* sintic_bolivia_gtk_sb_date_picker_get_DateString (SinticBoliviaGtkSBDatePicker* self);
+void sintic_bolivia_gtk_sb_date_picker_set_DateString (SinticBoliviaGtkSBDatePicker* self, const gchar* value);
+void sintic_bolivia_gtk_sb_date_picker_set_Icon (SinticBoliviaGtkSBDatePicker* self, GdkPixbuf* value);
+GType sintic_bolivia_gtk_tag_get_type (void) G_GNUC_CONST;
+SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_new (void);
+SinticBoliviaGtkTag* sintic_bolivia_gtk_tag_construct (GType object_type);
+void sintic_bolivia_gtk_tag_SetEvents (SinticBoliviaGtkTag* self);
+void sintic_bolivia_gtk_tag_OnButtonRemoveClicked (SinticBoliviaGtkTag* self);
+const gchar* sintic_bolivia_gtk_tag_get_Text (SinticBoliviaGtkTag* self);
+void sintic_bolivia_gtk_tag_set_Text (SinticBoliviaGtkTag* self, const gchar* value);
 GType sintic_bolivia_gtk_sb_print_preview_get_type (void) G_GNUC_CONST;
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_new (GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);
 SinticBoliviaGtkSBPrintPreview* sintic_bolivia_gtk_sb_print_preview_construct (GType object_type, GtkPrintOperation* _op, GtkPrintOperationPreview* _op_preview, GtkPrintContext* _context);

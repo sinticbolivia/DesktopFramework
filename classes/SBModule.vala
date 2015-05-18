@@ -96,10 +96,10 @@ namespace SinticBolivia
 				string ext = SBOS.GetOS().IsUnix() ? "so" : "dll";
 				
 				if( ext != parts[1] ) continue;
-				SBModules.LoadModule(module_file, modules_path);
+				SBModules.LoadModule(SBFileHelper.SanitizePath(module_file), SBFileHelper.SanitizePath(modules_path), ext);
 			}
 		}
-		public static bool LoadModule(string module_name, string? path = null)
+		public static bool LoadModule(string module_name, string? path = null, string mod_extension = "so")
 		{
 			GLib.Type 	mod_type;
 			GLib.Module module;
@@ -120,24 +120,41 @@ namespace SinticBolivia
 			}
 				
 			string module_dir = (path != null) ? path : Environment.get_current_dir();
-			
 			//##check if modules is supported by OS
 			assert(GLib.Module.supported());
+			//##check for module dependencies
+			string deps_file = module_dir + "/" + module_name + ".deps";
+			if( FileUtils.test(deps_file, FileTest.IS_REGULAR) )
+			{
+				stdout.printf("Loading %s module dependencies: %s\n", module_name, mod_extension);
+				string deps_str = "";
+				FileUtils.get_contents(deps_file, out deps_str);
+				string[] mod_deps = deps_str.split(",");
+				foreach(string _dep in mod_deps)
+				{
+					string dep = _dep.replace("\n", "");
+					if( !SBModules.IsModuleLoaded(dep) )
+					{
+						//##load dependencie
+						string dep_file = "lib" + dep + "." + mod_extension;
+						stdout.printf("\tDependencie: %s\n", dep_file);
+						SBModules.LoadModule(dep_file, module_dir, mod_extension);
+					}
+				}
+			}
 			string the_module_path = GLib.Module.build_path(module_dir, module_name);
 			stdout.printf("Loading module from path: %s\n", the_module_path);
 			//##load the module
 			module = GLib.Module.open(the_module_path, ModuleFlags.BIND_LAZY);
 			if( module == null )
 			{
-				stderr.printf("Error loading module: %s\n", the_module_path);
+				stderr.printf("Error loading module: %s, ERROR: %s\n", the_module_path, GLib.Module.error());
 				return false;
 			}
 			
 			void* function;
 			string module_symbol = "sb_get_module_%s_type".printf(module_name.down().strip().replace(".dll", "").replace(".so", ""));
 			//##we call a generic functions into module and we get the function into a pointer
-			//module.symbol("sb_get_module_type", out function);
-			//stdout.printf("finding module symbol: %s\n", module_symbol);
 			module.symbol(module_symbol, out function);
 			//##we cast the pointer to delegate
 			unowned GetModuleObjectType get_module_type = (GetModuleObjectType)function;
@@ -146,6 +163,8 @@ namespace SinticBolivia
 			//##note: we have the module ready to execute
 			//## now we create an instance of module and using the module interface
 			var module_obj	= (ISBModule)Object.new(mod_type);
+			
+			
 			//##we call the module methods
 			module_obj.Load();
 			//module_obj.Init();
@@ -168,7 +187,6 @@ namespace SinticBolivia
 		}
 		public static bool IsModuleLoaded(string mod_name)
 		{
-			
 			return SBModules._modules.has_key(mod_name);
 		}
 		public static HashMap<string, ISBModule> GetModules()

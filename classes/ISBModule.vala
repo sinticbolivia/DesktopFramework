@@ -10,6 +10,7 @@ namespace SinticBolivia
 		public abstract string LibraryName{get;}
 		public abstract string Author{get;}
 		public abstract double Version{get;}
+		public abstract string Dependencies{get;default = "";}
 		
 		public abstract void Enabled();
 		public abstract void Disabled();
