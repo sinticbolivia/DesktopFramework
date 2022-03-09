@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 //#ifdef __PIC__
 //     #define do_cpuid(func, eax, ebx, ecx, edx) __asm__ __volatile__ ("cpuid": "=a" (varEAX), "=b" (varEBX), "=c" (varECX), "=d" (varEDX) : "a" (1));
