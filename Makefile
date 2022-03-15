@@ -63,5 +63,4 @@ test: test.vala
 clean:
 	-rm $(DEST_LIBRARY)
 	-rm *.h
-	-rm *.c
 	-rm *.o
