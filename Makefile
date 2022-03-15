@@ -24,11 +24,11 @@ SOURCES=$(wildcard classes/*.vala) $(wildcard Database/*.vala)
 
 $(info Trying to detect the operating system)
 ifneq (, $(findstring /Library, $(PATH)))
-OS=LINUX
+OS=MACOS
 DEST_LIBRARY=libSinticBolivia.dylib
 $(info MACOS detected)
 else ifneq (, $(findstring /usr/bin, $(PATH)))
-OS=MACOS
+OS=LINUX
 DEST_LIBRARY=libSinticBolivia.so
 $(info LINUX detected)
 else ifneq (, $(findstring Windows, $(PATH)))
@@ -61,7 +61,7 @@ $(DEST_LIBRARY): $(SOURCES)
 test: test.vala
 	$(VC) -X -I. -X -L./bin $(VLIBS) -X -l$(LIBRARY_NAME) $(LIBRARY_NAME).vapi  test.vala -o bin/test 
 clean:
-	rm -fv bin/$(DEST_LIBRARY)
-	rm *.h
-	rm *.c
-	rm *.o
+	-rm $(DEST_LIBRARY)
+	-rm *.h
+	-rm *.c
+	-rm *.o

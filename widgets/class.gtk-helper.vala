@@ -1,5 +1,4 @@
 using Gee;
-using GLib;
 using Gtk;
 using SinticBolivia;
 
@@ -74,7 +73,7 @@ namespace SinticBolivia.Gtk
 					int col_index = i;
 					//stdout.printf("TOGGLE INDEX: %d\n", col_index);
 					cell = new CellRendererToggle();
-					ListStore model = (treeview.model as ListStore);
+					var model = (treeview.model as global::Gtk.ListStore);
 					(cell as CellRendererToggle).toggled.connect( (_toggle, _path) => 
 					{
 						

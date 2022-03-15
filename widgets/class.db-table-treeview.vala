@@ -1,4 +1,4 @@
-using GLib;
+//using GLib;
 using Gee;
 using Gtk;
 using SinticBolivia;
@@ -50,8 +50,9 @@ namespace SinticBolivia.Gtk
 			{
 				types[i] = typeof(string);
 			}
-			this.model = new ListStore(this.treeviewColumns.length);
-			(this.model as ListStore).set_column_types(types);
+			this.model = new global::Gtk.ListStore(this.treeviewColumns.length);
+			
+			(this.model as global::Gtk.ListStore).set_column_types(types);
 			//GtkHelper.BuildTreeViewColumns(this.treeviewColumns);
 			for(int i = 0; i < this.treeviewColumns.length; i++)
 			{
@@ -62,15 +63,15 @@ namespace SinticBolivia.Gtk
 		}
 		public void Bind()
 		{
-			(this.model as ListStore).clear();
+			(this.model as global::Gtk.ListStore).clear();
 			TreeIter iter;
 			var rows = this.dbh.GetResults(this.query);
 			foreach(var row in rows)
 			{
-				(this.model as ListStore).append(out iter);
+				(this.model as global::Gtk.ListStore).append(out iter);
 				for(int i = 0; i < this.tableColumns.length; i++)
 				{
-					(this.model as ListStore).set(iter,
+					(this.model as global::Gtk.ListStore).set(iter,
 						i, row.Get(this.tableColumns[i])
 					);
 				}
