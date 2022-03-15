@@ -32,5 +32,5 @@ all:
 	# valac -o $(LIBRARY_NAME).so $(SOURCES) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h -X -fPIC -X -shared $(VFLAGS) $(CFLAGS) $(VLIBS) $(CLIBS)
 	gcc -shared -fPIC -o $(DEST_LIBRARY) $(CLIBS) *.o
 clean:
-	rm -f *.vapi *.h *.c *.so 
+	-rm -f *.o *.vapi *.h $(DEST_LIBRARY) 
 	
