@@ -5,15 +5,17 @@
 
 #include <gtk/gtk.h>
 #include <glib-object.h>
-#include <SinticBolivia.h>
+#include <glib.h>
+#include <gee.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gio/gio.h>
 #include <float.h>
 #include <math.h>
+#include <pango/pango.h>
 #include <cairo-gobject.h>
+#include <SinticBolivia.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -26,6 +28,72 @@ G_BEGIN_DECLS
 #define VALA_EXTERN extern
 #endif
 #endif
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK (sintic_bolivia_gtk_sb_notebook_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebook))
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
+#define SINTIC_BOLIVIA_GTK_IS_SB_NOTEBOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK))
+#define SINTIC_BOLIVIA_GTK_SB_NOTEBOOK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_NOTEBOOK, SinticBoliviaGtkSBNotebookClass))
+
+typedef struct _SinticBoliviaGtkSBNotebook SinticBoliviaGtkSBNotebook;
+typedef struct _SinticBoliviaGtkSBNotebookClass SinticBoliviaGtkSBNotebookClass;
+typedef struct _SinticBoliviaGtkSBNotebookPrivate SinticBoliviaGtkSBNotebookPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE (sintic_bolivia_gtk_sb_cairo_cell_table_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_CELL_TABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE, SinticBoliviaGtkSBCairoCellTable))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_CELL_TABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE, SinticBoliviaGtkSBCairoCellTableClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_CELL_TABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_CELL_TABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_CELL_TABLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_CELL_TABLE, SinticBoliviaGtkSBCairoCellTableClass))
+
+typedef struct _SinticBoliviaGtkSBCairoCellTable SinticBoliviaGtkSBCairoCellTable;
+typedef struct _SinticBoliviaGtkSBCairoCellTableClass SinticBoliviaGtkSBCairoCellTableClass;
+typedef struct _SinticBoliviaGtkSBCairoCellTablePrivate SinticBoliviaGtkSBCairoCellTablePrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE (sintic_bolivia_gtk_sb_cairo_table_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_TABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE, SinticBoliviaGtkSBCairoTable))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_TABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE, SinticBoliviaGtkSBCairoTableClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_TABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_TABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_TABLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_TABLE, SinticBoliviaGtkSBCairoTableClass))
+
+typedef struct _SinticBoliviaGtkSBCairoTable SinticBoliviaGtkSBCairoTable;
+typedef struct _SinticBoliviaGtkSBCairoTableClass SinticBoliviaGtkSBCairoTableClass;
+typedef struct _SinticBoliviaGtkSBCairoTablePrivate SinticBoliviaGtkSBCairoTablePrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT (sintic_bolivia_gtk_sb_cairo_object_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT, SinticBoliviaGtkSBCairoObject))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT, SinticBoliviaGtkSBCairoObjectClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_OBJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_OBJECT, SinticBoliviaGtkSBCairoObjectClass))
+
+typedef struct _SinticBoliviaGtkSBCairoObject SinticBoliviaGtkSBCairoObject;
+typedef struct _SinticBoliviaGtkSBCairoObjectClass SinticBoliviaGtkSBCairoObjectClass;
+typedef struct _SinticBoliviaGtkSBCairoObjectPrivate SinticBoliviaGtkSBCairoObjectPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH (sintic_bolivia_gtk_sb_cairo_paragraph_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_PARAGRAPH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH, SinticBoliviaGtkSBCairoParagraph))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_PARAGRAPH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH, SinticBoliviaGtkSBCairoParagraphClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_PARAGRAPH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH))
+#define SINTIC_BOLIVIA_GTK_IS_SB_CAIRO_PARAGRAPH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH))
+#define SINTIC_BOLIVIA_GTK_SB_CAIRO_PARAGRAPH_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_CAIRO_PARAGRAPH, SinticBoliviaGtkSBCairoParagraphClass))
+
+typedef struct _SinticBoliviaGtkSBCairoParagraph SinticBoliviaGtkSBCairoParagraph;
+typedef struct _SinticBoliviaGtkSBCairoParagraphClass SinticBoliviaGtkSBCairoParagraphClass;
+typedef struct _SinticBoliviaGtkSBCairoParagraphPrivate SinticBoliviaGtkSBCairoParagraphPrivate;
+
+#define SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD (sintic_bolivia_gtk_sb_dashboard_get_type ())
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboard))
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
+#define SINTIC_BOLIVIA_GTK_IS_SB_DASHBOARD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD))
+#define SINTIC_BOLIVIA_GTK_SB_DASHBOARD_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SINTIC_BOLIVIA_GTK_TYPE_SB_DASHBOARD, SinticBoliviaGtkSBDashboardClass))
+
+typedef struct _SinticBoliviaGtkSBDashboard SinticBoliviaGtkSBDashboard;
+typedef struct _SinticBoliviaGtkSBDashboardClass SinticBoliviaGtkSBDashboardClass;
+typedef struct _SinticBoliviaGtkSBDashboardPrivate SinticBoliviaGtkSBDashboardPrivate;
 
 #define SINTIC_BOLIVIA_GTK_TYPE_DB_TABLE_TREE_VIEW (sintic_bolivia_gtk_db_table_tree_view_get_type ())
 #define SINTIC_BOLIVIA_GTK_DB_TABLE_TREE_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SINTIC_BOLIVIA_GTK_TYPE_DB_TABLE_TREE_VIEW, SinticBoliviaGtkDbTableTreeView))
@@ -114,6 +182,106 @@ typedef struct _SinticBoliviaGtkTagPrivate SinticBoliviaGtkTagPrivate;
 typedef struct _SinticBoliviaGtkSBPrintPreview SinticBoliviaGtkSBPrintPreview;
 typedef struct _SinticBoliviaGtkSBPrintPreviewClass SinticBoliviaGtkSBPrintPreviewClass;
 typedef struct _SinticBoliviaGtkSBPrintPreviewPrivate SinticBoliviaGtkSBPrintPreviewPrivate;
+
+struct _SinticBoliviaGtkSBNotebook {
+	GtkNotebook parent_instance;
+	SinticBoliviaGtkSBNotebookPrivate * priv;
+	gint _totalPages;
+	GeeHashMap* _pages;
+};
+
+struct _SinticBoliviaGtkSBNotebookClass {
+	GtkNotebookClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBCairoCellTable {
+	GObject parent_instance;
+	SinticBoliviaGtkSBCairoCellTablePrivate * priv;
+	gchar* Align;
+	gdouble Width;
+	gdouble Height;
+	gboolean Border;
+	gchar* Text;
+	gdouble _x;
+	gdouble _y;
+	PangoLayout* _layout;
+	cairo_t* _cr;
+};
+
+struct _SinticBoliviaGtkSBCairoCellTableClass {
+	GObjectClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBCairoTable {
+	GObject parent_instance;
+	SinticBoliviaGtkSBCairoTablePrivate * priv;
+	cairo_t* _cr;
+	PangoLayout* _layout;
+	guint _columns;
+	guint _rows;
+	gdouble* _columnsWidth;
+	gint _columnsWidth_length1;
+	guint _nextColumnIndex;
+	guint _nextRowIndex;
+	gdouble _x;
+	gdouble _y;
+	gdouble _nextX;
+	gdouble _nextY;
+	gdouble Height;
+};
+
+struct _SinticBoliviaGtkSBCairoTableClass {
+	GObjectClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBCairoObject {
+	GObject parent_instance;
+	SinticBoliviaGtkSBCairoObjectPrivate * priv;
+	gchar* type;
+	gint height;
+	gint width;
+	cairo_t* context;
+	PangoLayout* layout;
+	gdouble PageWidth;
+};
+
+struct _SinticBoliviaGtkSBCairoObjectClass {
+	GObjectClass parent_class;
+	void (*SetWidth) (SinticBoliviaGtkSBCairoObject* self, gint w);
+	void (*CalculateSize) (SinticBoliviaGtkSBCairoObject* self);
+	void (*Draw) (SinticBoliviaGtkSBCairoObject* self);
+};
+
+struct _SinticBoliviaGtkSBCairoParagraph {
+	SinticBoliviaGtkSBCairoObject parent_instance;
+	SinticBoliviaGtkSBCairoParagraphPrivate * priv;
+	gchar* text;
+	gchar* Font;
+	gdouble FontSize;
+	gchar* Align;
+};
+
+struct _SinticBoliviaGtkSBCairoParagraphClass {
+	SinticBoliviaGtkSBCairoObjectClass parent_class;
+};
+
+struct _SinticBoliviaGtkSBDashboard {
+	GtkFixed parent_instance;
+	SinticBoliviaGtkSBDashboardPrivate * priv;
+	gint fixedWidth;
+	gint fixedHeight;
+	gint fixedX;
+	gint fixedY;
+	gint fixedRow;
+	gint fixedCol;
+	gint widgetHeight;
+	gint widgetWidth;
+	gint widgetMargin;
+};
+
+struct _SinticBoliviaGtkSBDashboardClass {
+	GtkFixedClass parent_class;
+};
 
 struct _SinticBoliviaGtkDbTableTreeView {
 	GtkTreeView parent_instance;
@@ -253,6 +421,98 @@ struct _SinticBoliviaGtkSBPrintPreviewClass {
 	GtkBoxClass parent_class;
 };
 
+VALA_EXTERN GType sintic_bolivia_gtk_sb_notebook_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBNotebook, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_new (void);
+VALA_EXTERN SinticBoliviaGtkSBNotebook* sintic_bolivia_gtk_sb_notebook_construct (GType object_type);
+VALA_EXTERN gint sintic_bolivia_gtk_sb_notebook_AddPage (SinticBoliviaGtkSBNotebook* self,
+                                             const gchar* page_id,
+                                             const gchar* title,
+                                             GtkWidget* content);
+VALA_EXTERN gboolean sintic_bolivia_gtk_sb_notebook_RemovePage (SinticBoliviaGtkSBNotebook* self,
+                                                    const gchar* page_id);
+VALA_EXTERN GtkWidget* sintic_bolivia_gtk_sb_notebook_GetPage (SinticBoliviaGtkSBNotebook* self,
+                                                   const gchar* page_id);
+VALA_EXTERN void sintic_bolivia_gtk_sb_notebook_SetCurrentPageById (SinticBoliviaGtkSBNotebook* self,
+                                                        const gchar* page_id);
+VALA_EXTERN GType sintic_bolivia_gtk_sb_cairo_cell_table_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBCairoCellTable, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBCairoCellTable* sintic_bolivia_gtk_sb_cairo_cell_table_new (cairo_t* cr,
+                                                                              PangoLayout* layout);
+VALA_EXTERN SinticBoliviaGtkSBCairoCellTable* sintic_bolivia_gtk_sb_cairo_cell_table_construct (GType object_type,
+                                                                                    cairo_t* cr,
+                                                                                    PangoLayout* layout);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_cell_table_Draw (SinticBoliviaGtkSBCairoCellTable* self);
+VALA_EXTERN gdouble sintic_bolivia_gtk_sb_cairo_cell_table_get_X (SinticBoliviaGtkSBCairoCellTable* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_cell_table_set_X (SinticBoliviaGtkSBCairoCellTable* self,
+                                                   gdouble value);
+VALA_EXTERN gdouble sintic_bolivia_gtk_sb_cairo_cell_table_get_Y (SinticBoliviaGtkSBCairoCellTable* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_cell_table_set_Y (SinticBoliviaGtkSBCairoCellTable* self,
+                                                   gdouble value);
+VALA_EXTERN GType sintic_bolivia_gtk_sb_cairo_table_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBCairoTable, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBCairoTable* sintic_bolivia_gtk_sb_cairo_table_new (cairo_t* cr,
+                                                                     PangoLayout* layout,
+                                                                     guint columns,
+                                                                     guint rows);
+VALA_EXTERN SinticBoliviaGtkSBCairoTable* sintic_bolivia_gtk_sb_cairo_table_construct (GType object_type,
+                                                                           cairo_t* cr,
+                                                                           PangoLayout* layout,
+                                                                           guint columns,
+                                                                           guint rows);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_table_SetColumnsWidth (SinticBoliviaGtkSBCairoTable* self,
+                                                        gdouble* widths,
+                                                        gint widths_length1);
+VALA_EXTERN SinticBoliviaGtkSBCairoCellTable* sintic_bolivia_gtk_sb_cairo_table_AddCell (SinticBoliviaGtkSBCairoTable* self,
+                                                                             const gchar* text,
+                                                                             const gchar* align,
+                                                                             gboolean border);
+VALA_EXTERN gdouble sintic_bolivia_gtk_sb_cairo_table_get_X (SinticBoliviaGtkSBCairoTable* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_table_set_X (SinticBoliviaGtkSBCairoTable* self,
+                                              gdouble value);
+VALA_EXTERN gdouble sintic_bolivia_gtk_sb_cairo_table_get_Y (SinticBoliviaGtkSBCairoTable* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_table_set_Y (SinticBoliviaGtkSBCairoTable* self,
+                                              gdouble value);
+VALA_EXTERN GType sintic_bolivia_gtk_sb_cairo_object_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBCairoObject, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBCairoObject* sintic_bolivia_gtk_sb_cairo_object_construct (GType object_type,
+                                                                             const gchar* type);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_object_SetWidth (SinticBoliviaGtkSBCairoObject* self,
+                                                  gint w);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_object_CalculateSize (SinticBoliviaGtkSBCairoObject* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_object_Draw (SinticBoliviaGtkSBCairoObject* self);
+VALA_EXTERN cairo_t* sintic_bolivia_gtk_sb_cairo_object_get_Context (SinticBoliviaGtkSBCairoObject* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_object_set_Context (SinticBoliviaGtkSBCairoObject* self,
+                                                     cairo_t* value);
+VALA_EXTERN PangoLayout* sintic_bolivia_gtk_sb_cairo_object_get_PangoLayout (SinticBoliviaGtkSBCairoObject* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_object_set_PangoLayout (SinticBoliviaGtkSBCairoObject* self,
+                                                         PangoLayout* value);
+VALA_EXTERN gint sintic_bolivia_gtk_sb_cairo_object_get_Height (SinticBoliviaGtkSBCairoObject* self);
+VALA_EXTERN GType sintic_bolivia_gtk_sb_cairo_paragraph_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBCairoParagraph, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBCairoParagraph* sintic_bolivia_gtk_sb_cairo_paragraph_new (void);
+VALA_EXTERN SinticBoliviaGtkSBCairoParagraph* sintic_bolivia_gtk_sb_cairo_paragraph_construct (GType object_type);
+VALA_EXTERN SinticBoliviaGtkSBCairoParagraph* sintic_bolivia_gtk_sb_cairo_paragraph_new_with_context (cairo_t* ctx,
+                                                                                          gdouble page_width);
+VALA_EXTERN SinticBoliviaGtkSBCairoParagraph* sintic_bolivia_gtk_sb_cairo_paragraph_construct_with_context (GType object_type,
+                                                                                                cairo_t* ctx,
+                                                                                                gdouble page_width);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_paragraph_SetText (SinticBoliviaGtkSBCairoParagraph* self,
+                                                    const gchar* str,
+                                                    const gchar* font,
+                                                    const gchar* align);
+VALA_EXTERN const gchar* sintic_bolivia_gtk_sb_cairo_paragraph_get_Text (SinticBoliviaGtkSBCairoParagraph* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_cairo_paragraph_set_Text (SinticBoliviaGtkSBCairoParagraph* self,
+                                                     const gchar* value);
+VALA_EXTERN GType sintic_bolivia_gtk_sb_dashboard_get_type (void) G_GNUC_CONST ;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkSBDashboard, g_object_unref)
+VALA_EXTERN SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_new (void);
+VALA_EXTERN SinticBoliviaGtkSBDashboard* sintic_bolivia_gtk_sb_dashboard_construct (GType object_type);
+VALA_EXTERN void sintic_bolivia_gtk_sb_dashboard_Add (SinticBoliviaGtkSBDashboard* self,
+                                          GtkWidget* child);
+VALA_EXTERN gint sintic_bolivia_gtk_sb_dashboard_get_Width (SinticBoliviaGtkSBDashboard* self);
+VALA_EXTERN void sintic_bolivia_gtk_sb_dashboard_set_Width (SinticBoliviaGtkSBDashboard* self,
+                                                gint value);
 VALA_EXTERN GType sintic_bolivia_gtk_db_table_tree_view_get_type (void) G_GNUC_CONST ;
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (SinticBoliviaGtkDbTableTreeView, g_object_unref)
 VALA_EXTERN SinticBoliviaGtkDbTableTreeView* sintic_bolivia_gtk_db_table_tree_view_new (const gchar* db_table,

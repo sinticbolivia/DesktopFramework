@@ -40,6 +40,87 @@ namespace SinticBolivia {
 			public string Title { get; set; }
 		}
 		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBCairoCellTable : GLib.Object {
+			public string Align;
+			public bool Border;
+			public double Height;
+			public string Text;
+			public double Width;
+			protected Cairo.Context _cr;
+			protected Pango.Layout _layout;
+			protected double _x;
+			protected double _y;
+			public SBCairoCellTable (Cairo.Context cr, Pango.Layout layout);
+			public void Draw ();
+			public double X { get; set; }
+			public double Y { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public abstract class SBCairoObject : GLib.Object {
+			public double PageWidth;
+			protected Cairo.Context context;
+			protected int height;
+			protected Pango.Layout layout;
+			protected string type;
+			protected int width;
+			protected SBCairoObject (string type);
+			public abstract void CalculateSize ();
+			public abstract void Draw ();
+			public abstract void SetWidth (int w);
+			public Cairo.Context Context { get; set; }
+			public int Height { get; }
+			public Pango.Layout PangoLayout { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBCairoParagraph : SinticBolivia.Gtk.SBCairoObject {
+			public string Align;
+			public string Font;
+			public double FontSize;
+			protected string text;
+			public SBCairoParagraph ();
+			public override void CalculateSize ();
+			public override void Draw ();
+			public void SetText (string str, string? font = null, string align = "left");
+			public override void SetWidth (int w);
+			public SBCairoParagraph.with_context (Cairo.Context ctx, double page_width);
+			public string Text { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBCairoTable : GLib.Object {
+			public double Height;
+			protected uint _columns;
+			protected double[] _columnsWidth;
+			protected Cairo.Context _cr;
+			protected Pango.Layout _layout;
+			protected uint _nextColumnIndex;
+			protected uint _nextRowIndex;
+			protected double _nextX;
+			protected double _nextY;
+			protected uint _rows;
+			protected double _x;
+			protected double _y;
+			public SBCairoTable (Cairo.Context cr, Pango.Layout layout, uint columns = 0, uint rows = 0);
+			public SinticBolivia.Gtk.SBCairoCellTable AddCell (string text, string align = "left", bool border = true);
+			public void SetColumnsWidth (double[] widths);
+			public double X { get; set; }
+			public double Y { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBDashboard : global::Gtk.Fixed {
+			protected int fixedCol;
+			protected int fixedHeight;
+			protected int fixedRow;
+			protected int fixedWidth;
+			protected int fixedX;
+			protected int fixedY;
+			protected int widgetHeight;
+			protected int widgetMargin;
+			protected int widgetWidth;
+			public SBDashboard ();
+			public void Add (global::Gtk.Widget child);
+			public int Width { get; set; }
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
 		public class SBDatePicker : global::Gtk.Fixed {
 			protected global::Gtk.Calendar calendar;
 			protected global::Gtk.Entry entryDate;
@@ -86,6 +167,16 @@ namespace SinticBolivia {
 			public Gdk.Pixbuf GetPixbuf (string image, int width = 0, int height = 0);
 			public string[] GetSQLFromResource (string sql_file);
 			public void LoadResources ();
+		}
+		[CCode (cheader_filename = "GtkSinticBolivia.h")]
+		public class SBNotebook : global::Gtk.Notebook {
+			protected Gee.HashMap<string,int> _pages;
+			protected int _totalPages;
+			public SBNotebook ();
+			public int AddPage (string page_id, string title, global::Gtk.Widget content);
+			public global::Gtk.Widget? GetPage (string page_id);
+			public bool RemovePage (string page_id);
+			public void SetCurrentPageById (string page_id);
 		}
 		[CCode (cheader_filename = "GtkSinticBolivia.h")]
 		public class SBPrintPreview : global::Gtk.Box {

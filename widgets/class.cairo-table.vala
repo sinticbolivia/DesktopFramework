@@ -174,7 +174,7 @@ namespace SinticBolivia.Gtk
 		{
 			get{return this.height;}
 		}
-		public SBCairoObject(string type)
+		protected SBCairoObject(string type)
 		{
 			this.type = type;
 		}
