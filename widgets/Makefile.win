@@ -1,27 +1,27 @@
-VFLAGS=-X -I/mingw/include\
-		-X -I/mingw/include/gee-1.0\
-		-X -L/mingw/lib\
+VFLAGS=-X -I/mingw64/include\
+		-X -I/mingw64/include/gee-0.8\
+		-X -L/mingw64/lib\
 		-X -DGETTEXT_PACKAGE\
 		-X -D__LCC__\
 		-X -I..\
-		-X -L../bin
+		-X -L..
 		
 VLIBS=--pkg gmodule-2.0\
-		--pkg gee-1.0\
+		--pkg gee-0.8\
 		--pkg gtk+-3.0\
 		--pkg libxml-2.0\
 		--pkg sqlite3\
 		--pkg mysql\
 		--pkg SinticBolivia\
-		-X -lgee\
+		-X -lgee-0.8\
 		-X -lSinticBolivia
 				
 VAPI_DIR=--vapidir=..
 SOURCES=$(wildcard *.vala) printpreview/class.print-preview.vala
-LIBRARY_NAME=GtkSinticBolivia
+LIBRARY_NAME=libGtkSinticBolivia
 
 all: 
-	valac -o ../bin/lib$(LIBRARY_NAME).dll $(SOURCES) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(VAPI_DIR) $(VFLAGS) $(VLIBS) -X -fPIC -X -shared
+	valac -o ../$(LIBRARY_NAME).dll $(SOURCES) --library=../$(LIBRARY_NAME) -H ../$(LIBRARY_NAME).h $(VAPI_DIR) $(VFLAGS) $(VLIBS) -X -fPIC -X -shared
 clean:
 	rm -f *.vapi
 	rm -f *.h

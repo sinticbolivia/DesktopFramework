@@ -247,5 +247,54 @@ namespace SinticBolivia
 	
 	public abstract class SBModule : Object
 	{
+		protected string 	_moduleId;
+		protected string	_name;
+		protected string	_description;
+		protected string 	_author;
+		protected double 	_version;
+		
+		protected string 		resourceFile;
+		protected string 		resourceNs;
+		protected GLib.Resource res_data;
+		
+		public void LoadResources()
+		{
+			try
+			{
+				if( FileUtils.test(this.resourceFile, FileTest.EXISTS) )
+				{
+					this.res_data = Resource.load(this.resourceFile);
+							
+				}
+				else
+				{
+					stderr.printf("Resource file for %s does not exists\n", this._name);
+				}
+			}
+			catch(GLib.Error e)
+			{
+				stderr.printf("ERROR LOADING RESOURCE: %s\n", e.message);
+			}
+		}
+		public InputStream GetInputStream(string file)
+		{
+			return this.res_data.open_stream("%s/%s".printf(this.resourceNs, file), 
+															ResourceLookupFlags.NONE);
+		}
+		public string[] GetSQLFromResource(string sql_file)
+		{
+			var istream 	= this.GetInputStream(sql_file);
+			var ds 			= new DataInputStream(istream);
+			string sql 		= "";
+			string? line 	= "";
+			while( (line = ds.read_line()) != null )
+			{
+				sql += line;
+			}
+			
+			string[] queries = sql.split(";");
+			
+			return queries;
+		}
 	}	
 }
