@@ -18,10 +18,10 @@ VLIBS=--pkg gmodule-2.0\
 				
 VAPI_DIR=--vapidir=..
 SOURCES=$(wildcard *.vala) printpreview/class.print-preview.vala
-LIBRARY_NAME=libGtkSinticBolivia
+LIBRARY_NAME=GtkSinticBolivia
 
 all: 
-	valac -o ../$(LIBRARY_NAME).dll $(SOURCES) --library=../$(LIBRARY_NAME) -H ../$(LIBRARY_NAME).h $(VAPI_DIR) $(VFLAGS) $(VLIBS) -X -fPIC -X -shared
+	valac -o ../lib$(LIBRARY_NAME).dll $(SOURCES) --library=../$(LIBRARY_NAME) -H ../$(LIBRARY_NAME).h $(VAPI_DIR) $(VFLAGS) $(VLIBS) -X -fPIC -X -shared
 clean:
 	rm -f *.vapi
 	rm -f *.h
