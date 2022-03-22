@@ -1,7 +1,7 @@
 using GLib;
 using Gtk;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class Tag : Fixed
 	{

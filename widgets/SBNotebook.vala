@@ -2,7 +2,7 @@ using GLib;
 using Gtk;
 using Gee;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class SBNotebook : Notebook
 	{

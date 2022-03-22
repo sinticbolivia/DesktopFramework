@@ -4,7 +4,7 @@ using Gtk;
 using SinticBolivia;
 using SinticBolivia.Database;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class DbTableTreeView : TreeView
 	{

@@ -2,7 +2,7 @@ using GLib;
 using Gtk;
 using SinticBolivia;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class SBPrintPreview : Box
 	{

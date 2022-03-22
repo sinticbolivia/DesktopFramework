@@ -3,7 +3,7 @@ using Gee;
 using Gtk;
 using SinticBolivia;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class SBDashboard : Fixed
 	{

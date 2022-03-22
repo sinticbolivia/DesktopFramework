@@ -2,7 +2,7 @@ using GLib;
 using Pango;
 using Cairo;
 
-namespace SinticBolivia.Gtk
+namespace SinticBolivia.GtkWidgets
 {
 	public class SBCairoCellTable : Object
 	{
