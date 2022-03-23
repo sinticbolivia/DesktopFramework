@@ -171,11 +171,29 @@ namespace SinticBolivia.Database
 		public		abstract	void BeginTransaction();
 		public		abstract	void EndTransaction();
 		
+		public virtual long insertObject(string table, SBObject obj)
+		{
+			var data = new HashMap<string, Value?>();
+			foreach(ParamSpec prop in obj.getProperties())
+			{
+				Value? val = obj.getPropertyValue(prop.name);
+				if( val == null )
+				{
+					continue;
+					//data.set(prop.name, "NULL");
+				}
+				data.set(prop.name, val);
+			}
+			return this.Insert(table, data);
+		}
 		/**
 		*  Insert a row into table
 		*/
 		public virtual long Insert(string table, HashMap<string, Value?> data)
 		{
+			if( data.size <= 0 )
+				return 0;
+				
 			string query = @"INSERT INTO $table(%s) VALUES(%s)";
 			string cols = "";
 			string values = "";

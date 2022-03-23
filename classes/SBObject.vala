@@ -17,7 +17,22 @@ namespace SinticBolivia
 			
 			return property != null;
 		}
-		public bool setPropertyValue(string name, string val)
+		public virtual Value getParamSpecValue(ParamSpec param)
+		{
+			Value propVal = Value(param.value_type);
+			this.get_property(param.name, ref propVal);
+			
+			return propVal;
+		}
+		public virtual Value? getPropertyValue(string property_name)
+		{
+			ParamSpec? property;
+			if( !this.propertyExists(property_name, out property) )
+				return null;
+				
+			return this.getParamSpecValue(property);
+		}
+		public virtual bool setPropertyValue(string name, string val)
 		{
 			ParamSpec? property;
 			
@@ -57,23 +72,15 @@ namespace SinticBolivia
 			{
 				propertyVal.set_boolean(val == "true" ? true : false);
 			}
-			
+			/*
+			else if( property.value_type == typeof(Object) )
+			{
+				propertyVal.set_object(val);
+			}
+			*/
 			this.set_property(name, propertyVal);
 			
 			return true;
-		}
-		public Value? getPropertyValue(string name)
-		{
-			ParamSpec? property;
-			
-			if( !this.propertyExists(name, out property) )
-				return null;
-				
-			Value propVal 	= Value (property.value_type);
-			
-			this.get_property(property.name, ref propVal);
-			
-			return propVal;
 		}
 	}
 }
