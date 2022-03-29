@@ -2,7 +2,7 @@ namespace SinticBolivia
 {
 	public class SBObject : Object
 	{
-		public ParamSpec[] getProperties()
+		public (unowned ParamSpec)[] getProperties()
 		{
 			Type type = this.get_type(); //typeof(theObj);
 			

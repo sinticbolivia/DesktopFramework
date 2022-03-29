@@ -171,7 +171,7 @@ namespace SinticBolivia.Database
 		public		abstract	void BeginTransaction();
 		public		abstract	void EndTransaction();
 		
-		public virtual long insertObject(string table, SBObject obj)
+		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
 			var data = new HashMap<string, Value?>();
 			foreach(ParamSpec prop in obj.getProperties())
@@ -182,9 +182,33 @@ namespace SinticBolivia.Database
 					continue;
 					//data.set(prop.name, "NULL");
 				}
-				data.set(prop.name, val);
+				string column_name = prop.name.replace("-", "_");
+				if( column_name in exclude )
+					continue;
+				if( prop.get_blurb() == "PRIMARY_KEY" && (int64)val <= 0 )
+					continue;
+					
+				data.set(column_name, val);
 			}
 			return this.Insert(table, data);
+		}
+		public virtual long updateObject(string table, SBObject obj, string[] exclude = {})
+		{
+			var data = new HashMap<string, Value?>();
+			foreach(ParamSpec prop in obj.getProperties())
+			{
+				Value? val = obj.getPropertyValue(prop.name);
+				if( val == null )
+				{
+					continue;
+				}
+				string column_name = prop.name.replace("-", "_");
+				if( column_name in exclude )
+					continue;
+					
+				data.set(column_name, val);
+			}
+			return 0;
 		}
 		/**
 		*  Insert a row into table
@@ -206,6 +230,10 @@ namespace SinticBolivia.Database
 				if( gtype == "gint" )
 				{
 					values += "%d,".printf((int)data.get(key));
+				}
+				else if( gtype == "guint" )
+				{
+					values += "%u,".printf((uint)data.get(key));
 				}
 				else if( gtype == "glong" )
 				{

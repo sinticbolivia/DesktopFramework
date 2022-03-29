@@ -7,15 +7,27 @@ namespace SinticBolivia
 {
 	public class SBFactory
 	{
+		public		static SBConfig		config;
+		protected	static	SBDatabase	dbh;
+		
+		public static SBDatabase? getDbh()
+		{
+			if( dbh != null )
+				return dbh;
+			dbh = GetNewDbHandlerFromConfig(config);
+			
+			return dbh;
+		}
 		public static SBDatabase? GetNewDbHandlerFromConfig(SBConfig cfg)
 		{
-			string db_engine = (string)cfg.GetValue("database_engine", "sqlite3");
-			string db_server = (string)cfg.GetValue("db_server", "");
-			SBDatabase? dbh = null;
+			string db_engine 	= (string)cfg.GetValue("database_engine", "sqlite3");
+			string db_server 	= (string)cfg.GetValue("db_server", "");
+			string db_name 		= (string)cfg.GetValue("db_name", "");
+			SBDatabase? dbh 	= null;
 			
 			if( db_engine == "sqlite3")
 			{
-				dbh = new SBSQLite( SinticBolivia.SBFileHelper.SanitizePath("db/%s".printf(db_server)));
+				dbh = new SBSQLite( SinticBolivia.SBFileHelper.SanitizePath("database/%s".printf(db_server)));
 			}
 			else if( db_engine == "mysql")
 			{
@@ -25,6 +37,7 @@ namespace SinticBolivia
 				int port		= int.parse((string)cfg.GetValue("db_port", "3306"));
 				
 				dbh = new SBMySQL(db_server, dbname, user, pass, port);
+				dbh.SelectDb(dbname);
 			}
 			else
 			{
