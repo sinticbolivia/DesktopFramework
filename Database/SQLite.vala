@@ -67,6 +67,87 @@ namespace SinticBolivia.Database
 			return 0;
 			
 		}
+		public override ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null)
+		{
+			Gee.ArrayList<T> results = new Gee.ArrayList<T>();
+			if( query != null )
+				this.Query(query);
+			int cols = this.stmt.column_count();
+			int res = 0;
+			do 
+			{
+				res = this.stmt.step();
+				switch (res) 
+				{
+					case Sqlite.DONE:
+						break;
+					case Sqlite.ROW:
+						T obj = factory != null ? factory(this) : (T)Object.new(typeof(T));
+						//T obj = (T)Object.new(typeof(T));
+						results.add(obj);
+						//GLib.Value[] objValues = new GLib.Value[cols];
+						//string[] objProps = new string[cols];
+						
+						for (int col = 0; col < cols; col++) 
+						{
+							string column_name 		= stmt.column_name(col);
+							string? column_value 	= stmt.column_text(col);
+							if( Sqlite.NULL == stmt.column_type(col) )
+							{
+								//print("%s => NULL\n", column_name);
+								continue;
+							}
+							//GLib.Value pv = GLib.Value(typeof(string));
+							//pv.set_string(column_value);
+							//objProps[col] = column_name;
+							//objValues[col] = pv;
+							
+							ParamSpec? spec;
+							if( (obj as SBObject).propertyExists(column_name, out spec) )
+							{
+								if( spec.value_type == typeof(DateTime) )
+								{
+									if( column_value.strip().length > 0 )
+									{
+										print("DATETIME column found: %s\n", column_value);
+										GLib.Value pValue = GLib.Value(spec.value_type);
+										//pValue.set_object(new DateTime.from_iso8601(column_value, null));
+										var datetime = new SBDateTime.from_string(column_value);
+										print("VALUE: %s\n", datetime.get_datetime().format("%Y-%m-%d %H:%M:%S"));
+										pValue = (DateTime)datetime.get_datetime();
+										//pValue.set_object(datetime.get_datetime());
+										(obj as Object).set_property(spec.name, datetime.get_datetime());
+									}
+									
+								}
+								else
+								{
+									(obj as SBObject).setPropertyValue(spec.name, column_value);
+								}
+							}
+						}
+						//T obj = factory != null ? ()factory() : (T)Object.new_with_properties(typeof(T), objProps, objValues);
+						//if( factory != null )
+						//	factory(this, (SBObject)obj);
+						
+						break;
+					default:
+						printerr ("Error: %d, %s\n", res, this._db.errmsg ());
+						break;
+				}
+			} while (res == Sqlite.ROW);
+			this.stmt = null;
+			
+			return results;
+		}
+		public override	T getObject<T>(string? query)
+		{
+			var rows = this.getObjects<T>(query);
+			if( rows.size <= 0 )
+				return null;
+			
+			return rows.get(0);
+		}
 		public override SBDBRow? GetRow(string? query)
 		{
 			var rows = (ArrayList<SBDBRow>)this.GetResults(query);
@@ -154,8 +235,10 @@ namespace SinticBolivia.Database
 			//stdout.printf("\n");
 			return 0;
 		}
-		public override string EscapeString(string str)
+		public override string EscapeString(string? str)
 		{
+			if( str == null )
+				return "";
 			return str.replace("'", "''");
 		}
 	}

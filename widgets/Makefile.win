@@ -12,6 +12,7 @@ VLIBS=--pkg gmodule-2.0\
 		--pkg libxml-2.0\
 		--pkg sqlite3\
 		--pkg mysql\
+		--pkg json-glib-1.0\
 		--pkg SinticBolivia\
 		-X -lgee-0.8\
 		-X -lSinticBolivia

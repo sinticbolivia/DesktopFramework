@@ -3,6 +3,7 @@ VLIBS=--pkg gmodule-2.0 --pkg gtk+-3.0\
 		--pkg sqlite3\
 		--pkg mysql\
 		--pkg libxml-2.0\
+		--pkg json-glib-1.0\
 		--pkg SinticBolivia
 		
 SOURCES=$(wildcard *.vala) printpreview/class.print-preview.vala

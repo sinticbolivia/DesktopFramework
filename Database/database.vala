@@ -4,134 +4,8 @@ using SinticBolivia;
 
 namespace SinticBolivia.Database
 {
-	public class SBDBCell : Object
-	{
-		protected string _columnName;
-		protected string? _columnValue;
+	public delegate SBObject InstanceFactory(SBDatabase dbh);
 
-		public string ColumnName
-		{
-			set
-			{
-				this._columnName = value;	
-			}
-			get
-			{
-				return this._columnName;	
-			}
-		}
-		public string? TheValue
-		{
-			get
-			{
-				return this._columnValue;
-			}	
-			set
-			{
-				this._columnValue = value;	
-			}
-		}
-		
-		
-		public SBDBCell()
-		{
-			
-		}
-		
-	}
-	public class SBDBRow : Object
-	{
-		protected int _length;
-		protected Array<SBDBCell> _cells;
-		protected Array<string> _keys;
-		
-		public Array<SBDBCell> Cells
-		{
-			get
-			{
-				return this._cells;	
-			}
-			set
-			{
-				//this._cells = value;				
-			}
-		}
-		public SBDBRow()
-		{
-			this._cells = new Array<SBDBCell>();
-			this._keys = new Array<string>();
-			this._length = 0;
-			
-		}
-		public void Add(SBDBCell cell)
-		{
-			this._cells.append_val(cell);
-			this._length++;
-						
-		}
-		public unowned string Get(string column_name)
-		{
-			int index = -1;
-			if( !this.ColumnNameExists(column_name, out index) )
-				return "";
-			
-			return (this.Cells.index(index).TheValue == null) ? "" : this.Cells.index(index).TheValue;
-		}
-		public unowned int GetInt(string column_name)
-		{
-			string? val = this.Get(column_name);
-			return (val == null) ? 0 : int.parse(val);
-		}
-		public unowned double GetDouble(string column_name)
-		{
-			string? val = this.Get(column_name);
-			return (val == null) ? 0.0 : double.parse(val);
-		}
-		public void Set(string column_name, string? the_value)
-		{
-			int index = -1;
-			
-			if( !this.ColumnNameExists(column_name, out index) )
-			{
-				//stderr.printf("SBDBRow ERROR: column \"%s\" does not exists\n", column_name);
-				SBDBCell cell = new SBDBCell();
-				cell.ColumnName = column_name;
-				cell.TheValue = the_value;
-				this.Add(cell);
-				return;
-			}
-			this.Cells.index(index).TheValue = the_value;
-		}
-		public bool ColumnNameExists(string column, out int cell_index)
-		{
-			bool exists = false;
-			cell_index = -1;
-			
-			for(int i = 0; i < this.Cells.length; i++)
-			{
-				if(this.Cells.index(i).ColumnName == column )
-				{
-					cell_index = i;
-					exists = true;
-					break;
-				}
-			}
-			
-			return exists;
-		}
-		public HashMap<string, string> ToHashMap()
-		{
-			var data = new HashMap<string,string>();
-			//foreach(var cell in this._cells)
-			for(int i = 0; i < this._cells.length; i++)
-			{
-				var cell = (SBDBCell)this._cells.index(i);
-				data.set(cell.ColumnName, cell.TheValue == null ? "" : cell.TheValue);
-			}
-			
-			return data;
-		}
-	}
 	public abstract class SBDatabase : GLib.Object 
 	{
 		protected	string		_databaseType = "";
@@ -161,6 +35,9 @@ namespace SinticBolivia.Database
 			get{return this._databaseType;}
 			protected set{this._databaseType = value;}
 		}
+		
+		
+		
 		public 		abstract 	bool Open();
 		public 		abstract 	bool Close();
 		public 		abstract	void SelectDb(string db_name);
@@ -170,6 +47,8 @@ namespace SinticBolivia.Database
 		public 		abstract 	long Execute(string sql);
 		public		abstract	void BeginTransaction();
 		public		abstract	void EndTransaction();
+		public		abstract	ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null);
+		public		abstract	T getObject<T>(string? query);
 		
 		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
@@ -177,16 +56,45 @@ namespace SinticBolivia.Database
 			foreach(ParamSpec prop in obj.getProperties())
 			{
 				Value? val = obj.getPropertyValue(prop.name);
+				string column_name = prop.name.replace("-", "_");
+				if( column_name in exclude )
+					continue;
+				if( prop.get_blurb() == "PRIMARY_KEY" )
+				{
+					
+					if( prop.value_type == typeof(int64) && (int64)val <= 0)
+						continue;
+					if( prop.value_type == typeof(long) && (long)val <= 0)
+						continue;
+					if( prop.value_type == typeof(int) && (int)val <= 0)
+						continue;
+					
+				}
+				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
+				if( prop.value_type == typeof(DateTime) )
+				{
+					val = Value(typeof(string));
+					if( (val as DateTime) != null )
+					{
+						string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
+						//stdout.printf("Property value %s\n", datetime);
+						val.set_string(datetime);
+					}
+					else
+					{
+						val.set_string("NULL");
+					}
+				}
+				else
+				{
+					
+				}
 				if( val == null )
 				{
 					continue;
 					//data.set(prop.name, "NULL");
 				}
-				string column_name = prop.name.replace("-", "_");
-				if( column_name in exclude )
-					continue;
-				if( prop.get_blurb() == "PRIMARY_KEY" && (int64)val <= 0 )
-					continue;
+				
 					
 				data.set(column_name, val);
 			}
@@ -197,7 +105,18 @@ namespace SinticBolivia.Database
 			var data = new HashMap<string, Value?>();
 			foreach(ParamSpec prop in obj.getProperties())
 			{
-				Value? val = obj.getPropertyValue(prop.name);
+				Value? val = obj.getPropertyValue(prop.name);;
+				if( prop.value_type == typeof(DateTime) )
+				{
+					stdout.printf("Property %s is DateTime\n", prop.name);
+					string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
+					stdout.printf("Property vaue %s\n", datetime);
+					val.set_string(datetime);
+				}
+				else
+				{
+					
+				}
 				if( val == null )
 				{
 					continue;
@@ -536,9 +455,11 @@ namespace SinticBolivia.Database
 			
 			return this;
 		}
-		public virtual string EscapeString(string str)
+		public virtual string EscapeString(string? str)
 		{
 			string striped = "";
+			if( str == null )
+				return striped;
 			try
 			{
 				//var regex = new Regex("[']");

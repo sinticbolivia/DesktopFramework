@@ -32,7 +32,7 @@ namespace SinticBolivia
 				var parseDateStr = string.joinv (" ", parseDateStrArr);
 				var r = /([0-9]{2})\:([0-9]{2})\:([0-9\.]{2,6})/;
 				var timeParts = r.split (dateStr);
-				print("DATE PARTS: %s\n", string.joinv(",", parseDateStrArr) );
+				print("DATE PARTS: %s\n", parseDateStr );
 				print("TIME PARTS: %s\n", string.joinv(", ", timeParts));
 				var hour = "00";
 				var minute = "00";
@@ -52,17 +52,21 @@ namespace SinticBolivia
 						second = timeParts[i];
 					}
 				}
+				//print("TIME: %s:%s:%s\n", hour, minute, second);
 				this.parse_date (parseDateStr);
 				if( this._valid )  
 				{
-					this.datetime = new GLib.DateTime.local (
-						this.get_year(), 
-						this.get_month (), 
-						this.get_day_of_month (),
+					//print("IS VALID\n");
+					
+					var newdatetime = new GLib.DateTime.local (
+						this.datetime.get_year(), 
+						this.datetime.get_month (), 
+						this.datetime.get_day_of_month (),
 						int.parse (hour), 
 						int.parse (minute), 
 						int.parse (second)
 					);
+					this.datetime = newdatetime;
 				}
 				return _valid;
 			} 
@@ -74,16 +78,15 @@ namespace SinticBolivia
 		}
 		public bool parse_date (string dateStr) 
 		{
+			//string[] parts = dateStr.replace("/", "").split("-");
+			//message ("Parsing Date: %s\n", dateStr);
 			var parsed_date = Date ();
-			parsed_date.set_parse (dateStr);
+			parsed_date.set_parse (dateStr.strip());
 			if (parsed_date.valid ()) 
 			{
 				var time = Time();
 				parsed_date.to_time (out time);
-				this.datetime = new GLib.DateTime.local (
-					time.year, time.month, time.day,
-					time.hour, time.minute, time.second
-				);
+				
 				var output = new char[100];
 				var format = "%c";
 				var success = parsed_date.strftime (output, format);
@@ -94,8 +97,23 @@ namespace SinticBolivia
 				} 
 				else 
 				{
+					string yearStr = time.year.to_string();
+					if( yearStr.length == 3 )
+						yearStr = yearStr.substring(1);
+					/*
+					message("Building date with data: %d %d %d | %d %d %d\n",
+						int.parse(yearStr), time.month, time.day,
+						time.hour, time.minute, time.second
+					);
+					*/
+					var bdatetime = new GLib.DateTime.local (
+						int.parse(yearStr), time.month + 1, time.day,
+						0, 0, 0
+					);
 					var formatted_output = ((string) output).chomp ();
 					//message ("Parsed Date: '" + formatted_output + "'\n");
+					message ("Format Date: %s\n", bdatetime.format("%Y-%m-%d %H:%M:%S"));
+					this.datetime = bdatetime;
 					_valid = true;
 				}
 			} 
@@ -104,6 +122,7 @@ namespace SinticBolivia
 				_valid = false;
 				warning ("INVALID DATE: Failed to formart date '%s'.".printf(dateStr));
 			}
+			
 			return _valid;
 		}
 		public string format(string format) 

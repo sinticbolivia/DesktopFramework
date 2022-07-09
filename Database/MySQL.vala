@@ -77,6 +77,22 @@ namespace SinticBolivia.Database
 			
 			return 0;
 		}
+		public override	ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null)
+		{
+			var results = new ArrayList<T>();
+			if( query != null )
+				this.Query(query);
+			
+			return results;
+		}
+		public override	T getObject<T>(string? query)
+		{
+			var rows = this.getObjects<T>(query);
+			if( rows.size <= 0 )
+				return null;
+			
+			return rows.get(0);
+		}
 		public override	SBDBRow? GetRow(string? query)
 		{
 			this.Query(query);

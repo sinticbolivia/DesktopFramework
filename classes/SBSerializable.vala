@@ -44,7 +44,7 @@ namespace SinticBolivia.Classes
 			if( list == null )
 				return false;
 				
-			val	= Value(typeof(ArrayList<T>));
+			val	= Value(typeof(ArrayList));
 			var list_value = new ArrayList<T>(); //(ArrayList<T>)Object.new(typeof(ArrayList<T>));
 			
 			list.foreach_element((array, index, node) => 

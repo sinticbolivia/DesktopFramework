@@ -32,6 +32,11 @@ namespace SinticBolivia
 				
 			return this.getParamSpecValue(property);
 		}
+		/*
+		public virtual bool setParaSpecValue(ParamSpec param)
+		{
+		}
+		*/
 		public virtual bool setPropertyValue(string name, string val)
 		{
 			ParamSpec? property;
@@ -60,6 +65,10 @@ namespace SinticBolivia
 			{
 				propertyVal.set_ulong(ulong.parse(val));
 			}
+			else if( property.value_type == typeof(int64) )
+			{
+				propertyVal.set_int64(int64.parse(val));
+			}
 			else if( property.value_type == typeof(float) )
 			{
 				propertyVal.set_float(float.parse(val));
@@ -71,6 +80,14 @@ namespace SinticBolivia
 			else if( property.value_type == typeof(bool) )
 			{
 				propertyVal.set_boolean(val == "true" ? true : false);
+			}
+			else
+			{
+				
+			}
+			/*else if( property.value_type == typeof(DateTime) )
+			{
+				
 			}
 			/*
 			else if( property.value_type == typeof(Object) )
