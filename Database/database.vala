@@ -53,12 +53,16 @@ namespace SinticBolivia.Database
 		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
 			var data = new HashMap<string, Value?>();
+			
 			foreach(ParamSpec prop in obj.getProperties())
 			{
 				Value? val = obj.getPropertyValue(prop.name);
 				string column_name = prop.name.replace("-", "_");
+				
 				if( column_name in exclude )
 					continue;
+				
+				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
 				if( prop.get_blurb() == "PRIMARY_KEY" )
 				{
 					
@@ -70,32 +74,30 @@ namespace SinticBolivia.Database
 						continue;
 					
 				}
-				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
 				if( prop.value_type == typeof(DateTime) )
 				{
-					val = Value(typeof(string));
+					//stdout.printf("Property %s is %s (DateTime)\n", prop.name, prop.value_type.name());
+					var dateVal = Value(typeof(string));
 					if( (val as DateTime) != null )
 					{
 						string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
 						//stdout.printf("Property value %s\n", datetime);
-						val.set_string(datetime);
+						dateVal.set_string(datetime);
 					}
 					else
 					{
-						val.set_string("NULL");
+						dateVal.set_string("NULL");
 					}
+					data.set(column_name, dateVal);
+					continue;
 				}
-				else
-				{
-					
-				}
+				
 				if( val == null )
 				{
 					continue;
 					//data.set(prop.name, "NULL");
 				}
 				
-					
 				data.set(column_name, val);
 			}
 			return this.Insert(table, data);
@@ -108,9 +110,9 @@ namespace SinticBolivia.Database
 				Value? val = obj.getPropertyValue(prop.name);;
 				if( prop.value_type == typeof(DateTime) )
 				{
-					stdout.printf("Property %s is DateTime\n", prop.name);
+					//stdout.printf("Property %s is DateTime\n", prop.name);
 					string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
-					stdout.printf("Property vaue %s\n", datetime);
+					//stdout.printf("Property value %s\n", datetime);
 					val.set_string(datetime);
 				}
 				else
