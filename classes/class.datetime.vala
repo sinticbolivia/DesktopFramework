@@ -16,7 +16,7 @@ namespace SinticBolivia
 			this();
 			this.parse(dateStr);
 		}
-		public bool parse(string dateStr) 
+		public bool parse(string dateStr, string dateSep = "-") 
 		{
 			if (dateStr.index_of (":") > -1) 
 			{
@@ -30,6 +30,8 @@ namespace SinticBolivia
 					parseDateStrArr[i] = partsDate[i];
 				}
 				var parseDateStr = string.joinv (" ", parseDateStrArr);
+				string[] dateParts = parseDateStr.split(dateSep);
+				
 				var r = /([0-9]{2})\:([0-9]{2})\:([0-9\.]{2,6})/;
 				var timeParts = r.split (dateStr);
 				print("DATE PARTS: %s\n", parseDateStr );
@@ -59,7 +61,8 @@ namespace SinticBolivia
 					//print("IS VALID\n");
 					
 					var newdatetime = new GLib.DateTime.local (
-						this.datetime.get_year(), 
+						//this.datetime.get_year(), 
+						int.parse(dateParts[0]),
 						this.datetime.get_month (), 
 						this.datetime.get_day_of_month (),
 						int.parse (hour), 
@@ -78,8 +81,9 @@ namespace SinticBolivia
 		}
 		public bool parse_date (string dateStr) 
 		{
-			//string[] parts = dateStr.replace("/", "").split("-");
-			//message ("Parsing Date: %s\n", dateStr);
+			string[] parts = dateStr.replace("/", "-").split("-");
+			
+			message ("Parsing Date: %s\n", dateStr);
 			var parsed_date = Date ();
 			parsed_date.set_parse (dateStr.strip());
 			if (parsed_date.valid ()) 
@@ -100,14 +104,20 @@ namespace SinticBolivia
 					string yearStr = time.year.to_string();
 					if( yearStr.length == 3 )
 						yearStr = yearStr.substring(1);
-					/*
+					
 					message("Building date with data: %d %d %d | %d %d %d\n",
-						int.parse(yearStr), time.month, time.day,
-						time.hour, time.minute, time.second
+						int.parse(yearStr), 
+						time.month, 
+						time.day,
+						time.hour, 
+						time.minute, 
+						time.second
 					);
-					*/
+					
 					var bdatetime = new GLib.DateTime.local (
-						int.parse(yearStr), time.month + 1, time.day,
+						int.parse(yearStr), 
+						time.month + 1, 
+						time.day,
 						0, 0, 0
 					);
 					var formatted_output = ((string) output).chomp ();
@@ -182,6 +192,39 @@ namespace SinticBolivia
 		public int get_microsecond () 
 		{
 			return this.datetime.get_microsecond ();
+		}
+		public static DateTime parseDbDate(string dateStr)
+		{
+			string[] dateParts = dateStr.strip().replace("/", "-").split("-");
+			
+			DateTime dbDate = new DateTime(new TimeZone.local(), 
+				int.parse(dateParts[0]),
+				int.parse(dateParts[1]) - 1,
+				int.parse(dateParts[2]),
+				0, 0 ,0
+			);
+			
+			return dbDate;
+		}
+		public static DateTime parseDbDateTime(string datetime)
+		{
+			string[] parts = datetime.strip().split(" ");
+			DateTime dbDate = parseDbDate(parts[0]);
+			if( parts.length < 2 )
+				return dbDate;
+				
+			string[] timeParts = parts[1].split(":");
+			
+			DateTime dbDateTime = new DateTime(new TimeZone.local(), 
+				dbDate.get_year(),
+				dbDate.get_month(),
+				dbDate.get_day_of_month(),
+				int.parse(timeParts[0]),
+				int.parse(timeParts[1]),
+				int.parse(timeParts[2])
+			);
+			
+			return dbDateTime;
 		}
 	}
 }

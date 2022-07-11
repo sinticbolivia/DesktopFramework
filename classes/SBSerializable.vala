@@ -7,6 +7,7 @@ namespace SinticBolivia.Classes
 	{
 		public virtual Json.Node serialize_property (string property_name, Value val, ParamSpec pspec)
 		{
+			//print("SERIALIZE PROP: %s\n", property_name);
 			if (val.type ().is_a (typeof (Gee.ArrayList)))
 			{
 				unowned Gee.ArrayList<GLib.Object> list_value = val as Gee.ArrayList<GLib.Object>;
@@ -26,7 +27,15 @@ namespace SinticBolivia.Classes
 			else if( val.type().is_a(typeof(DateTime)) )
 			{
 				var node = new Json.Node (Json.NodeType.VALUE);
-				node.set_string ( ( val as DateTime).format("%Y-%m-%d %H:%M:%S") );
+				
+				if( ( val as DateTime) != null)
+				{
+					string datetimeStr = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
+					//print("SERIALIZE PROP: %s => %s\n", property_name, datetimeStr);
+					node.set_string ( datetimeStr );
+				}
+				else
+					node.init_null();
 				return node;
 			}
 			var node = this.default_serialize_property(property_name, val, pspec);

@@ -43,7 +43,12 @@ namespace SinticBolivia
 			
 			if( !this.propertyExists(name, out property) )
 				return false;
-			
+			/*
+			if( property.value_type == typeof(DateTime) )
+			{
+				continue;
+			}
+			*/
 			Value propertyVal = Value(property.value_type);
 			if( property.value_type == typeof(string) )
 			{
@@ -68,6 +73,10 @@ namespace SinticBolivia
 			else if( property.value_type == typeof(int64) )
 			{
 				propertyVal.set_int64(int64.parse(val));
+			}
+			else if( property.value_type == typeof(uint64) )
+			{
+				propertyVal.set_uint64(uint64.parse(val));
 			}
 			else if( property.value_type == typeof(float) )
 			{
@@ -97,6 +106,11 @@ namespace SinticBolivia
 			*/
 			this.set_property(name, propertyVal);
 			
+			return true;
+		}
+		public virtual bool setPropertyGValue(string name, Value? val)
+		{
+			this.set_property(name, val);
 			return true;
 		}
 	}

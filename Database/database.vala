@@ -49,7 +49,27 @@ namespace SinticBolivia.Database
 		public		abstract	void EndTransaction();
 		public		abstract	ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null);
 		public		abstract	T getObject<T>(string? query);
-		
+		public		HashMap<string, string> getObjectKeys(SBObject obj)
+		{
+			var data = new HashMap<string, string>();
+			int fk_count = 0;
+			foreach(ParamSpec prop in obj.getProperties())
+			{
+				string column_name = prop.name.replace("-", "_");
+				if( prop.get_blurb() == "PRIMARY_KEY" )
+				{
+					data.set("primary_key", column_name);
+					continue;
+				}
+				if( prop.get_blurb() == "FOREIGN_KEY" )
+				{
+					data.set("primary_key_%d".printf(fk_count), column_name);
+					fk_count++;
+					continue;
+				}
+			}
+			return data;
+		}
 		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
 			var data = new HashMap<string, Value?>();
@@ -65,12 +85,17 @@ namespace SinticBolivia.Database
 				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
 				if( prop.get_blurb() == "PRIMARY_KEY" )
 				{
-					
 					if( prop.value_type == typeof(int64) && (int64)val <= 0)
+						continue;
+					if( prop.value_type == typeof(uint64) && (uint64)val <= 0)
 						continue;
 					if( prop.value_type == typeof(long) && (long)val <= 0)
 						continue;
+					if( prop.value_type == typeof(ulong) && (ulong)val <= 0)
+						continue;
 					if( prop.value_type == typeof(int) && (int)val <= 0)
+						continue;
+					if( prop.value_type == typeof(uint) && (uint)val <= 0)
 						continue;
 					
 				}
@@ -91,44 +116,55 @@ namespace SinticBolivia.Database
 					data.set(column_name, dateVal);
 					continue;
 				}
-				
 				if( val == null )
 				{
+					//continue;
+					data.set(column_name, "NULL");
 					continue;
-					//data.set(prop.name, "NULL");
 				}
 				
 				data.set(column_name, val);
 			}
 			return this.Insert(table, data);
 		}
-		public virtual long updateObject(string table, SBObject obj, string[] exclude = {})
+		public virtual long updateObject(string table, SBObject obj, string[] exclude = {}) throws SBException
 		{
 			var data = new HashMap<string, Value?>();
+			string pk_column = "";
+			Value? pk_value = null;
+			
 			foreach(ParamSpec prop in obj.getProperties())
 			{
-				Value? val = obj.getPropertyValue(prop.name);;
-				if( prop.value_type == typeof(DateTime) )
-				{
-					//stdout.printf("Property %s is DateTime\n", prop.name);
-					string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
-					//stdout.printf("Property value %s\n", datetime);
-					val.set_string(datetime);
-				}
-				else
-				{
-					
-				}
-				if( val == null )
-				{
-					continue;
-				}
 				string column_name = prop.name.replace("-", "_");
 				if( column_name in exclude )
 					continue;
 					
-				data.set(column_name, val);
+				Value? val = obj.getPropertyValue(prop.name);
+				if( prop.get_blurb() == "PRIMARY_KEY" )
+				{
+					pk_column = column_name;
+					pk_value = val;
+					continue;
+				}
+				if( prop.value_type == typeof(DateTime) )
+				{
+					//var dateVal = Value(typeof(string));
+					//stdout.printf("Property %s is DateTime\n", prop.name);
+					string datetime = ( (val as DateTime) != null ) ? (val as DateTime).format("%Y-%m-%d %H:%M:%S") : "NULL";
+					//stdout.printf("Property value %s\n", datetime);
+					//val.set_string(datetime);
+					data.set(column_name, datetime);
+					continue;
+				}
+				
+				data.set(column_name, val == null ? "NULL" : val);
 			}
+			if( pk_column.strip().length <= 0 )
+				throw new SBException.GENERAL("Unable to update, the object has no primary key");
+				
+			var wheres = new HashMap<string, Value?>();
+			wheres.set(pk_column, pk_value);
+			this.Update(table, data, wheres);
 			return 0;
 		}
 		/**
@@ -159,6 +195,10 @@ namespace SinticBolivia.Database
 				else if( gtype == "glong" )
 				{
 					values += "%ld,".printf((long)data.get(key));
+				}
+				else if( gtype == "gulong" )
+				{
+					values += "%lu,".printf((ulong)data.get(key));
 				}
 				else if( gtype == "gint64" )
 				{
@@ -212,9 +252,17 @@ namespace SinticBolivia.Database
 				{
 					query += "%d,".printf((int)data.get(key));
 				}
+				else if( gtype == "guint" )
+				{
+					where_str += "%u AND ".printf((uint)w.get(key));
+				}
 				else if( gtype == "glong" )
 				{
 					query += "%ld,".printf((long)data.get(key));
+				}
+				else if( gtype == "gulong" )
+				{
+					where_str += "%lu AND ".printf((ulong)w.get(key));
 				}
 				else if( gtype == "gint64" )
 				{
@@ -231,7 +279,10 @@ namespace SinticBolivia.Database
 				}
 				else if( gtype == "gchararray" )
 				{
-					query += "'%s',".printf(this.EscapeString((string)data.get(key)));
+					if( (string)data.get(key) == "NULL" || (string)data.get(key) == "null" )
+						query += "NULL,";
+					else
+						query += "'%s',".printf(this.EscapeString((string)data.get(key)));
 				}
 				else
 				{
@@ -250,9 +301,17 @@ namespace SinticBolivia.Database
 				{
 					where_str += "%d AND ".printf((int)w.get(key));
 				}
+				else if( gtype == "guint" )
+				{
+					where_str += "%u AND ".printf((uint)w.get(key));
+				}
 				else if( gtype == "glong" )
 				{
 					where_str += "%ld AND ".printf((long)w.get(key));
+				}
+				else if( gtype == "gulong" )
+				{
+					where_str += "%lu AND ".printf((ulong)w.get(key));
 				}
 				else if( gtype == "gint64" )
 				{
@@ -277,6 +336,7 @@ namespace SinticBolivia.Database
 				}
 			}
 			where_str = where_str.substring(0, where_str.length - 4);
+			print("UPDATE QUERY: %s\n", query + where_str);
 			this.Execute(query + where_str);
 		}
 		public virtual void Delete(string table, HashMap<string, Value?> w)
