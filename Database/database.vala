@@ -336,7 +336,7 @@ namespace SinticBolivia.Database
 				}
 			}
 			where_str = where_str.substring(0, where_str.length - 4);
-			print("UPDATE QUERY: %s\n", query + where_str);
+			//print("UPDATE QUERY: %s\n", query + where_str);
 			this.Execute(query + where_str);
 		}
 		public virtual void Delete(string table, HashMap<string, Value?> w)

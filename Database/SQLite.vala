@@ -109,7 +109,7 @@ namespace SinticBolivia.Database
 								{
 									if( column_value.strip().length > 0 )
 									{
-										print("DATETIME column found: %s\n", column_value);
+										//print("DATETIME column found: %s\n", column_value);
 										//GLib.Value pValue = GLib.Value(spec.value_type);
 										//pValue.set_object(new DateTime.from_iso8601(column_value, null));
 										//var datetime = new SBDateTime.from_string(column_value);
@@ -118,7 +118,7 @@ namespace SinticBolivia.Database
 										//pValue.set_object(datetime.get_datetime());
 										//(obj as Object).set_property(spec.name, datetime.get_datetime());
 										DateTime datetime = SBDateTime.parseDbDateTime(column_value);
-										print("VALUE: %s\n", datetime.format("%Y-%m-%d %H:%M:%S"));
+										//print("VALUE: %s\n", datetime.format("%Y-%m-%d %H:%M:%S"));
 										(obj as Object).set_property(spec.name, datetime);
 									}
 									
