@@ -70,6 +70,53 @@ namespace SinticBolivia.Database
 			}
 			return data;
 		}
+		public virtual HashMap<string, Value?> objectToHashMap(SBObject obj)
+		{
+			var data = new HashMap<string, Value?>();
+			foreach(ParamSpec prop in obj.getProperties())
+			{
+				Value? val 			= obj.getPropertyValue(prop.name);
+				string column_name 	= prop.name.replace("-", "_");
+				
+				if( prop.value_type == typeof(DateTime) )
+				{
+					//stdout.printf("Property %s is %s (DateTime)\n", prop.name, prop.value_type.name());
+					var dateVal = Value(typeof(string));
+					if( (val as DateTime) != null )
+					{
+						string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
+						//stdout.printf("Property value %s\n", datetime);
+						dateVal.set_string(datetime);
+					}
+					else
+					{
+						dateVal.set_string("NULL");
+					}
+					data.set(column_name, dateVal);
+					continue;
+				}
+				//else if( prop.value_type == typeof(Object) )
+				else if( prop.value_type.is_object() )
+				{
+					Json.Node root_node = Json.gobject_serialize((Object)val);
+					Json.Generator generator = new Json.Generator();
+					generator.set_root(root_node);
+					string obj_json = generator.to_data(null);
+					//print("%s => OBJ_JSON: %s\n", column_name, obj_json);
+					data.set(column_name, obj_json);
+					continue;
+				}
+				if( val == null )
+				{
+					//continue;
+					data.set(column_name, "NULL");
+					continue;
+				}
+				
+				data.set(column_name, val);
+			}
+			return data;
+		}
 		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
 			var data = new HashMap<string, Value?>();
@@ -83,6 +130,7 @@ namespace SinticBolivia.Database
 					continue;
 				
 				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
+				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.is_object() ? "Object" : "Non Object");
 				if( prop.get_blurb() == "PRIMARY_KEY" )
 				{
 					if( prop.value_type == typeof(int64) && (int64)val <= 0)
@@ -114,6 +162,17 @@ namespace SinticBolivia.Database
 						dateVal.set_string("NULL");
 					}
 					data.set(column_name, dateVal);
+					continue;
+				}
+				//else if( prop.value_type == typeof(Object) )
+				else if( prop.value_type.is_object() )
+				{
+					Json.Node root_node = Json.gobject_serialize((Object)val);
+					Json.Generator generator = new Json.Generator();
+					generator.set_root(root_node);
+					string obj_json = generator.to_data(null);
+					//print("%s => OBJ_JSON: %s\n", column_name, obj_json);
+					data.set(column_name, obj_json);
 					continue;
 				}
 				if( val == null )
@@ -156,7 +215,15 @@ namespace SinticBolivia.Database
 					data.set(column_name, datetime);
 					continue;
 				}
-				
+				else if( prop.value_type.is_object() )
+				{
+					Json.Node root_node = Json.gobject_serialize((Object)val);
+					Json.Generator generator = new Json.Generator();
+					generator.set_root(root_node);
+					string obj_json = generator.to_data(null);
+					data.set(column_name, obj_json);
+					continue;
+				}
 				data.set(column_name, val == null ? "NULL" : val);
 			}
 			if( pk_column.strip().length <= 0 )
@@ -233,6 +300,7 @@ namespace SinticBolivia.Database
 			cols 	= cols.substring(0, cols.length - 1);
 			values 	= values.substring(0, values.length - 1);
 			query 	= query.printf(cols, values);
+			//stdout.printf("LAST QUERY: %s\n", query);
 			this.LastQuery = query;
 			this.Execute(query);
 			return this.LastInsertId;

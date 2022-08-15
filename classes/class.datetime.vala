@@ -193,20 +193,20 @@ namespace SinticBolivia
 		{
 			return this.datetime.get_microsecond ();
 		}
-		public static DateTime parseDbDate(string dateStr)
+		public static DateTime? parseDbDate(string dateStr)
 		{
 			string[] dateParts = dateStr.strip().replace("/", "-").split("-");
 			
 			DateTime dbDate = new DateTime(new TimeZone.local(), 
 				int.parse(dateParts[0]),
-				int.parse(dateParts[1]) - 1,
+				int.parse(dateParts[1]),
 				int.parse(dateParts[2]),
 				0, 0 ,0
 			);
 			
 			return dbDate;
 		}
-		public static DateTime parseDbDateTime(string datetime)
+		public static DateTime? parseDbDateTime(string datetime)
 		{
 			string[] parts = datetime.strip().split(" ");
 			DateTime dbDate = parseDbDate(parts[0]);
