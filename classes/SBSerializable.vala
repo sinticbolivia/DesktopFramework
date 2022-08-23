@@ -45,6 +45,17 @@ namespace SinticBolivia.Classes
 		}
 		public virtual bool deserialize_property (string property_name, out Value val, ParamSpec pspec, Json.Node property_node)
 		{
+			if( pspec.value_type.is_a(typeof(DateTime)) && !property_node.is_null() )
+			{
+				DateTime datetime = SBDateTime.parseDbDateTime(property_node.get_string());
+				if( datetime != null )
+				{
+					val = Value(typeof(DateTime));
+					val = datetime;
+					return true;
+				}
+				return false;
+			}
 			return this.default_deserialize_property (property_name, out val, pspec, property_node);
 		}
 		public virtual bool deserializeArrayProperty<T>(string prop,  out Value val, Json.Node property_node)

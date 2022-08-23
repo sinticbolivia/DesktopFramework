@@ -23,7 +23,8 @@ MACROS=-D __linux__
 SOURCES=$(wildcard classes/*.vala) $(wildcard Database/*.vala)
 
 $(info Trying to detect the operating system)
-ifneq (, $(findstring /Library, $(PATH)))
+#ifneq (, $(findstring /Library, $(PATH)))
+ifneq ($(wildcard /Library/.*),)
 OS=MACOS
 DEST_LIBRARY=libSinticBolivia.dylib
 $(info MACOS detected)
