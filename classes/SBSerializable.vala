@@ -3,8 +3,11 @@ using Gee;
 
 namespace SinticBolivia.Classes
 {
-	public abstract class SBSerializable : SBObject, Json.Serializable
+	public abstract class SBSerializable : SBObject, Json.Serializable 
 	{
+		protected	string _rawJson;
+		protected	ArrayList<string> _lostJsonProperties;
+		
 		public virtual Json.Node serialize_property (string property_name, Value val, ParamSpec pspec)
 		{
 			//print("SERIALIZE PROP: %s\n", property_name);
@@ -93,5 +96,33 @@ namespace SinticBolivia.Classes
 			return specs;
 		}
 		*/
+		public void setRawJson(string json)
+		{
+			this._rawJson = json;
+		}
+		public string getRawJson()
+		{
+			return this._rawJson;
+		}
+		public Json.Node? getObjNode()
+		{
+			return Json.from_string(this._rawJson);
+		}
+		/*
+		public override unowned ParamSpec? Json.Serializable.find_property (string name) 
+		{
+			if( this._lostJsonProperties == null )
+				this._lostJsonProperties = new ArrayList<string>();
+			
+			unowned ParamSpec? prop = (base as Json.Serializable).find_property(name);
+			//this.propertyExists(name, out prop);
+			if( prop == null )
+			{
+				//warning("Property does not exists: %s\n", name);
+				this._lostJsonProperties.add( name );
+			}
+			return prop;
+		}
+		//*/
 	}
 }

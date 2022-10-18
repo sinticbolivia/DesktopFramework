@@ -145,6 +145,10 @@ namespace SinticBolivia.Reports
 				{
 					command = "atril --preview %s".printf(pdf_path);
 				}
+				else if( Environment.find_program_in_path("open") != null )
+				{
+					command = "open %s".printf(pdf_path);
+				}
 				else
 				{
 					command = "xdg-open %s".printf(pdf_path);
