@@ -15,7 +15,7 @@ CLIBS=$(shell pkg-config --libs gmodule-2.0) $(shell pkg-config --libs gtk+-3.0)
 	-L.. -lSinticBolivia
 
 #ifneq (, $(findstring /Library, $(PATH)))
-ifneq ( $(wildcard /Library/.*),)
+ifneq ($(wildcard /Library/.*),)
 OS=MACOS
 DEST_LIBRARY=lib$(LIBRARY_NAME).dylib
 $(info MACOS detected)

@@ -24,6 +24,8 @@ namespace SinticBolivia.GtkWidgets
 		{
 			set{this.entryDate.secondary_icon_pixbuf = value;}
 		}
+		public signal void on_date_changed(DateTime date);
+		
 		public SBDatePicker()
 		{
 			this.orientation = Orientation.HORIZONTAL;
@@ -134,6 +136,7 @@ namespace SinticBolivia.GtkWidgets
 			this.entryDate.text = date.format(this.format);
 			//this.calendar.get_date(out year, out month, out day);
 			//this.entryDate.text = "%04d-%02d-%02d".printf(this.calendar.year, this.calendar.month + 1, this.calendar.day);
+			this.on_date_changed(this.date);
 		}
 		protected void OnDaySelectedDoubleClick()
 		{
@@ -142,6 +145,7 @@ namespace SinticBolivia.GtkWidgets
 			this.entryDate.text = date.format(this.format);
 			//this.popup.visible = false;
 			this.popup.hide();
+			this.on_date_changed(this.date);
 		}
 		public void setDate(DateTime ndate)
 		{

@@ -8,10 +8,13 @@ namespace SinticBolivia.GtkWidgets
 		protected	SpinButton		minuteSpin;
 		protected	DateTime		datetime;
 		
+		public signal void on_datetime_changed(DateTime date);
+		
 		public SBDateTimePicker()
 		{
 			base();
 			this.build();
+			this.setEvents();
 		}
 		protected void build()
 		{
@@ -26,6 +29,24 @@ namespace SinticBolivia.GtkWidgets
 			this.pack_start(this.hourSpin, false, false);
 			this.pack_start(this.minuteSpin, false, false);
 			
+		}
+		protected void setEvents()
+		{
+			this.on_date_changed.connect(this.onDateChanged);
+			this.hourSpin.value_changed.connect(this.onHourChanged);
+			this.minuteSpin.value_changed.connect(this.onMinuteChanged);
+		}
+		protected void onDateChanged(DateTime date)
+		{
+			this.on_datetime_changed(this.getDateTime());
+		}
+		protected void onHourChanged()
+		{
+			this.on_datetime_changed(this.getDateTime());
+		}
+		protected void onMinuteChanged()
+		{
+			this.on_datetime_changed(this.getDateTime());
 		}
 		public DateTime getDateTime()
 		{
