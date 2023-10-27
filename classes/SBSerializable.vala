@@ -12,7 +12,7 @@ namespace SinticBolivia.Classes
 		{
 			
 			if (val.type ().is_a (typeof (Gee.ArrayList)) 
-				|| ( val.type ().is_a (typeof (Object)) && (val as Object).get_type().is_a(typeof (Gee.ArrayList)) ) 
+				|| ( val.type ().is_a (typeof (Object)) && (val as Object) != null && (val as Object).get_type().is_a(typeof (Gee.ArrayList)) ) 
 			)
 			{
 				unowned Gee.ArrayList<GLib.Object> list_value = val as Gee.ArrayList<GLib.Object>;

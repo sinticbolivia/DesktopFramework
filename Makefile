@@ -1,3 +1,4 @@
+PKG_CONFIG=/usr/local/bin/pkg-config
 VFLAGS=-X -DGETTEXT_PACKAGE
 		
 VLIBS=--pkg gmodule-2.0\
@@ -7,7 +8,8 @@ VLIBS=--pkg gmodule-2.0\
 	--pkg gio-2.0\
 	--pkg posix\
 	--pkg libxml-2.0\
-	--pkg json-glib-1.0
+	--pkg json-glib-1.0\
+	--pkg libsoup-3.0
 	
 CLIBS=`pkg-config gio-2.0 --libs`\
 		`pkg-config gmodule-2.0 --libs`\
@@ -15,7 +17,8 @@ CLIBS=`pkg-config gio-2.0 --libs`\
 		`pkg-config libxml-2.0 --libs`\
 		`pkg-config gee-0.8 --libs`\
 		`pkg-config sqlite3 --libs`\
-		`pkg-config mysqlclient --libs`
+		`pkg-config libsoup-3.0 --libs`\
+		`$(PKG_CONFIG) mysqlclient --libs`
 		#-lintl
 
 VC=valac
@@ -65,3 +68,5 @@ clean:
 	-rm $(DEST_LIBRARY)
 	-rm *.h
 	-rm *.o
+	-rm classes/*.vala.c
+	-rm Database/*.vala.c

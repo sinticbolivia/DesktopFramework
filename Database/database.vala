@@ -4,6 +4,17 @@ using SinticBolivia;
 
 namespace SinticBolivia.Database
 {
+	public string row_array_to_json(ArrayList<SBDBRow> rows)
+	{
+		string json = "[";
+		foreach(var row in rows)
+		{
+			json += row.to_json() + ",";
+		}
+		json = ((string)json.substring(0, json.length - 1)) + "]";
+		
+		return json;
+	}
 	public delegate SBObject InstanceFactory(SBDatabase dbh);
 
 	public abstract class SBDatabase : GLib.Object 
@@ -36,15 +47,15 @@ namespace SinticBolivia.Database
 			protected set{this._databaseType = value;}
 		}
 		
-		
-		
+		public		abstract	SBDBTable get_table(string name);
+		public		abstract	ArrayList<SBDBTable> show_tables();
 		public 		abstract 	bool Open();
 		public 		abstract 	bool Close();
 		public 		abstract	void SelectDb(string db_name);
-		public 		abstract 	long Query(string? query = null);
+		public 		abstract 	long Query(string? query = null) throws SBDatabaseException;
 		public		abstract	SBDBRow? GetRow(string? query);
 		public		abstract	ArrayList<SBDBRow> GetResults(string? query);
-		public 		abstract 	long Execute(string sql);
+		public 		abstract 	long Execute(string sql) throws SBDatabaseException;
 		public		abstract	void BeginTransaction();
 		public		abstract	void EndTransaction();
 		public		abstract	ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null);
@@ -237,7 +248,7 @@ namespace SinticBolivia.Database
 		/**
 		*  Insert a row into table
 		*/
-		public virtual long Insert(string table, HashMap<string, Value?> data)
+		public virtual long Insert(string table, HashMap<string, Value?> data) throws SBDatabaseException
 		{
 			if( data.size <= 0 )
 				return 0;
@@ -290,6 +301,12 @@ namespace SinticBolivia.Database
 					{
 						values += "'%s',".printf(this.EscapeString((string)data.get(key)));
 					}
+				}
+				else if( gtype == "GDateTime" )
+				{
+					DateTime val = (DateTime)data.get(key);
+					string datetime = val.format("%Y-%m-%d %H:%M:%S");// : "NULL";
+					values += "'%s',".printf(datetime);
 				}
 				else
 				{

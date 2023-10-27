@@ -1,6 +1,6 @@
 using GLib;
 using Gee;
-//using Mysql;
+//using Mysql.Database;
 //using Mysql;
 
 namespace SinticBolivia.Database
@@ -62,7 +62,7 @@ namespace SinticBolivia.Database
 			this.databaseName = db_name;
 			this.dbh.select_db(this.databaseName);
 		}
-		public override long Query(string? query = null)
+		public override long Query(string? query = null) throws SBDatabaseException
 		{
 			this.resultSet = null;
 			string q = query != null ? query : this.builtQuery;
@@ -70,19 +70,127 @@ namespace SinticBolivia.Database
 			if( res != 0 )
 			{
 				stderr.printf("MYSQL ERROR: %s\nQUERY WAS: %s\n", this.dbh.error(), q);
-				
+				throw new SBDatabaseException.GENERAL(this.dbh.error());
 				return res;
 			}
-			this.resultSet = this.dbh.use_result();
+			this.resultSet = this.dbh.store_result(); //this.dbh.use_result();
 			
 			return 0;
+		}
+		public CellType get_cell_type_from_name(string name)
+		{
+			CellType t = CellType.VARCHAR;
+			if( name == "bigint unsigned")
+				t = CellType.UBIGINT;
+			if( name == "bigint")
+				t = CellType.BIGINT;
+			else if( "varchar" in name )
+				t = CellType.VARCHAR;
+			else if ( "int" == name )
+				t = CellType.INT;
+			else if ( "int unsigned" == name )
+				t = CellType.UINT;
+			else if ( "text" == name )
+				t = CellType.TEXT;
+			else if ( "date" == name )
+				t = CellType.DATE;
+			else if ( "datetime" == name )
+				t = CellType.DATETIME;
+			return t;
+		}
+		public CellType get_cell_type(Mysql.FieldType type)
+		{
+			CellType t;
+			
+			switch(type)
+			{
+				case Mysql.FieldType.DATE:
+					t = CellType.DATE;
+				break;
+				case Mysql.FieldType.DATETIME:
+					t = CellType.DATETIME;
+				break;
+				case Mysql.FieldType.DECIMAL:
+					t = CellType.DOUBLE;
+				break;
+				case Mysql.FieldType.DOUBLE:
+					t = CellType.DOUBLE;
+				break;
+				case Mysql.FieldType.FLOAT:
+					t = CellType.FLOAT;
+				break;
+				case Mysql.FieldType.INT24:
+					t = CellType.INT;
+				break;
+				case Mysql.FieldType.LONG:
+					t = CellType.LONG;
+				break;
+				case Mysql.FieldType.LONGLONG:
+					t = CellType.BIGINT;
+				break;
+				case Mysql.FieldType.NULL:
+					t = CellType.NULL;
+				break;
+				default:
+					t = CellType.VARCHAR;
+				break;
+			}
+			return t;
 		}
 		public override	ArrayList<T> getObjects<T>(string? query, InstanceFactory? factory = null)
 		{
 			var results = new ArrayList<T>();
 			if( query != null )
 				this.Query(query);
+			owned Mysql.Result res = (owned)this.resultSet;
+			string[]? row;
+			Mysql.Field[] fields = res.fetch_fields();
 			
+			while( (row = res.fetch_row()) != null )
+			{
+				T obj = (T)Object.new(typeof(T));
+				for(int i = 0; i < res.num_fields(); i++ )
+				{
+					string column_name = fields[i].name;
+					string column_value = row[i];
+					ParamSpec? spec = null;
+					if( obj is SBDBRow )
+					{
+						var cell = new SBDBCell();
+						cell.ColumnName = column_name;
+						cell.TheValue 	= column_value;
+						cell.ctype 		= this.get_cell_type(fields[i].type);
+						cell.length 	= fields[i].length;
+						cell.max_length = fields[i].max_length;
+						cell.decimals 	= fields[i].decimals;
+						(obj as SBDBRow).Add(cell);
+					}
+					else if( obj is SBObject && (obj as SBObject).propertyExists(column_name, out spec) )
+					{
+						if( spec.value_type == typeof(DateTime) )
+						{
+							if( column_value.strip().length > 0 )
+							{
+								DateTime datetime = SBDateTime.parseDbDateTime(column_value);
+								if( datetime != null )
+								{
+									(obj as Object).set_property(spec.name, datetime);
+								}
+							}
+						}
+						else if( spec.value_type.is_object() && column_value.strip().length > 0 )
+						{
+							var jsonObj = Json.gobject_deserialize(spec.value_type, Json.from_string(column_value));
+							(obj as SBObject).setPropertyGValue(spec.name, jsonObj);
+						}
+						else
+						{
+							(obj as SBObject).setPropertyValue(spec.name, column_value);
+						}
+					}
+				}
+				results.add(obj);
+			}
 			return results;
 		}
 		public override	T getObject<T>(string? query)
@@ -134,13 +242,14 @@ namespace SinticBolivia.Database
 			
 			return rows;
 		}
-		public override	long Execute(string sql)
+		public override	long Execute(string sql) throws SBDatabaseException
 		{
 			//stdout.printf("EXECUTE: %s\n", sql);
 			int res = this.dbh.query( sql );
 			if( res != 0 )
 			{
 				stderr.printf("MYSQL ERROR: %s\nQUERY WAS: %s\n", this.dbh.error(), sql);
+				throw new SBDatabaseException.GENERAL(this.dbh.error());
 				return res;
 			}
 			if( sql.down().index_of("insert") != -1 )
@@ -152,5 +261,66 @@ namespace SinticBolivia.Database
 		}
 		public override	void BeginTransaction(){}
 		public override	void EndTransaction(){}
+		public override	SBDBTable get_table(string name)
+		{
+			var table = new SBDBTable()
+			{
+				name 		= name,
+				comments 	= "",
+				columns 	= this.get_table_columns(name)
+			};
+			
+			return table;
+		}
+		public override ArrayList<SBDBTable> show_tables()
+		{
+			var items = new ArrayList<SBDBTable>();
+			string query = "SHOW TABLES";
+			this.Query(query);
+			string[]? row = null;
+			
+			owned Mysql.Result? res = (owned)this.resultSet;
+			if( res == null )
+				return items;
+			while( (row = res.fetch_row()) != null )
+			{
+				string name = row[0];
+				var table = new SBDBTable()
+				{
+					name = name,
+					comments = "",
+					columns = this.get_table_columns(name)
+				};
+				items.add(table);
+			}
+			
+			return items;
+		}
+		public ArrayList<SBDBColumn> get_table_columns(string name)
+		{
+			var columns = new ArrayList<SBDBColumn>();
+			string query = "DESCRIBE %s".printf(name);
+			this.Query(query);
+			owned Mysql.Result res = (owned)this.resultSet;
+			if( res == null )
+				return columns;
+			Mysql.Field[] fields = res.fetch_fields();
+			string[]? row = null;
+			
+			while( (row = res.fetch_row()) != null )
+			{
+				string col_name = row[0];
+				var column = new SBDBColumn()
+				{
+					name = col_name,
+					comments = "",
+					db_type = fields[0].type,
+					type = this.get_cell_type_from_name(row[1]),
+					is_key = (row[3] == "PRI") ? true : false
+				};
+				columns.add(column);
+			}
+			return columns;
+		}
 	}
 }

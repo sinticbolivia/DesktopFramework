@@ -50,7 +50,7 @@ namespace SinticBolivia.Database
 		{
 			this.Execute("END TRANSACTION");
 		}
-		public override long Query(string? query = null)
+		public override long Query(string? query = null) throws SBDatabaseException
 		{
 			this.stmt = null;
 			//Statement stmt;
@@ -60,6 +60,7 @@ namespace SinticBolivia.Database
 			if( res != Sqlite.OK )
 			{
 				stderr.printf("SQLite Query Error: %s, QUERY WAS:%s\n", this._db.errmsg (), q);
+				throw new SBDatabaseException.GENERAL(this._db.errmsg());
 				return 0;
 			}
 			//this.stmt = null;
@@ -195,7 +196,7 @@ namespace SinticBolivia.Database
 			
 			return records;
 		}
-		public override long Execute(string sql)
+		public override long Execute(string sql) throws SBDatabaseException
 		{
 			this.stmt = null;
 			string error;
@@ -203,8 +204,9 @@ namespace SinticBolivia.Database
 			
 			if( res != Sqlite.OK )
 			{
-				stderr.printf("SQLITE ERROR: %s\n", this._db.errmsg());
-				throw new Error(Quark.from_string("SQLITE_ERROR"), -1, "SQLITE ERROR: %s, SQL (DML) WAS: %s\n".printf(error, sql));
+				stderr.printf("SQLITE ERROR: %s\nQUERY WAS: %s\n", this._db.errmsg(), sql);
+				throw new SBDatabaseException.GENERAL(this._db.errmsg());
+				//throw new Error(Quark.from_string("SQLITE_ERROR"), -1, "SQLITE ERROR: %s, SQL (DML) WAS: %s\n".printf(error, sql));
 			}
 			//stdout.printf("QUERY: %s\n", sql);
 			if( sql.down().index_of("insert") != -1 )
@@ -243,6 +245,26 @@ namespace SinticBolivia.Database
 			if( str == null )
 				return "";
 			return str.replace("'", "''");
+		}
+		public override SBDBTable get_table(string name)
+		{
+			var table = new SBDBTable()
+			{
+				name	= name,
+				comments	= "",
+				columns		= this.get_table_columns(name)
+			};
+			return table;
+		}
+		public override ArrayList<SBDBTable> show_tables()
+		{
+			var items = new ArrayList<SBDBTable>();
+			return items;
+		}
+		public ArrayList<SBDBColumn> get_table_columns(string name)
+		{
+			var columns = new ArrayList<SBDBColumn>();
+			return columns;
 		}
 	}
 }

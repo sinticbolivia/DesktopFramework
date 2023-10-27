@@ -19,11 +19,15 @@ namespace SinticBolivia.Database
 				//this._cells = value;				
 			}
 		}
-		public SBDBRow()
+		construct
 		{
 			this._cells = new Array<SBDBCell>();
 			this._keys = new Array<string>();
 			this._length = 0;
+		}
+		public SBDBRow()
+		{
+			
 			
 		}
 		public void Add(SBDBCell cell)
@@ -93,6 +97,47 @@ namespace SinticBolivia.Database
 			}
 			
 			return data;
+		}
+		public string to_json()
+		{
+			string json = "";
+			var gen = new Json.Generator();
+			var root = new Json.Node(Json.NodeType.OBJECT);
+			var object = new Json.Object();
+			root.set_object(object);
+			gen.set_root(root);
+			foreach(var cell in this._cells)
+			{
+				if( cell.ctype == CellType.BIGINT || cell.ctype == CellType.UBIGINT 
+					|| cell.ctype == CellType.LONG || cell.ctype == CellType.ULONG
+					|| cell.ctype == CellType.INT || cell.ctype == CellType.UINT )
+				{
+					if( cell.TheValue == null)
+						object.set_null_member(cell.ColumnName);
+					else
+						object.set_int_member(cell.ColumnName, int.parse(cell.TheValue));
+				}
+				else if( cell.ctype == CellType.FLOAT || cell.ctype == CellType.DOUBLE )
+				{
+					if( cell.TheValue == null)
+						object.set_null_member(cell.ColumnName);
+					else
+						object.set_double_member(cell.ColumnName, double.parse(cell.TheValue));
+				}
+				//else if( cell.TheValue == null )
+				//	object.set_null_member(cell.ColumnName);
+				else
+				{
+					if( cell.TheValue == null )
+						object.set_null_member(cell.ColumnName);
+					else
+						object.set_string_member(cell.ColumnName, cell.TheValue);
+				}
+			}
+			size_t length;
+			json = gen.to_data(out length);
+			
+			return json;
 		}
 	}
 }
