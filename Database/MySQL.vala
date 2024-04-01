@@ -29,7 +29,7 @@ namespace SinticBolivia.Database
 			this.dbh = new Mysql.Database();
 			
 		}
-		public override bool Open()
+		public override bool Open() throws SBDatabaseException
 		{
 			if( !this.dbh.real_connect(this.server, 
 										this.username, 
@@ -69,8 +69,12 @@ namespace SinticBolivia.Database
 			int res = this.dbh.query( q );
 			if( res != 0 )
 			{
-				stderr.printf("MYSQL ERROR: %s\nQUERY WAS: %s\n", this.dbh.error(), q);
-				throw new SBDatabaseException.GENERAL(this.dbh.error());
+				stderr.printf("MYSQL ERROR (%u): %s\nQUERY WAS: %s\n", this.dbh.errno(), this.dbh.error(), q);
+				
+				if( this.dbh.errno() == 4031 )
+					throw new SBDatabaseException.DISCONNECTED(this.dbh.error());
+				else
+					throw new SBDatabaseException.GENERAL(this.dbh.error());
 				return res;
 			}
 			this.resultSet = this.dbh.store_result(); //this.dbh.use_result();
@@ -142,7 +146,7 @@ namespace SinticBolivia.Database
 			var results = new ArrayList<T>();
 			if( query != null )
 				this.Query(query);
-			owned Mysql.Result res = (owned)this.resultSet;
+			Mysql.Result res = (owned)this.resultSet;
 			string[]? row;
 			Mysql.Field[] fields = res.fetch_fields();
 			
@@ -217,7 +221,18 @@ namespace SinticBolivia.Database
 			
 			for(int i = 0; i < fields.length; i++)
 			{
-				db_row.Set(fields[i].name, row[i]);
+				string column_name = fields[i].name;
+				string column_value = row[i];
+				var cell = new SBDBCell();
+				cell.ColumnName = column_name;
+				cell.TheValue 	= column_value;
+				cell.ctype 		= this.get_cell_type(fields[i].type);
+				cell.length 	= fields[i].length;
+				cell.max_length = fields[i].max_length;
+				cell.decimals 	= fields[i].decimals;
+				//(obj as SBDBRow).Add(cell);
+				//db_row.Set(fields[i].name, row[i]);
+				db_row.Add(cell);
 			}
 			
 			return db_row;
@@ -279,7 +294,7 @@ namespace SinticBolivia.Database
 			this.Query(query);
 			string[]? row = null;
 			
-			owned Mysql.Result? res = (owned)this.resultSet;
+			Mysql.Result? res = (owned)this.resultSet;
 			if( res == null )
 				return items;
 			while( (row = res.fetch_row()) != null )
@@ -301,7 +316,7 @@ namespace SinticBolivia.Database
 			var columns = new ArrayList<SBDBColumn>();
 			string query = "DESCRIBE %s".printf(name);
 			this.Query(query);
-			owned Mysql.Result res = (owned)this.resultSet;
+			Mysql.Result res = (owned)this.resultSet;
 			if( res == null )
 				return columns;
 			Mysql.Field[] fields = res.fetch_fields();

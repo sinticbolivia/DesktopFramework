@@ -43,6 +43,19 @@ namespace SinticBolivia.Database
 			}
 			return found;
 		}
+		public SBDBColumn? get_column(string col_name)
+		{
+			SBDBColumn? found = null;
+			foreach(var column in (ArrayList<SBDBColumn>)this.columns)
+			{
+				if( column.name == col_name )
+				{
+					found = column;
+					break;
+				}
+			}
+			return found;
+		}
 		public HashMap<string, Value?> json_object_2_hashmap(Json.Object obj)
 		{
 			var data = new HashMap<string, Value?>();
@@ -99,6 +112,19 @@ namespace SinticBolivia.Database
 				stderr.printf("ERROR DESERIALIZING JSON OBJECT: %s\n", e.message);
 			}
 			return null;
+		}
+		public SBDBRow? get_single_by(string column, string val, ...)
+		{
+			string query = "SELECT * FROM %s WHERE 1 = 1 ".printf(this.name);
+			var db_column = this.get_column(column);
+			if( db_column != null )
+			{
+				query += "AND %s = %s ".printf(column, db_column.format_data(val));
+			}
+			query += "LIMIT 1";
+			
+			var dbh = SBFactory.getDbh();
+			return dbh.GetRow(query);
 		}
 	}
 }

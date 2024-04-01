@@ -2,6 +2,7 @@ namespace SinticBolivia.Database
 {
 	public errordomain SBDatabaseException
 	{
-		GENERAL
+		GENERAL,
+		DISCONNECTED
 	}
 }

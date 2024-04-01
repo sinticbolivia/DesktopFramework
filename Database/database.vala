@@ -1,32 +1,36 @@
 using GLib;
 using Gee;
 using SinticBolivia;
+using SinticBolivia.Classes;
 
 namespace SinticBolivia.Database
 {
 	public string row_array_to_json(ArrayList<SBDBRow> rows)
 	{
+		if( rows.size <= 0 )
+			return "[]";
+
 		string json = "[";
 		foreach(var row in rows)
 		{
 			json += row.to_json() + ",";
 		}
 		json = ((string)json.substring(0, json.length - 1)) + "]";
-		
+
 		return json;
 	}
 	public delegate SBObject InstanceFactory(SBDatabase dbh);
 
-	public abstract class SBDatabase : GLib.Object 
+	public abstract class SBDatabase : GLib.Object
 	{
 		protected	string		_databaseType = "";
 		protected	SBDBRow[]	_rows;
-		public		int			LastInsertId = 0;
+		public		long		LastInsertId = 0;
 		public 		string 		LastQuery = "";
 		protected	string		columnLeftWrap = "";
 		protected	string		columnRightWrap = "";
 		protected	string		builtQuery = "";
-		
+
 		/**
 		 * Properties
 		 */
@@ -46,10 +50,10 @@ namespace SinticBolivia.Database
 			get{return this._databaseType;}
 			protected set{this._databaseType = value;}
 		}
-		
+
 		public		abstract	SBDBTable get_table(string name);
 		public		abstract	ArrayList<SBDBTable> show_tables();
-		public 		abstract 	bool Open();
+		public 		abstract 	bool Open() throws SBDatabaseException;
 		public 		abstract 	bool Close();
 		public 		abstract	void SelectDb(string db_name);
 		public 		abstract 	long Query(string? query = null) throws SBDatabaseException;
@@ -88,7 +92,7 @@ namespace SinticBolivia.Database
 			{
 				Value? val 			= obj.getPropertyValue(prop.name);
 				string column_name 	= prop.name.replace("-", "_");
-				
+
 				if( prop.value_type == typeof(DateTime) )
 				{
 					//stdout.printf("Property %s is %s (DateTime)\n", prop.name, prop.value_type.name());
@@ -123,7 +127,7 @@ namespace SinticBolivia.Database
 					data.set(column_name, "NULL");
 					continue;
 				}
-				
+
 				data.set(column_name, val);
 			}
 			return data;
@@ -131,18 +135,23 @@ namespace SinticBolivia.Database
 		public virtual long insertObject(string table, SBObject obj, string[] exclude = {})
 		{
 			var data = new HashMap<string, Value?>();
-			
+			string primary_key = "";
+			if( obj is Entity )
+			{
+				primary_key = (obj as Entity).get_primary_key().strip().length > 0 ?
+					(obj as Entity).get_primary_key() : "";
+			}
 			foreach(ParamSpec prop in obj.getProperties())
 			{
 				Value? val = obj.getPropertyValue(prop.name);
 				string column_name = prop.name.replace("-", "_");
-				
+
 				if( column_name in exclude )
 					continue;
-				
+
 				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.name());
 				//stdout.printf("Property %s is %s\n", prop.name, prop.value_type.is_object() ? "Object" : "Non Object");
-				if( prop.get_blurb() == "PRIMARY_KEY" )
+				if( prop.get_blurb() == "PRIMARY_KEY" || column_name == primary_key )
 				{
 					if( prop.value_type == typeof(int64) && (int64)val <= 0)
 						continue;
@@ -156,43 +165,7 @@ namespace SinticBolivia.Database
 						continue;
 					if( prop.value_type == typeof(uint) && (uint)val <= 0)
 						continue;
-					
 				}
-				if( prop.value_type == typeof(DateTime) )
-				{
-					//stdout.printf("Property %s is %s (DateTime)\n", prop.name, prop.value_type.name());
-					var dateVal = Value(typeof(string));
-					if( (val as DateTime) != null )
-					{
-						string datetime = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
-						//stdout.printf("Property value %s\n", datetime);
-						dateVal.set_string(datetime);
-					}
-					else
-					{
-						dateVal.set_string("NULL");
-					}
-					data.set(column_name, dateVal);
-					continue;
-				}
-				//else if( prop.value_type == typeof(Object) )
-				else if( prop.value_type.is_object() )
-				{
-					Json.Node root_node = Json.gobject_serialize((Object)val);
-					Json.Generator generator = new Json.Generator();
-					generator.set_root(root_node);
-					string obj_json = generator.to_data(null);
-					//print("%s => OBJ_JSON: %s\n", column_name, obj_json);
-					data.set(column_name, obj_json);
-					continue;
-				}
-				if( val == null )
-				{
-					//continue;
-					data.set(column_name, "NULL");
-					continue;
-				}
-				
 				data.set(column_name, val);
 			}
 			return this.Insert(table, data);
@@ -200,46 +173,26 @@ namespace SinticBolivia.Database
 		public virtual long updateObject(string table, SBObject obj, string[] exclude = {}) throws SBException
 		{
 			var data = new HashMap<string, Value?>();
-			string pk_column = "";
+			string pk_column = (obj is Entity) ? (obj as Entity).get_primary_key() : "";
 			Value? pk_value = null;
-			
+			if( pk_column.strip().length <= 0 )
+				throw new SBException.GENERAL("Unable to update, the object has no primary key");
 			foreach(ParamSpec prop in obj.getProperties())
 			{
 				string column_name = prop.name.replace("-", "_");
 				if( column_name in exclude )
 					continue;
-					
+
 				Value? val = obj.getPropertyValue(prop.name);
-				if( prop.get_blurb() == "PRIMARY_KEY" )
+				if( prop.get_blurb() == "PRIMARY_KEY" || column_name == pk_column )
 				{
 					pk_column = column_name;
 					pk_value = val;
 					continue;
 				}
-				if( prop.value_type == typeof(DateTime) )
-				{
-					//var dateVal = Value(typeof(string));
-					//stdout.printf("Property %s is DateTime\n", prop.name);
-					string datetime = ( (val as DateTime) != null ) ? (val as DateTime).format("%Y-%m-%d %H:%M:%S") : "NULL";
-					//stdout.printf("Property value %s\n", datetime);
-					//val.set_string(datetime);
-					data.set(column_name, datetime);
-					continue;
-				}
-				else if( prop.value_type.is_object() )
-				{
-					Json.Node root_node = Json.gobject_serialize((Object)val);
-					Json.Generator generator = new Json.Generator();
-					generator.set_root(root_node);
-					string obj_json = generator.to_data(null);
-					data.set(column_name, obj_json);
-					continue;
-				}
-				data.set(column_name, val == null ? "NULL" : val);
+				data.set(column_name, val);
 			}
-			if( pk_column.strip().length <= 0 )
-				throw new SBException.GENERAL("Unable to update, the object has no primary key");
-				
+
 			var wheres = new HashMap<string, Value?>();
 			wheres.set(pk_column, pk_value);
 			this.Update(table, data, wheres);
@@ -252,67 +205,13 @@ namespace SinticBolivia.Database
 		{
 			if( data.size <= 0 )
 				return 0;
-				
 			string query = @"INSERT INTO $table(%s) VALUES(%s)";
 			string cols = "";
 			string values = "";
 			foreach(string key in data.keys)
 			{
-				cols += "%s%s%s,".printf(this.columnLeftWrap, key, this.columnRightWrap);
-				//##build values
-				string gtype = data.get(key).type_name();
-							
-				if( gtype == "gint" )
-				{
-					values += "%d,".printf((int)data.get(key));
-				}
-				else if( gtype == "guint" )
-				{
-					values += "%u,".printf((uint)data.get(key));
-				}
-				else if( gtype == "glong" )
-				{
-					values += "%ld,".printf((long)data.get(key));
-				}
-				else if( gtype == "gulong" )
-				{
-					values += "%lu,".printf((ulong)data.get(key));
-				}
-				else if( gtype == "gint64" )
-				{
-					//string format = "%"+int64.FORMAT+",";
-					values += "%s,".printf(data.get(key).get_int64().to_string());
-				}
-				else if( gtype == "gfloat" )
-				{
-					values += "%.2f,".printf((float)data.get(key));
-				}
-				else if( gtype == "gdouble" )
-				{
-					values += "%.2lf,".printf(data.get(key).get_double());
-				}
-				else if( gtype == "gchararray" )
-				{
-					if( (string)data.get(key) == "NULL" || (string)data.get(key) == "null" )
-					{
-						values += "NULL,";
-					}
-					else
-					{
-						values += "'%s',".printf(this.EscapeString((string)data.get(key)));
-					}
-				}
-				else if( gtype == "GDateTime" )
-				{
-					DateTime val = (DateTime)data.get(key);
-					string datetime = val.format("%Y-%m-%d %H:%M:%S");// : "NULL";
-					values += "'%s',".printf(datetime);
-				}
-				else
-				{
-					values += "'%s',".printf(this.EscapeString((string)data.get(key)));
-				}
-				
+				cols += "%s,".printf(this.prepare_column(key));
+				values += "%s,".printf(this.prepare_column_value(data.get(key)));
 			}
 			cols 	= cols.substring(0, cols.length - 1);
 			values 	= values.substring(0, values.length - 1);
@@ -326,156 +225,51 @@ namespace SinticBolivia.Database
 		{
 			string query = @"UPDATE $table SET ";
 			string where_str = " WHERE ";
-			
+
 			foreach(string key in data.keys)
 			{
-				query += "%s%s%s = ".printf(this.columnLeftWrap, key, this.columnRightWrap);
-				//##build values
-				string gtype = data.get(key).type_name();
-								
-				if( gtype == "gint" )
-				{
-					query += "%d,".printf((int)data.get(key));
-				}
-				else if( gtype == "guint" )
-				{
-					where_str += "%u AND ".printf((uint)w.get(key));
-				}
-				else if( gtype == "glong" )
-				{
-					query += "%ld,".printf((long)data.get(key));
-				}
-				else if( gtype == "gulong" )
-				{
-					where_str += "%lu AND ".printf((ulong)w.get(key));
-				}
-				else if( gtype == "gint64" )
-				{
-					//string format = "%"+int64.FORMAT+",";
-					query += "%s,".printf(data.get(key).get_int64().to_string());
-				}
-				else if( gtype == "gfloat" )
-				{
-					query += "%.2f,".printf((float)data.get(key));
-				}
-				else if( gtype == "gdouble" )
-				{
-					query += "%.2lf,".printf(data.get(key).get_double());
-				}
-				else if( gtype == "gchararray" )
-				{
-					if( (string)data.get(key) == "NULL" || (string)data.get(key) == "null" )
-						query += "NULL,";
-					else
-						query += "'%s',".printf(this.EscapeString((string)data.get(key)));
-				}
-				else
-				{
-					query += "'%s',".printf(this.EscapeString((string)data.get(key)));
-				}
+				query += "%s = %s,".printf(
+					this.prepare_column(key),
+					this.prepare_column_value(data.get(key))
+				);
 			}
-			query = query.substring(0, query.length - 1);
 			//##build where
 			foreach(string key in w.keys)
 			{
-				where_str += "%s%s%s = ".printf(this.columnLeftWrap, key, this.columnRightWrap);
-				//##build values
-				string gtype = w.get(key).type_name();
-							
-				if( gtype == "gint" )
-				{
-					where_str += "%d AND ".printf((int)w.get(key));
-				}
-				else if( gtype == "guint" )
-				{
-					where_str += "%u AND ".printf((uint)w.get(key));
-				}
-				else if( gtype == "glong" )
-				{
-					where_str += "%ld AND ".printf((long)w.get(key));
-				}
-				else if( gtype == "gulong" )
-				{
-					where_str += "%lu AND ".printf((ulong)w.get(key));
-				}
-				else if( gtype == "gint64" )
-				{
-					//string format = "%"+int64.FORMAT+",";
-					where_str += "%s AND ".printf(w.get(key).get_int64().to_string());
-				}
-				else if( gtype == "gfloat" )
-				{
-					where_str += "%.2f AND ".printf((float)w.get(key));
-				}
-				else if( gtype == "gdouble" )
-				{
-					where_str += "%.2lf AND ".printf(w.get(key).get_double());
-				}
-				else if( gtype == "gchararray" )
-				{
-					where_str += "'%s' AND ".printf(this.EscapeString((string)w.get(key)));
-				}
-				else
-				{
-					where_str += "'%s' AND ".printf(this.EscapeString((string)w.get(key)));
-				}
+				where_str += "%s = %s AND ".printf(
+					this.prepare_column(key),
+					this.prepare_column_value(w.get(key))
+				);
 			}
-			where_str = where_str.substring(0, where_str.length - 4);
+			query 		= query.substring(0, query.length - 1);
+			where_str 	= where_str.substring(0, where_str.length - 4);
 			//print("UPDATE QUERY: %s\n", query + where_str);
+			this.LastQuery = query + where_str;
 			this.Execute(query + where_str);
 		}
 		public virtual void Delete(string table, HashMap<string, Value?> w)
 		{
-			string query = "DELETE FROM %s ".printf(table);
+			string query = "DELETE FROM %s WHERE ".printf(table);
 			//##build where
 			foreach(string key in w.keys)
 			{
-				query += "%s%s%s = ".printf(this.columnLeftWrap, key, this.columnRightWrap);
-				
-				//##build values
-				string gtype = w.get(key).type_name();
-								
-				if( gtype == "gint" )
-				{
-					query += "%d AND ".printf((int)w.get(key));
-				}
-				else if( gtype == "glong" )
-				{
-					query += "%ld AND ".printf((long)w.get(key));
-				}
-				else if( gtype == "gint64" )
-				{
-					//string format = "%"+int64.FORMAT+",";
-					query += "%s AND ".printf(w.get(key).get_int64().to_string());
-				}
-				else if( gtype == "gfloat" )
-				{
-					query += "%.2f AND ".printf((float)w.get(key));
-				}
-				else if( gtype == "gdouble" )
-				{
-					query += "%.2lf AND ".printf(w.get(key).get_double());
-				}
-				else if( gtype == "gchararray" )
-				{
-					query += "'%s' AND ".printf((string)w.get(key));
-				}
-				else
-				{
-					query += "'%s' AND ".printf((string)w.get(key));
-				}
+				query += "%s = %s AND ".printf(
+					this.prepare_column(key),
+					this.prepare_column_value(w.get(key))
+				);
 			}
 			query = query.substring(0, query.length - 4);
+			this.LastQuery = query;
 			this.Execute(query);
 		}
 		public virtual string FormatColumns(string columns)
 		{
 			if( columns.strip() == "*" )
 				return columns;
-			
+
 			string formated = "";
 			string[] cols = columns.strip().split(",");
-			
+
 			for(int i = 0; i < cols.length; i++)
 			{
 				if( cols[i].index_of(".") != -1 )
@@ -487,10 +281,10 @@ namespace SinticBolivia.Database
 					}
 					else
 					{
-						formated += "%s%s%s.%s%s%s,".printf(this.columnLeftWrap, parts[0], this.columnRightWrap, 
+						formated += "%s%s%s.%s%s%s,".printf(this.columnLeftWrap, parts[0], this.columnRightWrap,
 														this.columnLeftWrap, parts[1], this.columnRightWrap);
 					}
-					
+
 				}
 				else
 				{
@@ -532,7 +326,7 @@ namespace SinticBolivia.Database
 			{
 				sep = "<>";
 			}
-			
+
 			string[] parts = condition.strip().split(sep);
 			formated = "%s = %s".printf(this.FormatColumns(parts[0].strip()), parts[1].strip());
 			return formated;
@@ -541,7 +335,7 @@ namespace SinticBolivia.Database
 		{
 			string formated = "";
 			string[] n_tables = tables.strip().split(",");
-			
+
 			for(int i = 0; i < n_tables.length; i++)
 			{
 				if( n_tables[i].strip().index_of(" ") != 1 )
@@ -559,19 +353,19 @@ namespace SinticBolivia.Database
 		public virtual SBDatabase Select(string columns)
 		{
 			this.builtQuery = "SELECT %s ".printf(this.FormatColumns(columns));
-			
+
 			return this;
 		}
 		public virtual SBDatabase From(string tables)
 		{
 			this.builtQuery += "FROM %s ".printf(this.FormatTables(tables));
-			
+
 			return this;
 		}
 		public virtual SBDatabase Where(string cond)
 		{
 			this.builtQuery += "WHERE %s ".printf(this.FormatCondition(cond));
-			
+
 			return this;
 		}
 		public virtual SBDatabase And(string cond)
@@ -587,19 +381,19 @@ namespace SinticBolivia.Database
 		public virtual SBDatabase OrderBy(string col, string desc_asc = "ASC")
 		{
 			this.builtQuery += "ORDER BY %s %s ".printf(col.strip(), desc_asc.strip());
-			
+
 			return this;
 		}
 		public virtual SBDatabase LeftJoin(string table)
 		{
 			this.builtQuery += "LEFT JOIN %s ".printf(this.FormatTables(table.strip()));
-			
+
 			return this;
 		}
 		public virtual SBDatabase On(string on)
 		{
 			this.builtQuery += "ON %s ".printf(this.FormatCondition(on.strip()));
-			
+
 			return this;
 		}
 		public virtual string EscapeString(string? str)
@@ -621,7 +415,72 @@ namespace SinticBolivia.Database
 			}
 			return striped;
 		}
+		public virtual string prepare_column(string column)
+		{
+			string pc = column;
+			if( column.index_of(".") != -1 )
+			{
+				string[] parts = column.split(".");
+				pc = "%s%s%s.%s%s%s".printf(
+					this.columnLeftWrap, parts[0], this.columnRightWrap,
+					this.columnLeftWrap, parts[1], this.columnRightWrap
+				);
+			}
+			else
+			{
+				pc = "%s%s%s".printf(this.columnLeftWrap, column, this.columnRightWrap);
+			}
+			return pc;
+		}
+		public virtual string prepare_column_value(Value? val)
+		{
+			//stdout.printf("%s => %s\n", val.strdup_contents(), val.type_name());
+			if( val.strdup_contents() == "NULL" )
+				return "NULL";
+			var integers = new ArrayList<Type>();
+			integers.add_all_array(new Type[]{
+				typeof(int), typeof(uint),
+				typeof(long), typeof(ulong),
+				typeof(int64), typeof(uint64)
+			});
+			var floats = new ArrayList<Type>();
+			integers.add_all_array(new Type[]{typeof(float), typeof(double)});
+
+			if( integers.contains( val.type() ) )
+			{
+				Value str_int = Value(typeof(string));
+				val.transform(ref str_int);
+				return (string)str_int;
+			}
+			else if( floats.contains( val.type() ) )
+			{
+				//Value str = Value(typeof(string));
+				//val.transform(ref str_int);
+				return val.type() == typeof(float) ?
+					"%.2f".printf((float)val) :
+					"%.2lf".printf((double)val);
+			}
+			else if( val.type() == typeof(SBDateTime) || val.type() == typeof(DateTime) )
+			{
+				return val.type() == typeof(DateTime) ?
+					((DateTime)val).format("'%Y-%m-%d %H:%M:%S'") :
+					((SBDateTime)val).format("'%Y-%m-%d %H:%M:%S'");
+			}
+			else if( val.type() == typeof(Object) )
+			{
+				string json = "";
+				if( val.type() == typeof(SBSerializable) )
+				{
+					json = ((SBSerializable)val).to_json();
+				}
+				else
+				{
+					size_t len;
+					json = Json.gobject_to_data((Object)val, out len);
+				}
+				return "'%s'".printf(json);
+			}
+			return (string)val == "''" ? "''" : "'%s'".printf(this.EscapeString((string)val));
+		}
 	}
-
 }
-

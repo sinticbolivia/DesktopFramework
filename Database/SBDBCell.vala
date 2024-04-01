@@ -19,6 +19,7 @@ namespace SinticBolivia.Database
 		LONGTEXT,
 		DATE,
 		DATETIME,
+		JSON,
 		NULL
 	}
 	public string get_cell_type_name(CellType type)

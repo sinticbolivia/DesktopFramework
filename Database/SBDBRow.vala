@@ -44,6 +44,16 @@ namespace SinticBolivia.Database
 			
 			return (this.Cells.index(index).TheValue == null) ? "" : this.Cells.index(index).TheValue;
 		}
+		public unowned int64 get_int64(string column_name)
+		{
+			string? val = this.Get(column_name);
+			return (val == null) ? 0 : int64.parse(val);
+		}
+		public unowned int64 get_long(string column_name)
+		{
+			string? val = this.Get(column_name);
+			return (val == null) ? 0 : long.parse(val);
+		}
 		public unowned int GetInt(string column_name)
 		{
 			string? val = this.Get(column_name);
@@ -54,7 +64,7 @@ namespace SinticBolivia.Database
 			string? val = this.Get(column_name);
 			return (val == null) ? 0.0 : double.parse(val);
 		}
-		public void Set(string column_name, string? the_value)
+		public void Set(string column_name, string? the_value, CellType ctype = CellType.VARCHAR)
 		{
 			int index = -1;
 			
@@ -64,6 +74,7 @@ namespace SinticBolivia.Database
 				SBDBCell cell = new SBDBCell();
 				cell.ColumnName = column_name;
 				cell.TheValue = the_value;
+				cell.ctype = ctype;
 				this.Add(cell);
 				return;
 			}
