@@ -3,16 +3,16 @@ using Gee;
 
 namespace SinticBolivia.Classes
 {
-	public abstract class SBSerializable : SBObject, Json.Serializable 
+	public abstract class SBSerializable : SBObject, Json.Serializable
 	{
 		protected	string _rawJson;
 		protected	ArrayList<string> _lostJsonProperties;
-		
+
 		public virtual Json.Node serialize_property (string property_name, Value val, ParamSpec pspec)
 		{
-			
-			if (val.type ().is_a (typeof (Gee.ArrayList)) 
-				|| ( val.type ().is_a (typeof (Object)) && (val as Object) != null && (val as Object).get_type().is_a(typeof (Gee.ArrayList)) ) 
+			message("Serializing: %s\n", property_name);
+			if (val.type ().is_a (typeof (Gee.ArrayList))
+				|| ( val.type ().is_a (typeof (Object)) && (val as Object) != null && (val as Object).get_type().is_a(typeof (Gee.ArrayList)) )
 			)
 			{
 				unowned Gee.ArrayList<GLib.Object> list_value = val as Gee.ArrayList<GLib.Object>;
@@ -29,13 +29,19 @@ namespace SinticBolivia.Classes
 					return node;
 				}
 			}
-			else if( val.type().is_a(typeof(DateTime)) )
+			else if( val.type().is_a(typeof(DateTime)) || val.type().is_a(typeof(SBDateTime)) )
 			{
 				var node = new Json.Node (Json.NodeType.VALUE);
-				
-				if( ( val as DateTime) != null)
+
+				if( (val as DateTime) != null )
 				{
 					string datetimeStr = (val as DateTime).format("%Y-%m-%d %H:%M:%S");
+					//print("SERIALIZE PROP: %s => %s\n", property_name, datetimeStr);
+					node.set_string ( datetimeStr );
+				}
+				else if( (val as SBDateTime) != null )
+				{
+					string datetimeStr = (val as SBDateTime).format("%Y-%m-%d %H:%M:%S");
 					//print("SERIALIZE PROP: %s => %s\n", property_name, datetimeStr);
 					node.set_string ( datetimeStr );
 				}
@@ -43,7 +49,7 @@ namespace SinticBolivia.Classes
 					node.init_null();
 				return node;
 			}
-			var node = this.default_serialize_property(property_name, val, pspec);
+			var node = this.default_serialize_property(property_name.replace("-", "_"), val, pspec);
 			//if( node != null )
 			//	print("%s(%s) => %s\n", property_name, node.type_name(), Json.to_string(node, true));
 			return node;
@@ -68,11 +74,11 @@ namespace SinticBolivia.Classes
 			Json.Array list = property_node.get_array();
 			if( list == null )
 				return false;
-				
+
 			val	= Value(typeof(ArrayList));
 			var list_value = new ArrayList<T>(); //(ArrayList<T>)Object.new(typeof(ArrayList<T>));
-			
-			list.foreach_element((array, index, node) => 
+
+			list.foreach_element((array, index, node) =>
 			{
 				var obj = Json.gobject_deserialize(typeof(T), node);
 				list_value.add(obj);
@@ -81,14 +87,14 @@ namespace SinticBolivia.Classes
 			return true;
 		}
 		/*
-		public override (unowned ParamSpec)[] list_properties () 
+		public override (unowned ParamSpec)[] list_properties ()
 		{
-			
+
 			Type type = this.get_type(); //typeof(theObj);
-			
+
 			var obj_class = (ObjectClass) type.class_ref ();
 			//return obj_class.list_properties();
-			
+
 			//unowned var specs  = this.getProperties();
 			var specs = obj_class.list_properties();
 			foreach(var spec in specs)
@@ -111,11 +117,11 @@ namespace SinticBolivia.Classes
 			return Json.from_string(this._rawJson);
 		}
 		/*
-		public override unowned ParamSpec? Json.Serializable.find_property (string name) 
+		public override unowned ParamSpec? Json.Serializable.find_property (string name)
 		{
 			if( this._lostJsonProperties == null )
 				this._lostJsonProperties = new ArrayList<string>();
-			
+
 			unowned ParamSpec? prop = (base as Json.Serializable).find_property(name);
 			//this.propertyExists(name, out prop);
 			if( prop == null )
@@ -126,5 +132,70 @@ namespace SinticBolivia.Classes
 			return prop;
 		}
 		//*/
+		public virtual Json.Object to_json_object()
+		{
+			var object = new Json.Object();
+			var props = this.getProperties();
+			foreach(var prop in props)
+			{
+				string prop_name = prop.name.replace("-", "_");
+				if( this.getParamSpecValue(prop) == null)
+				{
+					object.set_null_member(prop_name);
+					continue;
+				}
+				if( prop.value_type == typeof(int64) || prop.value_type == typeof(uint64)
+					|| prop.value_type == typeof(long) || prop.value_type == typeof(ulong)
+					|| prop.value_type == typeof(int) || prop.value_type == typeof(uint) )
+				{
+					if( this.getParamSpecValue(prop) == null)
+						object.set_null_member(prop_name);
+					else
+					{
+						Value str = Value(typeof(string));
+						this.getParamSpecValue(prop).transform(ref str);
+						object.set_int_member(prop_name, int64.parse((string)str));
+					}
+				}
+				else if( prop.value_type == typeof(float) || prop.value_type == typeof(double) )
+				{
+					if( this.getParamSpecValue(prop) == null)
+						object.set_null_member(prop_name);
+					else
+						object.set_double_member(prop_name, double.parse((string)this.getParamSpecValue(prop)));
+				}
+				else if( prop.value_type == typeof(DateTime) || prop.value_type == typeof(SBDateTime) )
+				{
+					string datetime = prop.value_type == typeof(DateTime) ?
+						((DateTime)this.getParamSpecValue(prop)).format("%Y-%m-%d %H:%M:%S") :
+						((SBDateTime)this.getParamSpecValue(prop)).format("%Y-%m-%d %H:%M:%S");
+					object.set_string_member(prop_name, datetime);
+				}
+				else
+				{
+					if( this.getParamSpecValue(prop) == null)
+						object.set_null_member(prop_name);
+					else
+						object.set_string_member(prop_name, (string)this.getParamSpecValue(prop));
+				}
+			}
+			return object;
+		}
+		public virtual Json.Node to_json_node()
+		{
+			var node = new Json.Node(Json.NodeType.OBJECT);
+			node.set_object(this.to_json_object());
+			return node;
+		}
+		public virtual string to_json()
+		{
+			string json = "";
+			var gen = new Json.Generator();
+			gen.set_root(this.to_json_node());
+			size_t length;
+			json = gen.to_data(out length);
+
+			return json;
+		}
 	}
 }

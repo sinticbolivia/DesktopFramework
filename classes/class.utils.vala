@@ -29,7 +29,46 @@ namespace SinticBolivia
 			
 			foreach(string key in data.keys)
 			{
-				root_obj.set_string_member(key, (string)data[key]);
+				string gtype = data.get(key).type_name();
+				if( gtype == "gbool" || gtype == "gboolean" )
+				{
+					root_obj.set_boolean_member(key, data.get(key).get_boolean());
+				}
+				else if( gtype == "gint" )
+				{
+					root_obj.set_int_member(key, data.get(key).get_int());
+				}
+				else if( gtype == "guint" )
+				{
+					root_obj.set_int_member(key, data.get(key).get_uint());
+				}
+				else if( gtype == "glong" )
+				{
+					root_obj.set_int_member(key, data.get(key).get_long());
+				}
+				else if( gtype == "gulong" )
+				{
+					root_obj.set_int_member(key, data.get(key).get_ulong());
+				}
+				else if( gtype == "gint64" )
+				{
+					root_obj.set_int_member(key, data.get(key).get_int64());
+				}
+				else if( gtype == "gfloat"|| gtype == "gdouble" )
+				{
+					root_obj.set_double_member(key, data.get(key).get_double());
+				}
+				else if( gtype == "GDateTime" )
+				{
+					DateTime val = (DateTime)data.get(key);
+					string datetime = val.format("%Y-%m-%d %H:%M:%S");
+					root_obj.set_string_member(key, datetime);
+				}
+				else
+				{
+					root_obj.set_string_member(key, (string)data[key]);
+				}
+				
 			}
 			size_t size;
 			return gen.to_data(out size);
@@ -56,6 +95,49 @@ namespace SinticBolivia
 				stderr.printf("Utils.JsonDecode ERROR: %s\n", e.message);
 			}
 			return data;
+		}
+		
+		public static HashMap<string, Value?> json_object_2_hashmap(Json.Object obj)
+		{
+			var data = new HashMap<string, Value?>();
+			/*
+			foreach(var column in obj.get_members())
+			{
+				Json.Node? node = obj.get_member(column);
+				Type node_type = node.get_value_type();
+				
+				if( node_type is int )
+				{
+					data.set(column, int.parse(obj.get_int_member(column).to_string()));
+				}
+				else if( node_type is double )
+				{
+					data.set(column, obj.get_double_member(column));
+				}
+				
+				else if( column.type == CellType.DATETIME )
+				{
+					
+					data.set(column.name, SBDateTime.parseDbDateTime(obj.get_string_member(column.name)));
+				}
+				
+				else
+				{
+					
+					data.set(column, obj.get_string_member(column));
+				}
+			}
+			*/
+			return data;
+		}
+		
+		public static HashMap<string, Value?> json_2_hashmap(string json)
+		{
+			var parser = new Json.Parser();
+			parser.load_from_data(json);
+			var obj = parser.get_root().get_object();
+			
+			return json_object_2_hashmap(obj);
 		}
 		public static string FillCeros(int number, int ceros_length = 6)
 		{

@@ -15,7 +15,7 @@ namespace SinticBolivia.Classes
 		public	string	body;
 		public	string	content_type = "text/html";
 		public	HashMap<string, string>	headers;
-		
+
 		public RestResponse(uint status_code, string body, string content_type = "text/html")
 		{
 			this.code = status_code;
@@ -25,16 +25,11 @@ namespace SinticBolivia.Classes
 		}
 		public RestResponse.json_object(uint status_code, Object? obj, string? message = null)
 		{
-			//Value valueData = (obj != null && obj.get_type() == typeof(ArrayList)) ? 
-			//		this.buildCollection((ArrayList<Object>)obj) : obj;
-			//Object valueData = (obj != null && obj.get_type() == typeof(ArrayList)) ? 
-			//		((ArrayList<Object>)obj).to_array() : obj;
-			
 			size_t size;
 			var resObj = new ResponseObject()
 			{
-				response 	= this.code != 200 ? "error" : "ok",
-				code 		= this.code,
+				response 	= status_code != 200 ? "error" : "ok",
+				code 		= status_code,
 				message		= message,
 				data 		= obj
 			};
@@ -42,14 +37,23 @@ namespace SinticBolivia.Classes
 			Json.Generator generator = new Json.Generator();
 			generator.set_root(root_node);
 			string _body = generator.to_data(null);
-			//print(this.body);
-			_body = this.sanitize_json(this.body);
+			print(_body);
+			//_body = this.sanitize_json(this.body);
 			this(status_code, _body, "application/json");
+		}
+		public RestResponse add_header(string name, string val)
+		{
+			this.headers.set(name, val);
+			return this;
+		}
+		public RestResponse set_content_type(string type)
+		{
+			this.content_type = type;
+			return this;
 		}
 		protected string sanitize_json(string json)
 		{
 			//return json;
-			
 			MatchInfo jsonData;
 			//json = /\r?\n|\r|\t/.replace(json, json.length, 0, "", RegexMatchFlags.NOTBOL);
 			//json = /:s*/.replace(json, json.length, 0, "", RegexMatchFlags.NOTBOL);
@@ -60,7 +64,7 @@ namespace SinticBolivia.Classes
 			//if( !/"([a-zA-Z0-9_\-]+)"\s*:/x.match_all(json, RegexMatchFlags.ANCHORED, out jsonData) )
 			//if( !/"(.*?)":/.match_all(json, RegexMatchFlags.NOTBOL, out jsonData) )
 				return json;
-			
+
 			//stdout.printf("count: %d\n", jsonData.get_match_count());
 			string newJson = json;
 			foreach(string prop in jsonData.fetch_all())
@@ -81,11 +85,6 @@ namespace SinticBolivia.Classes
 				objs[i] = items.get(i);
 			}
 			return objs;
-		}
-		public RestResponse add_header(string name, string val)
-		{
-			this.headers.set(name, val);
-			return this;
 		}
 	}
 }

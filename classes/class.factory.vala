@@ -7,18 +7,18 @@ namespace SinticBolivia
 {
 	public class SBFactory
 	{
-		public		static SBConfig		config;
+		public		static	SBConfig		config;
 		protected	static	SBDatabase	dbh;
 		
-		public static SBDatabase? getDbh()
+		public static SBDatabase? getDbh(bool new_conn = false) throws SBDatabaseException
 		{
-			if( dbh != null )
+			if( dbh != null && !new_conn )
 				return dbh;
 			dbh = GetNewDbHandlerFromConfig(config);
 			
 			return dbh;
 		}
-		public static SBDatabase? GetNewDbHandlerFromConfig(SBConfig cfg)
+		public static SBDatabase? GetNewDbHandlerFromConfig(SBConfig cfg)  throws SBDatabaseException
 		{
 			string db_engine 	= (string)cfg.GetValue("database_engine", "sqlite3");
 			string db_server 	= (string)cfg.GetValue("db_server", "");
@@ -39,6 +39,16 @@ namespace SinticBolivia
 				dbh = new SBMySQL(db_server, dbname, user, pass, port);
 				dbh.SelectDb(dbname);
 			}
+			else if( db_engine == "postgres" )
+			{
+				string dbname 	= (string)cfg.GetValue("db_name", "");
+				string user 	= (string)cfg.GetValue("db_user", "");
+				string pass 	= (string)cfg.GetValue("db_pass", "");
+				int port		= int.parse((string)cfg.GetValue("db_port", "5432"));
+				
+				dbh = new SBPostgres(db_server, dbname, user, pass, port);
+				dbh.SelectDb(dbname);
+			}
 			else
 			{
 				stderr.printf("ERROR: The database engine '%s' is not supported.\n", db_engine);
@@ -47,7 +57,7 @@ namespace SinticBolivia
 			dbh.Open();
 			return dbh;
 		}
-		public static SBDatabase? GetNewDbHandler(string db_engine, HashMap<string, Value?> args)
+		public static SBDatabase? GetNewDbHandler(string db_engine, HashMap<string, Value?> args) throws SBDatabaseException
 		{
 			SBDatabase? dbh = null;
 			
@@ -64,6 +74,17 @@ namespace SinticBolivia
 				int port		= (int)args["db_port"];
 				
 				dbh = new SBMySQL(db_server, dbname, user, pass, port);
+			}
+			else if( db_engine == "postgres" )
+			{
+				string db_server= (string)args["db_server"];
+				string dbname 	= (string)args["db_name"];
+				string user 	= (string)args["db_user"];
+				string pass 	= (string)args["db_pass"];
+				int port		= int.parse((string)args["db_port"]);
+				
+				dbh = new SBPostgres(db_server, dbname, user, pass, port);
+				//dbh.SelectDb(dbname);
 			}
 			else
 			{

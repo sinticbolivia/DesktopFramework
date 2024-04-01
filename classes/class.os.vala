@@ -3,7 +3,6 @@ using GLib;
 public extern char* getPSN(/*out char* sn*/);
 namespace SinticBolivia
 {
-	
 	public class SBOS
 	{
 		public string OS;
@@ -43,7 +42,7 @@ namespace SinticBolivia
 			char* _sn = getPSN();
 			string serial_number = (string)_sn;
 			delete _sn;
-			
+
 			return serial_number;
 		}
 	}

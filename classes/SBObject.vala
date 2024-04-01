@@ -1,11 +1,12 @@
 namespace SinticBolivia
 {
-	public class SBObject : Object
+	public class SBObject : GLib.Object
 	{
+		construct{}
 		public (unowned ParamSpec)[] getProperties()
 		{
 			Type type = this.get_type(); //typeof(theObj);
-			
+
 			var obj_class = (ObjectClass) type.class_ref ();
 			return obj_class.list_properties();
 		}
@@ -14,14 +15,14 @@ namespace SinticBolivia
 			Type type = this.get_type();
 			var obj_class = (ObjectClass) type.class_ref ();
 			property = obj_class.find_property(name);
-			
+
 			return property != null;
 		}
-		public virtual Value getParamSpecValue(ParamSpec param)
+		public virtual Value? getParamSpecValue(ParamSpec param)
 		{
 			Value propVal = Value(param.value_type);
 			this.get_property(param.name, ref propVal);
-			
+
 			return propVal;
 		}
 		public virtual Value? getPropertyValue(string property_name)
@@ -29,7 +30,7 @@ namespace SinticBolivia
 			ParamSpec? property;
 			if( !this.propertyExists(property_name, out property) )
 				return null;
-				
+
 			return this.getParamSpecValue(property);
 		}
 		/*
@@ -40,7 +41,7 @@ namespace SinticBolivia
 		public virtual bool setPropertyValue(string name, string val)
 		{
 			ParamSpec? property;
-			
+
 			if( !this.propertyExists(name, out property) )
 				return false;
 			/*
@@ -92,11 +93,11 @@ namespace SinticBolivia
 			}
 			else
 			{
-				
+
 			}
 			/*else if( property.value_type == typeof(DateTime) )
 			{
-				
+
 			}
 			/*
 			else if( property.value_type == typeof(Object) )
@@ -105,7 +106,7 @@ namespace SinticBolivia
 			}
 			*/
 			this.set_property(name, propertyVal);
-			
+
 			return true;
 		}
 		public virtual bool setPropertyGValue(string name, Value? val)
