@@ -206,7 +206,7 @@ namespace SinticBolivia.Database
         {
             var dbh = SBFactory.getDbh();
             if( dbh.Engine == "postgres" )
-                this._limit = "LIMIT %d OFFSET %d".printf(offset, limit);
+                this._limit = "LIMIT %d OFFSET %d".printf(limit, offset);
             else
                 this._limit = "LIMIT %d,%d".printf(offset, limit);
             return this;
@@ -239,6 +239,31 @@ namespace SinticBolivia.Database
                 dml += " %s".printf(this._limit);
             }
             return dml;
+        }
+        public virtual SBCollection<T> get<T>()
+        {
+            var dummy = (Entity)Object.new(typeof(T));
+            if( this._select.size <= 0 )
+                this.select_columns(dummy.get_columns());
+            if( this._from.size <= 0 )
+                this.from(dummy.get_table());
+
+            var dbh = SBFactory.getDbh();
+            string sql = this.sql();
+            message(sql);
+            var items = dbh.getObjects<T>(sql);
+            var collection = new SBCollection<T>();
+            collection.items = items;
+            return collection;
+            //return new SBCollection<T>.from_array(items.to_array());
+        }
+        public virtual T first<T>()
+        {
+            var dbh = SBFactory.getDbh();
+            this.limit(1);
+            string sql = this.sql();
+            var obj = dbh.getObject<T>(sql);
+            return obj;
         }
     }
 }

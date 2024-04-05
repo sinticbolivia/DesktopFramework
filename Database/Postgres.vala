@@ -37,7 +37,7 @@ namespace SinticBolivia.Database
 				this.port,
 				db_name
 			);
-			print(conn_info);
+			print("%s\n", conn_info);
 			this.dbh = Postgres.connect_db(conn_info);
 		}
 		public override bool Open() throws SBDatabaseException
