@@ -21,7 +21,10 @@ namespace SinticBolivia.Classes
 					var array = new Json.Array.sized (list_value.size);
 					foreach (var item in list_value)
 					{
-						array.add_element (Json.gobject_serialize (item));
+						if( item is SBSerializable )
+							array.add_element( (item as SBSerializable).to_json_node() );
+						else
+							array.add_element (Json.gobject_serialize (item));
 					}
 
 					var node = new Json.Node (Json.NodeType.ARRAY);
@@ -56,16 +59,24 @@ namespace SinticBolivia.Classes
 		}
 		public virtual bool deserialize_property (string property_name, out Value val, ParamSpec pspec, Json.Node property_node)
 		{
-			if( pspec.value_type.is_a(typeof(DateTime)) && !property_node.is_null() )
+			if( ( pspec.value_type.is_a(typeof(DateTime)) || pspec.value_type.is_a(typeof(SBDateTime)) )
+				&& !property_node.is_null()
+			)
 			{
-				DateTime datetime = SBDateTime.parseDbDateTime(property_node.get_string());
-				if( datetime != null )
+				if( pspec.value_type.is_a(typeof(DateTime)) )
 				{
-					val = Value(typeof(DateTime));
+					DateTime datetime = SBDateTime.parseDbDateTime(property_node.get_string());
+					val = Value(pspec.value_type);
 					val = datetime;
-					return true;
 				}
-				return false;
+				else
+				{
+					var datetime = new SBDateTime.from_string(property_node.get_string());
+					val = Value(pspec.value_type);
+					val = datetime;
+				}
+
+				return true;
 			}
 			return this.default_deserialize_property (property_name, out val, pspec, property_node);
 		}
@@ -139,7 +150,8 @@ namespace SinticBolivia.Classes
 			foreach(var prop in props)
 			{
 				string prop_name = prop.name.replace("-", "_");
-				if( this.getParamSpecValue(prop) == null)
+				Value? val = this.getParamSpecValue(prop);
+				if( val == null || val.strdup_contents() == "NULL" )
 				{
 					object.set_null_member(prop_name);
 					continue;
@@ -148,37 +160,39 @@ namespace SinticBolivia.Classes
 					|| prop.value_type == typeof(long) || prop.value_type == typeof(ulong)
 					|| prop.value_type == typeof(int) || prop.value_type == typeof(uint) )
 				{
-					if( this.getParamSpecValue(prop) == null)
+					if( val == null)
 						object.set_null_member(prop_name);
 					else
 					{
 						Value str = Value(typeof(string));
-						this.getParamSpecValue(prop).transform(ref str);
+						val.transform(ref str);
 						object.set_int_member(prop_name, int64.parse((string)str));
 					}
 				}
 				else if( prop.value_type == typeof(float) || prop.value_type == typeof(double) )
 				{
-					if( this.getParamSpecValue(prop) == null)
-						object.set_null_member(prop_name);
-					else
-						object.set_double_member(prop_name, double.parse((string)this.getParamSpecValue(prop)));
+					//message("%s => %s\n", prop_name, val.strdup_contents());
+					//if( val == null )
+					//	object.set_null_member(prop_name);
+					//else
+						object.set_double_member(prop_name, double.parse(val.strdup_contents()));
 				}
 				else if( prop.value_type == typeof(DateTime) || prop.value_type == typeof(SBDateTime) )
 				{
 					string datetime = prop.value_type == typeof(DateTime) ?
-						((DateTime)this.getParamSpecValue(prop)).format("%Y-%m-%d %H:%M:%S") :
-						((SBDateTime)this.getParamSpecValue(prop)).format("%Y-%m-%d %H:%M:%S");
+						((DateTime)val).format("%Y-%m-%d %H:%M:%S") :
+						((SBDateTime)val).format("%Y-%m-%d %H:%M:%S");
 					object.set_string_member(prop_name, datetime);
 				}
 				else
 				{
-					if( this.getParamSpecValue(prop) == null)
+					if( val == null)
 						object.set_null_member(prop_name);
 					else
-						object.set_string_member(prop_name, (string)this.getParamSpecValue(prop));
+						object.set_string_member(prop_name, (string)val);
 				}
 			}
+			this.after_build_json_object(object);
 			return object;
 		}
 		public virtual Json.Node to_json_node()
@@ -197,5 +211,6 @@ namespace SinticBolivia.Classes
 
 			return json;
 		}
+		public virtual void after_build_json_object(Json.Object obj){}
 	}
 }

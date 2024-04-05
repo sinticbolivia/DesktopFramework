@@ -78,7 +78,15 @@ namespace SinticBolivia.Classes
 		}
 		public int getInt(string param, int defVal = 0)
 		{
+			return this.get_int(param, defVal);
+		}
+		public int get_int(string param, int defVal = 0)
+		{
 			return int.parse(this.get(param, defVal.to_string()));
+		}
+		public long get_long(string param, long defVal = 0)
+		{
+			return long.parse(this.get(param, defVal.to_string()));
 		}
 		protected string getRawBody()
 		{
