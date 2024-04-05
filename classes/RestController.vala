@@ -36,7 +36,9 @@ namespace SinticBolivia.Classes
 		#if __SOUP_VERSION_2_70__
 		Soup.Message
 		#else
-		Soup.ServerMessage get_request_message()
+		Soup.ServerMessage
+		#endif
+		get_request_message()
 		{
 			return this.message;
 		}
