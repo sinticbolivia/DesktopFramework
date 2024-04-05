@@ -12,7 +12,7 @@ FILETYPE 0x1
 			VALUE "FileDescription", "Sintic Bolivia Desktop Framework"
 			VALUE "FileVersion", "1.0.3.0"
 			VALUE "InternalName", "LIBSINTICBOLIVIA"
-			VALUE "LegalCopyright", "(c) Sintic Bolivia 2006-2022, J. Marcelo Aviles Paco"
+			VALUE "LegalCopyright", "(c) Sintic Bolivia 2006-2024, J. Marcelo Aviles Paco"
 			VALUE "LegalTrademarks", ""
 			VALUE "OriginalFilename", "libSinticBolivia"
 			VALUE "ProductName", ""
@@ -27,4 +27,3 @@ FILETYPE 0x1
 		VALUE "Translation",0x0409,0x04E4
 	}
 }
-

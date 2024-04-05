@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config version="1.0">
+	<database_engine>postgres</database_engine>
+	<db_server>127.0.0.1</db_server>
+	<!--
+	<db_name>sb_authentication</db_name>
+	-->
+	<db_name>subscriptions</db_name>
+	<db_user>devudb</db_user>
+	<db_pass>[devudb]</db_pass>
+	<db_port>5432</db_port>
+	<modules_path>/Modules</modules_path>
+	<modules>
+		<![CDATA[
+		[
+			"libsubscriptions.dylib"
+		]
+		]]>
+		<module enabled="true">libsubscriptions</module>
+	</modules>
+	<server_port>2205</server_port>
+</config>
