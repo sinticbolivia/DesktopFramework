@@ -9,7 +9,7 @@ public void load_modules(RestServer server)
 {
     string current_dir = GLib.Environment.get_current_dir();
     var modules = SBFactory.config.get_json_value("modules");
-    modules.get_elements().foreach((module) =>
+    modules.get_array().get_elements().foreach((module) =>
     {
         server.load_module("%s/%s".printf(current_dir, module));
     });
