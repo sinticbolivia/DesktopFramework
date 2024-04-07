@@ -11,7 +11,7 @@ public void load_modules(RestServer server)
     var modules = SBFactory.config.get_json_value("modules");
     modules.get_array().get_elements().foreach((module) =>
     {
-        server.load_module("%s/%s".printf(current_dir, module));
+        server.load_module("%s/%s".printf(current_dir, module.get_string()));
     });
 
 }
