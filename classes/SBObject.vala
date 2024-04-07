@@ -61,7 +61,7 @@ namespace SinticBolivia
 			}
 			else if( property.value_type == typeof(uint) )
 			{
-				propertyVal.set_uint(uint.parse(val));
+				propertyVal.set_uint((uint)int.parse(val));
 			}
 			else if( property.value_type == typeof(long) )
 			{

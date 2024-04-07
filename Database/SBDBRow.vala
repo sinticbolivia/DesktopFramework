@@ -7,16 +7,16 @@ namespace SinticBolivia.Database
 		protected int _length;
 		protected Array<SBDBCell> _cells;
 		protected Array<string> _keys;
-		
+
 		public Array<SBDBCell> Cells
 		{
 			get
 			{
-				return this._cells;	
+				return this._cells;
 			}
 			set
 			{
-				//this._cells = value;				
+				//this._cells = value;
 			}
 		}
 		construct
@@ -27,21 +27,21 @@ namespace SinticBolivia.Database
 		}
 		public SBDBRow()
 		{
-			
-			
+
+
 		}
 		public void Add(SBDBCell cell)
 		{
 			this._cells.append_val(cell);
 			this._length++;
-						
+
 		}
 		public unowned string Get(string column_name)
 		{
 			int index = -1;
 			if( !this.ColumnNameExists(column_name, out index) )
 				return "";
-			
+
 			return (this.Cells.index(index).TheValue == null) ? "" : this.Cells.index(index).TheValue;
 		}
 		public unowned int64 get_int64(string column_name)
@@ -67,7 +67,7 @@ namespace SinticBolivia.Database
 		public void Set(string column_name, string? the_value, CellType ctype = CellType.VARCHAR)
 		{
 			int index = -1;
-			
+
 			if( !this.ColumnNameExists(column_name, out index) )
 			{
 				//stderr.printf("SBDBRow ERROR: column \"%s\" does not exists\n", column_name);
@@ -84,7 +84,7 @@ namespace SinticBolivia.Database
 		{
 			bool exists = false;
 			cell_index = -1;
-			
+
 			for(int i = 0; i < this.Cells.length; i++)
 			{
 				if(this.Cells.index(i).ColumnName == column )
@@ -94,7 +94,7 @@ namespace SinticBolivia.Database
 					break;
 				}
 			}
-			
+
 			return exists;
 		}
 		public HashMap<string, string> ToHashMap()
@@ -106,7 +106,7 @@ namespace SinticBolivia.Database
 				var cell = (SBDBCell)this._cells.index(i);
 				data.set(cell.ColumnName, cell.TheValue == null ? "" : cell.TheValue);
 			}
-			
+
 			return data;
 		}
 		public string to_json()
@@ -117,9 +117,10 @@ namespace SinticBolivia.Database
 			var object = new Json.Object();
 			root.set_object(object);
 			gen.set_root(root);
-			foreach(var cell in this._cells)
+			for(int i = 0; i < this._cells.length; i++)
 			{
-				if( cell.ctype == CellType.BIGINT || cell.ctype == CellType.UBIGINT 
+				var cell = this._cells.index(i);
+				if( cell.ctype == CellType.BIGINT || cell.ctype == CellType.UBIGINT
 					|| cell.ctype == CellType.LONG || cell.ctype == CellType.ULONG
 					|| cell.ctype == CellType.INT || cell.ctype == CellType.UINT )
 				{
@@ -147,7 +148,7 @@ namespace SinticBolivia.Database
 			}
 			size_t length;
 			json = gen.to_data(out length);
-			
+
 			return json;
 		}
 	}

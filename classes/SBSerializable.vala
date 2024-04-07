@@ -184,6 +184,17 @@ namespace SinticBolivia.Classes
 						((SBDateTime)val).format("%Y-%m-%d %H:%M:%S");
 					object.set_string_member(prop_name, datetime);
 				}
+				else if( prop.value_type == typeof(Gee.ArrayList) )
+				{
+					object.set_string_member(prop_name, "ArrayList");
+				}
+				else if( prop.value_type == typeof(Object) || prop.value_type == typeof(SBObject) )
+				{
+					if( prop.value_type == typeof(SBSerializable) )
+						object.set_string_member(prop_name, ((SBSerializable)val).to_json());
+					else //if( prop.value_type == typeof(SBCollection) )
+						object.set_string_member(prop_name, Json.gobject_to_data((Object)val, null)) ;
+				}
 				else
 				{
 					if( val == null)

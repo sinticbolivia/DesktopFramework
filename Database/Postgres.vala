@@ -180,8 +180,9 @@ namespace SinticBolivia.Database
 			var row = this.get_row_from_result(res, 0);
 			if( row == null )
 				return columns;
-			foreach(var cell in row.Cells)
+			for(int i = 0; i < row.Cells.length; i++)
 			{
+				var cell = row.Cells.index(i);
 				var column = new SBDBColumn()
 				{
 					name = cell.ColumnName,

@@ -33,11 +33,11 @@ namespace SinticBolivia.Classes
 				message		= message,
 				data 		= obj
 			};
-			Json.Node root_node = Json.gobject_serialize(resObj);
-			Json.Generator generator = new Json.Generator();
-			generator.set_root(root_node);
-			string _body = generator.to_data(null);
-			print(_body);
+			//Json.Node root_node = Json.gobject_serialize(resObj);
+			//Json.Generator generator = new Json.Generator();
+			//generator.set_root(root_node);
+			string _body = resObj.to_json(); //generator.to_data(null);
+			//print(_body);
 			//_body = this.sanitize_json(this.body);
 			this(status_code, _body, "application/json");
 		}
@@ -50,32 +50,6 @@ namespace SinticBolivia.Classes
 		{
 			this.content_type = type;
 			return this;
-		}
-		protected string sanitize_json(string json)
-		{
-			//return json;
-			MatchInfo jsonData;
-			//json = /\r?\n|\r|\t/.replace(json, json.length, 0, "", RegexMatchFlags.NOTBOL);
-			//json = /:s*/.replace(json, json.length, 0, "", RegexMatchFlags.NOTBOL);
-			json = /\s(?=[\s":{}])/.replace(json, json.length, 0, "", RegexMatchFlags.NOTBOL);
-			//print("JSON:\n%s\n", json);
-			//if( !/"(.*)"\s*:/.match_all_full(json, json.length, 0, RegexMatchFlags.NOTBOL, out jsonData) )
-			if( !/"(.*)"\s*:/.match_all(json, RegexMatchFlags.ANCHORED, out jsonData) )
-			//if( !/"([a-zA-Z0-9_\-]+)"\s*:/x.match_all(json, RegexMatchFlags.ANCHORED, out jsonData) )
-			//if( !/"(.*?)":/.match_all(json, RegexMatchFlags.NOTBOL, out jsonData) )
-				return json;
-
-			//stdout.printf("count: %d\n", jsonData.get_match_count());
-			string newJson = json;
-			foreach(string prop in jsonData.fetch_all())
-			//for(int i = 0; i < jsonData.get_match_count(); i++)
-			{
-				//string prop = jsonData.fetch(i);
-				//string searchProp = """"%s"""".printf(prop);
-				//stdout.printf("%s => %s\n", prop, prop.replace("-", "_"));
-				newJson = newJson.replace(prop, prop.replace("-", "_"));
-			}
-			return newJson;
 		}
 		protected virtual Object[] buildCollection(Gee.ArrayList<Object> items)
 		{

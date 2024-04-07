@@ -80,7 +80,6 @@ namespace SinticBolivia.Classes
 			string path,
 			Soup.WebsocketConnection conn
 			#endif
-
 		)
 		{
 			print("WEBSOCKET HANDLER CALLBACK\n");
@@ -93,12 +92,18 @@ namespace SinticBolivia.Classes
 			info (@"Client connected! Host: $host");
 			#endif
 
+			#if __SOUP_VERSION_2_70__
+			//conn.io_stream.input_stream.read_all();
+			string ws_key = "";
+			string ws_protocol = "";
+			string ws_version = "";
+			#else
 			var headers = message.get_request_headers();
-
 			string ws_key = headers.get_one("Sec-WebSocket-Key");
 			string ws_protocol = headers.get_one("Sec-WebSocket-Protocol");
 			string ws_version = headers.get_one ("Sec-WebSocket-Version");
-
+			#endif
+			
 			print("WS KEY: %s\n", ws_key);
 			var ws_accept_sha1 = new Checksum (ChecksumType.SHA1);
 			ws_accept_sha1.update (ws_key.data, ws_key.length);
@@ -112,9 +117,11 @@ namespace SinticBolivia.Classes
 			//{
 			//	print("SOUP PROTOCOL: %s\n", header_protocol);
 			//}
+			#if __SOUP_VERSION_2_70__
 
+			#else
 			var reponse_headers = message.get_response_headers();
-
+			#endif
 			this.sockets.add(conn);
 			conn.message.connect((type, buffer) =>
 			{

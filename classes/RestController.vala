@@ -44,7 +44,11 @@ namespace SinticBolivia.Classes
 		}
 		protected string get_remote_address()
 		{
+			#if __SOUP_VERSION_2_70__
+			return this.message.get_address().to_string();
+			#else
 			return this.message.get_remote_address().to_string();
+			#endif
 		}
 		protected string get_user_agent()
 		{
