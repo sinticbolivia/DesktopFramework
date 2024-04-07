@@ -103,7 +103,7 @@ namespace SinticBolivia.Classes
 			string ws_protocol = headers.get_one("Sec-WebSocket-Protocol");
 			string ws_version = headers.get_one ("Sec-WebSocket-Version");
 			#endif
-			
+
 			print("WS KEY: %s\n", ws_key);
 			var ws_accept_sha1 = new Checksum (ChecksumType.SHA1);
 			ws_accept_sha1.update (ws_key.data, ws_key.length);
@@ -122,6 +122,7 @@ namespace SinticBolivia.Classes
 			#else
 			var reponse_headers = message.get_response_headers();
 			#endif
+
 			this.sockets.add(conn);
 			conn.message.connect((type, buffer) =>
 			{
@@ -197,7 +198,6 @@ namespace SinticBolivia.Classes
 			message.set_status(response.code, null);
 			#endif
 			message.set_response(response.content_type, Soup.MemoryUse.COPY, response.body.data);
-
 		}
 		public void add_route(string route, string method, WebRouteCallback cb)
 		{

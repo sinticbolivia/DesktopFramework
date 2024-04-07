@@ -140,18 +140,21 @@ namespace SinticBolivia.Classes
 			T obj = null;
 			try
 			{
-				obj = Json.gobject_from_data(typeof(T), json);
+				if( json.strip().length <= 0 )
+					throw new SBException.GENERAL("Unable to parse json body, it is empty");
+				var node = Json.from_string(json);
+				if( node == null )
+					throw new SBException.GENERAL("Unable to parse json body");
+				obj = Json.gobject_deserialize(typeof(T), node);
+				if( obj == null )
+					throw new SBException.GENERAL("Unable to deserialize json body to object");
+				//obj = Json.gobject_from_data(typeof(T), json);
 			}
 			catch(Error e)
 			{
 				throw new SBException.GENERAL(e.message);
 			}
-			/*
-			if( typeof(T) == typeof(SBSerializable) )
-			{
-				((Entity)T).setRawJson(json);
-			}
-			*/
+
 			return obj;
 		}
 		public string get_header(string name, string defVal = "")

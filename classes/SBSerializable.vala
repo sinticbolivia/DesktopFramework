@@ -123,7 +123,7 @@ namespace SinticBolivia.Classes
 		{
 			return this._rawJson;
 		}
-		public Json.Node? getObjNode()
+		public Json.Node? getObjNode() throws GLib.Error
 		{
 			return Json.from_string(this._rawJson);
 		}
