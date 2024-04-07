@@ -16,7 +16,6 @@
 			"libsubscriptions.dylib"
 		]
 		]]>
-		<module enabled="true">libsubscriptions</module>
 	</modules>
 	<server_port>2205</server_port>
 </config>
