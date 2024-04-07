@@ -101,7 +101,7 @@ namespace SinticBolivia.Classes
 			#else
 			string raw_body = (string)this.message.get_request_body().data;
 			#endif
-			//print("RAW BODY: %s\n", raw_body);
+			stdout.printf("RAW BODY: %s\n", raw_body);
 			return raw_body;
 		}
 		public HashMap<string, Value?> to_hashmap()
