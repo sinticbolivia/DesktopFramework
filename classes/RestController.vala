@@ -140,7 +140,7 @@ namespace SinticBolivia.Classes
 			T obj = null;
 			try
 			{
-				if( json.strip().length <= 0 )
+				if( json == null || json.strip().length <= 0 )
 					throw new SBException.GENERAL("Unable to parse json body, it is empty");
 				var node = Json.from_string(json);
 				if( node == null )
