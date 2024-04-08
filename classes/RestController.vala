@@ -136,19 +136,22 @@ namespace SinticBolivia.Classes
 		}
 		protected T toObject<T>() throws SBException
 		{
-			string json = this.getRawBody();
 			T obj = null;
 			try
 			{
-				if( json == null || json.strip().length <= 0 )
-					throw new SBException.GENERAL("Unable to parse json body, it is empty");
-				var node = Json.from_string(json);
+				//if( json == null || json.strip().length <= 0 )
+				//	throw new SBException.GENERAL("Unable to parse json body, it is empty");
+				//var node = Json.from_string(json);
+				var node = this.to_json_node();
 				if( node == null )
 					throw new SBException.GENERAL("Unable to parse json body");
-				obj = Json.gobject_deserialize(typeof(T), node);
+				node.get_object().foreach_member((_obj, _name, _node) =>
+				{
+					stdout.printf("name: %s, value: %s\n", _name, node.get_value().strdup_contents());
+				});
+				obj = (T)Json.gobject_deserialize(typeof(T), node);
 				if( obj == null )
 					throw new SBException.GENERAL("Unable to deserialize json body to object");
-				//obj = Json.gobject_from_data(typeof(T), json);
 			}
 			catch(Error e)
 			{
