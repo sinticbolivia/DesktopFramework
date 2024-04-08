@@ -227,9 +227,7 @@ namespace SinticBolivia.Classes
 		{
 			obj.foreach_member( (_obj, _name, _node) =>
 			{
-				ParamSpec? property;
-				if( this.propertyExists(_name, out property) )
-					this.setPropertyGValue(_name, _node.get_value());
+				this.setPropertyGValue(_name, _node.get_value());
 			});
 		}
 	}

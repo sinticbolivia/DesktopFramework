@@ -111,7 +111,27 @@ namespace SinticBolivia
 		}
 		public virtual bool setPropertyGValue(string name, Value? val)
 		{
-			this.set_property(name, val);
+			ParamSpec? property;
+			if( !this.propertyExists(name, out property) )
+				return false;
+
+			if( property.value_type == typeof(DateTime) || property.value_type == typeof(SBDateTime) )
+			{
+				string str = (string)val;
+				if( str == null || str.strip().length <= 0 )
+					return false;
+				var datetime = new SBDateTime.from_string(str);
+				if( property.value_type == typeof(DateTime) )
+				{
+					this.set_property(name, datetime.get_datetime());
+				}
+				else if( property.value_type == typeof(SBDateTime) )
+				{
+					this.set_property(name, datetime);
+				}
+			}
+			else
+				this.set_property(name, val);
 			return true;
 		}
 	}
