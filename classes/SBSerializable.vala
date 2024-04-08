@@ -223,5 +223,14 @@ namespace SinticBolivia.Classes
 			return json;
 		}
 		public virtual void after_build_json_object(Json.Object obj){}
+		public virtual void bind_json_object(Json.Object obj)
+		{
+			obj.foreach_member( (_obj, _name, _node) =>
+			{
+				ParamSpec? property;
+				if( this.propertyExists(_name, out property) )
+					this.setPropertyGValue(_name, _node.get_value());
+			});
+		}
 	}
 }

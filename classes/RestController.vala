@@ -136,7 +136,7 @@ namespace SinticBolivia.Classes
 		}
 		protected T toObject<T>() throws SBException
 		{
-			T obj = null;
+			T for_obj = null;
 			try
 			{
 				//if( json == null || json.strip().length <= 0 )
@@ -149,8 +149,18 @@ namespace SinticBolivia.Classes
 				{
 					stdout.printf("name: %s, value: %s\n", _name, _node.get_value().strdup_contents());
 				});
-				obj = (T)Json.gobject_deserialize(typeof(T), node);
-				if( obj == null )
+				for_obj = Object.new(typeof(T));
+				if( for_obj is SBSerializable )
+				{
+					(for_obj as SBSerializable).bind_json_object(node.get_object());
+				}
+				else
+				{
+					for_obj = null;
+					for_obj = (T)Json.gobject_deserialize(typeof(T), node);
+				}
+
+				if( for_obj == null )
 					throw new SBException.GENERAL("Unable to deserialize json body to object");
 			}
 			catch(Error e)
@@ -158,7 +168,7 @@ namespace SinticBolivia.Classes
 				throw new SBException.GENERAL(e.message);
 			}
 
-			return obj;
+			return for_obj;
 		}
 		public string get_header(string name, string defVal = "")
 		{
