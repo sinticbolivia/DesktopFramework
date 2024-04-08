@@ -87,6 +87,11 @@ namespace SinticBolivia.Database
             var hasone = SBHasOne.instance<T>(this, foreign_key, source_key);
             return hasone;
         }
+        public virtual SBBelongsTo<T> belongs_to<T>(string foreign_key, string source_key)
+        {
+            var relationship = SBBelongsTo.instance<T>(this, foreign_key, source_key);
+            return relationship;
+        }
         public static T read<T>(long id) throws SBDatabaseException
         {
             //stdout.printf("Type: %s\n", typeof(T).name());

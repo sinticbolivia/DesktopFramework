@@ -145,10 +145,12 @@ namespace SinticBolivia.Classes
 				var node = this.to_json_node();
 				if( node == null )
 					throw new SBException.GENERAL("Unable to parse json body");
+				/*
 				node.get_object().foreach_member((_obj, _name, _node) =>
 				{
 					stdout.printf("name: %s, value: %s\n", _name, _node.get_value().strdup_contents());
 				});
+				*/
 				for_obj = Object.new(typeof(T));
 				if( for_obj is SBSerializable )
 				{

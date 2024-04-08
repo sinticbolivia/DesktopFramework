@@ -13,7 +13,15 @@ namespace SinticBolivia
 		}
 		public SBDateTime.from_datetime(DateTime dt)
 		{
-			this.datetime = dt;
+			this.datetime = new GLib.DateTime(
+				dt.get_timezone (),
+				dt.get_year(),
+				dt.get_month(),
+				dt.get_day_of_month (),
+				dt.get_hour (),
+				dt.get_minute (),
+				dt.get_seconds ()
+			);
 		}
 		public SBDateTime.from_string (string dateStr)
 		{
