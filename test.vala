@@ -76,7 +76,7 @@ public void test_query()
 	var builder = new SBDBQuery();
 	builder
 		.select("id,application_id,product_id,name")
-		.from("subscriptions_plans")
+		.from("subscriptions_plans sp")
 		.where()
 			.equals("id", 1)
 			.or()
@@ -86,7 +86,7 @@ public void test_query()
 			{
 				qb.where("name", "like", "x")
 					.or()
-					.where("description", "<>", "''")
+					.where("TRIM(sp.description)", "<>", "''")
 				;
 			})
 			.and()

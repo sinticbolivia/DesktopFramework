@@ -418,9 +418,16 @@ namespace SinticBolivia.Database
 		public virtual string prepare_column(string column)
 		{
 			string pc = column;
-			if( column.index_of(".") != -1 )
+			string? function = null;
+			if( column.index_of("(") != -1 )
 			{
-				string[] parts = column.split(".");
+				var parts = column.split("(");
+				function = parts[0].strip();
+				pc = parts[1].replace(")", "").strip();
+			}
+			if( pc.index_of(".") != -1 )
+			{
+				string[] parts = pc.split(".");
 				pc = "%s%s%s.%s%s%s".printf(
 					this.columnLeftWrap, parts[0], this.columnRightWrap,
 					this.columnLeftWrap, parts[1], this.columnRightWrap
@@ -428,8 +435,10 @@ namespace SinticBolivia.Database
 			}
 			else
 			{
-				pc = "%s%s%s".printf(this.columnLeftWrap, column, this.columnRightWrap);
+				pc = "%s%s%s".printf(this.columnLeftWrap, pc, this.columnRightWrap);
 			}
+			if( function != null )
+				pc = "%s(%s)".printf(function, pc);
 			return pc;
 		}
 		public virtual string prepare_column_value(Value? val)

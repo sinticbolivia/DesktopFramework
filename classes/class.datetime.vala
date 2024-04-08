@@ -11,6 +11,10 @@ namespace SinticBolivia
 		{
 			this.datetime = new GLib.DateTime.now_local ();
 		}
+		public SBDateTime.from_datetime(DateTime dt)
+		{
+			this.datetime = dt;
+		}
 		public SBDateTime.from_string (string dateStr)
 		{
 			this();
