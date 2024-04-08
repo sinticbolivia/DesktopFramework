@@ -147,7 +147,7 @@ namespace SinticBolivia.Classes
 					throw new SBException.GENERAL("Unable to parse json body");
 				node.get_object().foreach_member((_obj, _name, _node) =>
 				{
-					stdout.printf("name: %s, value: %s\n", _name, node.get_value().strdup_contents());
+					stdout.printf("name: %s, value: %s\n", _name, _node.get_value().strdup_contents());
 				});
 				obj = (T)Json.gobject_deserialize(typeof(T), node);
 				if( obj == null )
