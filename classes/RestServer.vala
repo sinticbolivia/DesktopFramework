@@ -10,7 +10,7 @@ namespace SinticBolivia.Classes
 		public	Soup.Server				server;
 		protected	uint				port;
 		protected	ArrayList<Soup.WebsocketConnection>	sockets;
-		protected	ArrayList<WebRoute>	routes;
+		//protected	ArrayList<WebRoute>	routes;
 		//public delegate void ControllerHandler(Soup.Message msg, string path, GLib.HashTable? query, Soup.ClientContext client);
 		public signal void on_handler_done(string path, RestController? controller = null);
 
@@ -20,7 +20,7 @@ namespace SinticBolivia.Classes
 			//this.server = new Soup.Server(Soup.SERVER_PORT, this.port);
 			this.server		= new Soup.Server(""/*Soup.SOCKET_TIMEOUT, "1000"*/);
 			this.sockets 	= new ArrayList<Soup.WebsocketConnection>();
-			this.routes 	= new ArrayList<WebRoute>();
+			//this.routes 	= new ArrayList<WebRoute>();
 			this.setEvents();
 		}
 		protected void setEvents()
@@ -199,6 +199,7 @@ namespace SinticBolivia.Classes
 			#endif
 			message.set_response(response.content_type, Soup.MemoryUse.COPY, response.body.data);
 		}
+		/*
 		public void add_route(string route, string method, WebRouteCallback cb)
 		{
 			var webroute = new WebRoute()
@@ -210,6 +211,7 @@ namespace SinticBolivia.Classes
 			};
 			this.routes.add(webroute);
 		}
+		*/
 		public bool load_module(string path) throws SBException
 		{
 			if( !FileUtils.test(path, FileTest.IS_REGULAR) )

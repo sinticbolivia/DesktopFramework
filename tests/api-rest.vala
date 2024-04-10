@@ -13,7 +13,6 @@ public void load_modules(RestServer server)
     {
         server.load_module("%s/%s".printf(current_dir, module.get_string()));
     });
-
 }
 public int main(string[] args)
 {

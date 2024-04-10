@@ -4,6 +4,8 @@ namespace SinticBolivia.Classes
 {
 	public abstract class RestController : Object
 	{
+		public delegate RestResponse? RouteCallback(SBCallbackArgs args);
+
 		protected	Soup.Server		server {get; set;}
 
 		#if __SOUP_VERSION_2_70__
@@ -13,7 +15,12 @@ namespace SinticBolivia.Classes
 		#endif
 		protected	string				path {get; set;}
 		protected	GLib.HashTable<string, string>?		query {get; set;}
+		protected	ArrayList<SBWebRoute>		_routes;
 
+		construct
+		{
+			this._routes 	= new ArrayList<SBWebRoute>();
+		}
 		protected RestController.with_args(Soup.Server srv,
 			#if __SOUP_VERSION_2_70__
 			Soup.Message msg,
@@ -31,6 +38,7 @@ namespace SinticBolivia.Classes
 			this.message 	= msg;
 			this.path 		= spath;
 			this.query 		= (q != null) ? q : new GLib.HashTable<string, string>(str_hash, str_equal);
+
 		}
 		public
 		#if __SOUP_VERSION_2_70__
@@ -184,12 +192,69 @@ namespace SinticBolivia.Classes
 
 			return header_val;
 		}
-		public virtual RestResponse? dispatch_route(WebRoute route)
+
+		public virtual bool match_route(string method, string route, string pattern, out SBCallbackArgs args = null)
 		{
-			return route.callback();
+			if( this.get_method() != method )
+				return false;
+			args = new SBCallbackArgs();
+			MatchInfo pathDataArgs;
+			MatchInfo pathData;
+			bool found_args = false;
+			stdout.printf("ROUTE: %s\nPATTERN: %s\n", route, pattern);
+			if( new Regex(""".*P<(\w+)>.*""").match(pattern, RegexMatchFlags.ANCHORED, out pathDataArgs) )
+			{
+				stdout.printf("Matched args\n");
+				found_args = true;
+				//params = pathDataArgs.fetch_all();
+			}
+			if( new Regex(pattern).match(route, RegexMatchFlags.ANCHORED, out pathData) )
+			{
+				if( found_args )
+				{
+					foreach(string arg in pathDataArgs.fetch_all())
+					{
+						stdout.printf("ROUTE ARG: %s\n", arg);
+						args.set_value(arg, pathData.fetch_named(arg));
+					}
+				}
+				return true;
+			}
+			return false;
 		}
+		public virtual RestController add_route(string method, string pattern, RouteCallback callback)
+		{
+			//if( this.match_route(method) )
+			this._routes.add( new SBWebRoute(method, pattern, callback) );
+			return this;
+		}
+		public virtual void register_routes(){}
 		public virtual RestResponse? before_dispatch(out bool next, RestHandler handler){next = true;return null;}
-		public abstract RestResponse dispatch(string route, string method, RestHandler handler);
+		public virtual RestResponse dispatch(string route, string method, RestHandler handler)
+		{
+			var response = new RestResponse(Soup.Status.BAD_REQUEST, "Invalid route");
+			try
+			{
+				foreach(var webroute in this._routes)
+				{
+					SBCallbackArgs args;
+					if( this.match_route(webroute.method, route, webroute.route, out args) )
+					{
+						response = webroute.callback(args);
+						break;
+					}
+				}
+			}
+			catch(SBException e)
+			{
+				return new RestResponse(Soup.Status.INTERNAL_SERVER_ERROR, e.message);
+			}
+            catch(RegexError e)
+            {
+                return new RestResponse(Soup.Status.INTERNAL_SERVER_ERROR, e.message);
+            }
+			return response;
+		}
 		public virtual void after_dispatch(RestResponse response){}
 	}
 }

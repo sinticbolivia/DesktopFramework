@@ -76,7 +76,7 @@ namespace SinticBolivia.Classes
         {
             return this.items.remove(item);
         }
-        public T remote_at(int index)
+        public T remove_at(int index)
         {
             return this.items.remove_at(index);
         }

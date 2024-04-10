@@ -13,7 +13,7 @@
 	<modules>
 		<![CDATA[
 		[
-			"libsubscriptions.dylib"
+			"../subscriptions/build/libsubscriptions.dylib"
 		]
 		]]>
 	</modules>

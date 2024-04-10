@@ -52,7 +52,7 @@ namespace SinticBolivia.Classes
 				//"base_route", this.prefix,
 				null
 			);
-
+			this.controller.register_routes();
 			string method = this.controller.get_method();
 			if( method == "OPTIONS" )
 				this.request_options();

@@ -1,3 +1,5 @@
+using SinticBolivia;
+
 namespace SinticBolivia.Classes
 {
     public interface ISBRestModule : Object
@@ -7,6 +9,7 @@ namespace SinticBolivia.Classes
         public abstract string description {get; set construct;}
         public abstract string version {get; set construct;}
 
+        public abstract void set_config(SBConfig cfg);
         public abstract void load();
         public abstract void init(RestServer server);
     }
