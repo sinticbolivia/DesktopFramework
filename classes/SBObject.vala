@@ -134,5 +134,26 @@ namespace SinticBolivia
 				this.set_property(name, val);
 			return true;
 		}
+		public string dump()
+		{
+			Type type = this.get_type();
+			string dump = "%s {\n".printf(type.name());
+			foreach(var prop in this.getProperties())
+			{
+				var val = this.getParamSpecValue(prop);
+				string? val_str = null;
+				if( val.type() == typeof(SBDateTime) || val.type() == typeof(DateTime) )
+				{
+					val_str = (val.type() == typeof(SBDateTime)) ?
+						(val as SBDateTime).format("%Y-%m-%d %H:%M:%S") :
+						(val as DateTime).format("%Y-%m-%d %H:%M:%S");
+				}
+				else
+					val_str = val.strdup_contents();
+				dump += "\t%s: %s\n".printf(prop.name, val_str);
+			}
+			dump += "}\n";
+			return dump;
+		}
 	}
 }

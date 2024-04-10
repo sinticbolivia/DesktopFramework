@@ -82,7 +82,7 @@ namespace SinticBolivia.Database
 			if( res.get_status() != Postgres.ExecStatus.COMMAND_OK )
 			{
 				string error = "[POSTGRES ERROR]: Database command failed: %s\nSQL: %s\n".printf( this.dbh.get_error_message (), sql );
-				throw new SBDatabaseException.GENERAL(this.dbh.get_error_message());
+				throw new SBDatabaseException.GENERAL(error);
 			}
 			if( sql.down().index_of("insert") != -1 )
 			{
@@ -91,7 +91,16 @@ namespace SinticBolivia.Database
 				string dml = "SELECT currval('%s_id_seq') AS last_id".printf(table_name);
 				//message(dml);
 				var resSeq = this.dbh.exec(dml);
-				this.LastInsertId = long.parse(resSeq.get_value(0, 0));
+				if( resSeq.get_status() != Postgres.ExecStatus.TUPLES_OK )
+				{
+					string error = "[POSTGRES ERROR]: Database query failed: %s\nQUERY: %s\n".printf(
+						this.dbh.get_error_message (),
+						dml
+					);
+					warning(error);
+				}
+				else
+					this.LastInsertId = long.parse(resSeq.get_value(0, 0));
 				//message("last_id: %ld\n", this.LastInsertId);
 				return this.LastInsertId;
 			}
