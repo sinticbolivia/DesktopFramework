@@ -419,11 +419,20 @@ namespace SinticBolivia.Database
 		{
 			string pc = column;
 			string? function = null;
+			string aux = "";
 			if( column.index_of("(") != -1 )
 			{
-				var parts = column.split("(");
-				function = parts[0].strip();
-				pc = parts[1].replace(")", "").strip();
+				string pattern = """(?P<function>\w+)\s*\((?P<column>[0-1A-Za-z_\.]+)\)(?P<aux>.*)""";
+				MatchInfo info;
+				if( new Regex(pattern).match(column, RegexMatchFlags.ANCHORED, out info) )
+				{
+					function  = info.fetch_named("function");
+					pc = info.fetch_named("column");
+					aux = info.fetch_named("aux");
+				}
+				//var parts = column.split("(");
+				//function = parts[0].strip();
+				//pc = parts[1].replace(")", "").strip();
 			}
 			if( pc.index_of(".") != -1 )
 			{
@@ -438,7 +447,7 @@ namespace SinticBolivia.Database
 				pc = "%s%s%s".printf(this.columnLeftWrap, pc, this.columnRightWrap);
 			}
 			if( function != null )
-				pc = "%s(%s)".printf(function, pc);
+				pc = "%s(%s)%s".printf(function, pc, aux);
 			return pc;
 		}
 		public virtual string prepare_column_value(Value? val)

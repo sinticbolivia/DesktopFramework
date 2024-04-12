@@ -210,6 +210,7 @@ namespace SinticBolivia.Classes
 			}
 			if( new Regex(pattern).match(route, RegexMatchFlags.ANCHORED, out pathData) )
 			{
+				stdout.printf("ROUTE MATCH\n");
 				if( found_args )
 				{
 					foreach(string arg in pathDataArgs.fetch_all())

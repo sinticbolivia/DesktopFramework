@@ -90,7 +90,7 @@ public void test_query()
 {
 	var builder = new SBDBQuery();
 	builder
-		.select("id,application_id,product_id,name")
+		.select("id,application_id,product_id,name,SUM(sp.price)")
 		.from("subscriptions_plans sp")
 		.where()
 			.equals("id", 1)
@@ -113,7 +113,16 @@ public void test_query()
 }
 public int main(string[] args)
 {
-	send_email();
+	/*
+	string pattern = """(?P<function>\w+)\s*\((?P<column>[0-1A-Za-z_\.]+)\)(?P<aux>.*)""";
+	var r = new Regex(pattern);
+	MatchInfo info;
+	if( r.match("SUM(p.price) AS price", RegexMatchFlags.ANCHORED, out info) )
+	{
+		print("FUNCTION: %s\nCOLUNN: %s\nAUX: %s\n", info.fetch_named("function"), info.fetch_named("column"), info.fetch_named("aux"));
+	}
+	*/
+	//send_email();
 	get_db_instance();
 	//show_processor();
 	//test_postgres();

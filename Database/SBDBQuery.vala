@@ -17,6 +17,7 @@ namespace SinticBolivia.Database
         protected   ArrayList<string>   _orderby;
         protected   string              _limit;
         protected   ArrayList<string>   _having;
+        protected   string              _group_by;
 
         public SBDBQuery()
         {
@@ -197,6 +198,11 @@ namespace SinticBolivia.Database
             this._where.add("OR");
             return this;
         }
+        public SBDBQuery group_by(string stmt)
+        {
+            this._group_by = stmt;
+            return this;
+        }
         public SBDBQuery order_by(string column, string order = "DESC")
         {
             this._orderby.add("%s %s".printf(column, order));
@@ -229,6 +235,10 @@ namespace SinticBolivia.Database
             if( this._where.size > 0 )
             {
                 dml += " WHERE " + string.joinv(" ", this._where.to_array());
+            }
+            if(  this._group_by != null && this._group_by.strip().length > 0 )
+            {
+                dml += " GROUP BY %s".printf(this._group_by);
             }
             if( this._orderby.size > 0 )
             {
