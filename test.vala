@@ -24,7 +24,22 @@ namespace Test
 		}
 	}
 }
-
+public void send_email()
+{
+	var smtp = new SBSmtpClient()
+	{
+		server 	= "mail.sinticbolivia.net",
+		port	= 25
+	};
+	smtp.open(SmtpConnectionSecurity.SECURITY_STARTTLS);
+	smtp.auth("ventas@sinticbolivia.net", "JnmsAKmu4k5I", SmtpAuthMethod.AUTH_LOGIN);
+	smtp.addFrom("ventas@sinticbolivia.net", "Test SinticLibrary");
+	smtp.addAddress("marcenickg@gmail.com", "%s %s".printf("Pepito", "Perez"));
+	//smtp.addAttachmentFile(this.printInvoice(invoice, false));
+	//smtp.addAttachmentData("invoice-%s.xml".printf(invoice.invoice_number.to_string()), siatInvoice.toXml().data);
+	smtp.send("Test subject", "Test Message body");
+	smtp.close();
+}
 public void show_processor()
 {
 	var os = new SBOS();
@@ -98,6 +113,7 @@ public void test_query()
 }
 public int main(string[] args)
 {
+	send_email();
 	get_db_instance();
 	//show_processor();
 	//test_postgres();

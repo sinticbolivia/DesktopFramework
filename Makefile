@@ -57,9 +57,11 @@ LIBRARY_NAME=SinticBolivia
 all: $(SOURCES) $(DEST_LIBRARY)
 
 $(DEST_LIBRARY): $(SOURCES)
+	gcc -c ccode/cpuid.c -fPIC
+	gcc -c ccode/smtp.c -fPIC
+	gcc -c ccode/smtp_client.c -fPIC
 	@#$(VC) $(MACROS) $(VFLAGS) $(VLIBS) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC -X -shared -o bin/$@
 	$(VC) -c $(MACROS) $(VFLAGS) $(VLIBS) --library=$(LIBRARY_NAME) -H $(LIBRARY_NAME).h $(SOURCES) -X -fPIC -X -I.
-	gcc -c ccode/cpuid.c -fPIC
 	gcc -o $@ *.o $(CLIBS) -shared
 
 
@@ -81,3 +83,4 @@ clean:
 	-rm *.o
 	-rm classes/*.vala.c
 	-rm Database/*.vala.c
+	-rm $(LIBRARY_NAME).vapi
