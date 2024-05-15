@@ -4,11 +4,27 @@ PKG_CONFIG=/usr/local/bin/pkg-config
 #AUX = $(shell $(PKG_CONFIG) libpq --cflags --libs)
 #$(info $(PKG_CONFIG_PATH))
 #$(info $(AUX))
+USELIB_MYSQL = $(shell pkg-config --exists mysqlclient;echo $$?)
+USELIB_MARIADB = $(shell pkg-config --exists libmariadb;echo $$?)
+#@echo $(USELIB_MYSQL)
+#$(info mysql:$(USELIB_MYSQL))
+#$(info mariadb:$(USELIB_MARIADB))
+MYSQL_LIB=mysqlclient
+VALA_MYSQL_LIB=mysql
+
+ifeq ($(USELIB_MARIADB), 0)
+$(info INFO: Using Maridb connector)
+MYSQL_LIB=libmariadb
+else
+$(info INFO: Using MySQL connector)
+MYSQL_LIB=mysqlclient
+endif
+#$(info $(USELIB_MYSQL))
 
 VFLAGS=-X -DGETTEXT_PACKAGE
 
 VLIBS=--pkg gmodule-2.0\
-	--pkg mysql\
+	--pkg $(VALA_MYSQL_LIB)\
 	--pkg sqlite3\
 	--pkg libpq\
 	--pkg gee-0.8\
@@ -25,7 +41,7 @@ CLIBS=`$(PKG_CONFIG) gio-2.0 --libs`\
 		`$(PKG_CONFIG) gee-0.8 --libs`\
 		`$(PKG_CONFIG) libsoup-3.0 --libs`\
 		`$(PKG_CONFIG) sqlite3 --libs`\
-		`$(PKG_CONFIG) mysqlclient --libs`\
+		`$(PKG_CONFIG) $(MYSQL_LIB) --libs`\
 		`$(PKG_CONFIG) libpq --libs`
 		#-lintl
 
