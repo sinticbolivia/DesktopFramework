@@ -1,3 +1,5 @@
+VC=/usr/local/bin/valac
+MACROS=-D __linux__ -D LIBPQ_9_3
 PKG_CONFIG=/usr/local/bin/pkg-config
 # EXPORT_PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig
 #export PKG_CONFIG_PATH=$(EXPORT_PKG_CONFIG_PATH)
@@ -28,6 +30,7 @@ LIBSOUP=libsoup-3.0
 else
 $(info INFO: Using libsoup-2.4)
 LIBSOUP=libsoup-2.4
+MACROS :=-D __SOUP_VERSION_2_70__
 endif
 #$(info $(USELIB_MYSQL))
 
@@ -55,8 +58,7 @@ CLIBS=`$(PKG_CONFIG) gio-2.0 --libs`\
 		`$(PKG_CONFIG) libpq --libs`
 		#-lintl
 
-VC=/usr/local/bin/valac
-MACROS=-D __linux__ -D LIBPQ_9_3
+
 SOURCES=$(wildcard classes/*.vala) $(wildcard Database/*.vala)
 
 $(info Trying to detect the operating system)
