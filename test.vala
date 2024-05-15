@@ -122,11 +122,11 @@ public int main(string[] args)
 		print("FUNCTION: %s\nCOLUNN: %s\nAUX: %s\n", info.fetch_named("function"), info.fetch_named("column"), info.fetch_named("aux"));
 	}
 	*/
-	//send_email();
-	get_db_instance();
+	send_email();
+	//get_db_instance();
 	//show_processor();
 	//test_postgres();
 	//test_entity();
-	test_query();
+	//test_query();
 	return 0;
 }

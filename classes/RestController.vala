@@ -102,14 +102,18 @@ namespace SinticBolivia.Classes
 		{
 			return long.parse(this.get(param, defVal.to_string()));
 		}
-		protected string getRawBody()
+		protected uint8[] get_body_bytes()
 		{
 			#if __SOUP_VERSION_2_70__
-			string raw_body = (string)this.message.request_body.flatten().data;
+			return this.message.request_body.flatten().data;
 			#else
-			string raw_body = (string)this.message.get_request_body().data;
+			return this.message.get_request_body().data;
 			#endif
-			stdout.printf("RAW BODY: %s\n", raw_body);
+		}
+		protected string getRawBody()
+		{
+			string raw_body = (string)this.get_body_bytes();
+			debug("\nRAW BODY: %s\n", raw_body);
 			return raw_body;
 		}
 		public HashMap<string, Value?> to_hashmap()
@@ -201,21 +205,21 @@ namespace SinticBolivia.Classes
 			MatchInfo pathDataArgs;
 			MatchInfo pathData;
 			bool found_args = false;
-			stdout.printf("ROUTE: %s\nPATTERN: %s\n", route, pattern);
+			debug("\nROUTE: %s\nPATTERN: %s\n", route, pattern);
 			if( new Regex(""".*P<(\w+)>.*""").match(pattern, RegexMatchFlags.ANCHORED, out pathDataArgs) )
 			{
-				stdout.printf("Matched args\n");
+				debug("\nMatched args\n");
 				found_args = true;
 				//params = pathDataArgs.fetch_all();
 			}
 			if( new Regex(pattern).match(route, RegexMatchFlags.ANCHORED, out pathData) )
 			{
-				stdout.printf("ROUTE MATCH\n");
+				debug("\nROUTE MATCH\n");
 				if( found_args )
 				{
 					foreach(string arg in pathDataArgs.fetch_all())
 					{
-						stdout.printf("ROUTE ARG: %s\n", arg);
+						debug("ROUTE ARG: %s\n", arg);
 						args.set_value(arg, pathData.fetch_named(arg));
 					}
 				}
@@ -257,5 +261,30 @@ namespace SinticBolivia.Classes
 			return response;
 		}
 		public virtual void after_dispatch(RestResponse response){}
+		protected virtual bool validate_jwt() throws SBException
+		{
+			string raw_token = this.get_header("Authorization", "");
+			if( raw_token == "" )
+				throw new SBException.GENERAL("No JWT found, unable to access to resource");
+			if( !("Bearer" in raw_token) )
+				throw new SBException.GENERAL("Invalid JWT, unable to access to resource");
+			string[] parts = raw_token.strip().split(" ");
+			if( parts.length <= 0 )
+				throw new SBException.GENERAL("Invalid JWT format, unable to access to resource");
+			if( parts[1].strip().length <= 0 )
+				throw new SBException.GENERAL("Invalid JWT, unable to access to resource");
+			//string cfg_jwt = (string)SBFactory.config.GetValue("api_token");
+			//if( cfg_jwt != parts[1].strip() )
+			//	throw new RestResponse(401, "Invalid JWT");
+
+			return true;
+		}
+		protected virtual string? get_jwt() throws SBException
+		{
+			this.validate_jwt();
+			string raw_token = this.get_header("Authorization", "");
+			string[] parts = raw_token.strip().split(" ");
+			return parts[1].strip();
+		}
 	}
 }

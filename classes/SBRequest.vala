@@ -1,3 +1,4 @@
+using Gee;
 using Soup;
 
 namespace SinticBolivia.Classes
@@ -5,10 +6,11 @@ namespace SinticBolivia.Classes
     public class SBRequest : SBObject
     {
         public  string content_type = "text/html";
+        public  HashMap<string, string>     headers;
 
         public SBRequest()
         {
-
+            this.headers = new Gee.HashMap<string,string>();
         }
         public SBResponse request(string url, string method = "GET", string? data = null)
         {
@@ -27,10 +29,19 @@ namespace SinticBolivia.Classes
                 message.set_request_body_from_bytes(this.content_type, new Bytes(data.data));
                 #endif
             }
+            foreach(var header in this.headers.entries)
+            {
+                #if __SOUP_VERSION_2_70__
+                message.request_headers.append(header.key, header.value);
+                #else
+                message.get_request_headers().append(header.key, header.value);
+                #endif
+            }
             #if __SOUP_VERSION_2_70__
             session.send_message(message);
             string raw = (string)message.response_body.data;
             #else
+
             string raw = (string)session.send_and_read(message).get_data();
             #endif
 

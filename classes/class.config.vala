@@ -1,21 +1,38 @@
 using Xml;
 using GLib;
 using Gee;
+using SinticBolivia.Classes;
 
 namespace SinticBolivia
 {
 	public class SBConfig : Object
 	{
-		protected string _cfg_file;
-		protected string _rootNode;
-		protected HashMap<string, Value?> _values;
+		protected 	string _cfg_file;
+		protected 	string _rootNode;
+		protected 	HashMap<string, Value?> _values;
+		protected	HashMap<string, Type>	_allowed_types;
 
 		public SBConfig(string cfg_file, string root_node)
 		{
 			this._cfg_file = cfg_file;
 			this._rootNode = root_node;
 			this._values = new HashMap<string, Value?>();
+			this._allowed_types = new HashMap<string, Type>();
+			this.set_allowed_types();
 			this._parseFile();
+		}
+		protected void set_allowed_types()
+		{
+			var types = new Type[]{
+				typeof(ArrayList),
+				typeof(HashMap),
+				typeof(SBSmtpConfig),
+				typeof(SBConfig)
+			};
+			foreach(var type in types)
+			{
+				this._allowed_types.set(type.name(), type);
+			}
 		}
 		protected void _parseFile()
 		{
@@ -50,6 +67,31 @@ namespace SinticBolivia
 			stderr.printf("\n\n");
 			this._parseNode(node);
 		}
+		protected void parseNodeGroup(Xml.Node* node, Type type)
+		{
+			string target_index = node->name;
+			var obj_target = Object.new(type);
+
+			for (Xml.Node* iter = node->children; iter != null; iter = iter->next)
+			{
+				// Spaces between tags are also nodes, discard them
+				if (iter->type != ElementType.ELEMENT_NODE) {
+					continue;
+				}
+				string node_name = iter->name;
+				string node_content = iter->get_content ();
+
+				if( obj_target is Gee.ArrayList )
+				{
+					((Gee.ArrayList<string>)obj_target).add(node_content);
+				}
+				else if( obj_target is SBObject )
+				{
+					(obj_target as SBObject).setPropertyValue(node_name, node_content);
+				}
+			}
+			this.SetValue(target_index, obj_target);
+		}
 		protected void _parseNode (Xml.Node* node)
 		{
 			// Loop over the passed node's children
@@ -59,17 +101,40 @@ namespace SinticBolivia
 				if (iter->type != ElementType.ELEMENT_NODE) {
 					continue;
 				}
-
 				// Get the node's name
 				string node_name = iter->name;
 				// Get the node's content with <tags> stripped
 				string node_content = iter->get_content ();
 				//print_indent (node_name, node_content);
-				// Now parse the node's properties (attributes) ...
-				//parse_properties (iter);
-				// Followed by its children nodes
-				((HashMap<string, Value?>)this._values).set(node_name, node_content);
-				this._parseNode (iter);
+				string? class_name = iter->get_prop("class");
+				string? item_name = iter->get_prop("name");
+				debug("Node: %s, Content: %s", node_name, node_content);
+				if( class_name != null )
+				{
+					string normalized_class_name = class_name.replace(".", "");
+					Type class_type = GLib.Type.from_name(normalized_class_name);
+					class_type.ensure();
+					//debug("TYPE: %s => %s", class_type.to_string(), class_type.name());
+					if( class_type.is_object() && this._allowed_types.contains(normalized_class_name) )
+					{
+						debug("Config subclass %s found", class_name);
+						this.parseNodeGroup(iter, class_type);
+						iter = iter->last;
+					}
+					else
+						debug("Config subclass %s not found (%s)",
+							normalized_class_name,
+							typeof(SinticBolivia.Classes.SBSmtpConfig).name()
+						);
+				}
+				else
+				{
+					((HashMap<string, Value?>)this._values).set(
+						item_name != null ? item_name : node_name,
+						node_content
+					);
+					this._parseNode (iter);
+				}
 			}
 		}
 		public Value? GetValue(string key, string? def_value = "")
@@ -79,7 +144,7 @@ namespace SinticBolivia
 
 			return (Value?)((HashMap<string, Value?>)this._values).get(key);
 		}
-		public void SetValue(string key, Value obj)
+		public void SetValue(string key, Value? obj)
 		{
 			if( ((HashMap<string, Value?>)this._values).has_key(key) )
 			{

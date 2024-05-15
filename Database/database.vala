@@ -417,6 +417,8 @@ namespace SinticBolivia.Database
 		}
 		public virtual string prepare_column(string column)
 		{
+			if( column == "*" )
+				return "*";
 			string pc = column;
 			string? function = null;
 			string aux = "";
@@ -437,14 +439,19 @@ namespace SinticBolivia.Database
 			if( pc.index_of(".") != -1 )
 			{
 				string[] parts = pc.split(".");
-				pc = "%s%s%s.%s%s%s".printf(
-					this.columnLeftWrap, parts[0], this.columnRightWrap,
-					this.columnLeftWrap, parts[1], this.columnRightWrap
-				);
+				pc = (parts[1] == "*") ?
+					"%s%s%s.%s".printf(
+						this.columnLeftWrap, parts[0], this.columnRightWrap,
+						parts[1]
+					) :
+					"%s%s%s.%s%s%s".printf(
+						this.columnLeftWrap, parts[0], this.columnRightWrap,
+						this.columnLeftWrap, parts[1], this.columnRightWrap
+					);
 			}
 			else
 			{
-				pc = "%s%s%s".printf(this.columnLeftWrap, pc, this.columnRightWrap);
+				pc = (pc == "*") ? "*" : "%s%s%s".printf(this.columnLeftWrap, pc, this.columnRightWrap);
 			}
 			if( function != null )
 				pc = "%s(%s)%s".printf(function, pc, aux);

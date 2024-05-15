@@ -20,6 +20,7 @@ public int main(string[] args)
 	string current_dir = GLib.Environment.get_current_dir();
     stdout.printf("CURRENT DIR: %s\n", current_dir);
     set_config();
+    debug((SBFactory.config.GetValue("smtp") as SBSmtpConfig).dump());
     var server = new RestServer((uint)SBFactory.config.get_int("server_port", 8080));
     load_modules(server);
     server.start(true);

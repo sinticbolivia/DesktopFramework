@@ -10,6 +10,7 @@
 	<db_pass>[devudb]</db_pass>
 	<db_port>5432</db_port>
 	<modules_path>/Modules</modules_path>
+	<server_port>2205</server_port>
 	<modules>
 		<![CDATA[
 		[
@@ -17,5 +18,15 @@
 		]
 		]]>
 	</modules>
-	<server_port>2205</server_port>
+	<smtp class="SinticBolivia.Classes.SBSmtpConfig">
+		<server>mail.sinticbolivia.net</server>
+		<port>25</port>
+		<username>ventas@sinticbolivia.net</username>
+		<password>JnmsAKmu4k5I</password>
+		<from>ventas@sinticbolivia.net</from>
+	</smtp>
+	<hooks>
+		<hook event="on_subscriptions_expired_found" method="POST">https://gestion.sinticbolivia.net/subscriptions/hooks/expired-found</hook>
+		<hook event="on_subscriptions_close_to_expire" method="POST">https://gestion.sinticbolivia.net/subscriptions/hooks/close-to-expire</hook>
+	</hooks>
 </config>

@@ -10,6 +10,11 @@ namespace SinticBolivia.Classes
         public      uint     code;
         public	    string	content_type = "text/html";
         public      HashMap<string, string>	headers;
+        public      bool ok
+        {
+            get { return this.code >= 200 && this.code <= 226;}
+        }
+        public      string body { get{return this._body;} }
 
         public SBResponse(string raw, uint status_code, string ctype = "text/html")
         {
