@@ -1,6 +1,6 @@
 VC=/usr/local/bin/valac
 MACROS=-D __linux__ -D LIBPQ_9_3
-PKG_CONFIG=/usr/local/bin/pkg-config
+PKG_CONFIG=pkg-config
 # EXPORT_PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig
 #export PKG_CONFIG_PATH=$(EXPORT_PKG_CONFIG_PATH)
 #AUX = $(shell $(PKG_CONFIG) libpq --cflags --libs)
@@ -65,6 +65,7 @@ $(info Trying to detect the operating system)
 #ifneq (, $(findstring /Library, $(PATH)))
 ifneq ($(wildcard /Library/.*),)
 OS=MACOS
+PKG_CONFIG=/usr/local/bin/pkg-config
 DEST_LIBRARY=libSinticBolivia.dylib
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/Cellar/icu4c/74.2/lib/pkgconfig:/usr/local/Cellar/libpq/16.2_1/lib/pkgconfig
 $(info MACOS detected)
