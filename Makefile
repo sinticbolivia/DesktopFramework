@@ -8,8 +8,8 @@ PKG_CONFIG=pkg-config
 #$(info $(AUX))
 USELIB_MYSQL = $(shell pkg-config --exists mysqlclient;echo $$?)
 USELIB_MARIADB = $(shell pkg-config --exists libmariadb;echo $$?)
-LIBSOUP_3 = $(sell pkg-config --exists libsoup-3.0;echo $$?)
-LIBSOUP_2 = $(sell pkg-config --exists libsoup-2.4;echo $$?)
+LIBSOUP_3 = $(shell pkg-config --exists libsoup-3.0;echo $$?)
+LIBSOUP_2 = $(shell pkg-config --exists libsoup-2.4;echo $$?)
 LIBSOUP=
 #@echo $(USELIB_MYSQL)
 #$(info mysql:$(USELIB_MYSQL))
