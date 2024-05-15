@@ -6,6 +6,9 @@ PKG_CONFIG=/usr/local/bin/pkg-config
 #$(info $(AUX))
 USELIB_MYSQL = $(shell pkg-config --exists mysqlclient;echo $$?)
 USELIB_MARIADB = $(shell pkg-config --exists libmariadb;echo $$?)
+LIBSOUP_3 = $(sell pkg-config --exists libsoup-3.0;echo $$?)
+LIBSOUP_2 = $(sell pkg-config --exists libsoup-2.4;echo $$?)
+LIBSOUP=
 #@echo $(USELIB_MYSQL)
 #$(info mysql:$(USELIB_MYSQL))
 #$(info mariadb:$(USELIB_MARIADB))
@@ -18,6 +21,13 @@ MYSQL_LIB=libmariadb
 else
 $(info INFO: Using MySQL connector)
 MYSQL_LIB=mysqlclient
+endif
+ifeq ($(LIBSOUP_3), 0)
+$(info INFO: Using libsoup-3.0)
+LIBSOUP=libsoup-3.0
+else
+$(info INFO: Using libsoup-2.4)
+LIBSOUP=libsoup-2.4
 endif
 #$(info $(USELIB_MYSQL))
 
@@ -32,14 +42,14 @@ VLIBS=--pkg gmodule-2.0\
 	--pkg posix\
 	--pkg libxml-2.0\
 	--pkg json-glib-1.0\
-	--pkg libsoup-3.0
+	--pkg $(LIBSOUP)
 
 CLIBS=`$(PKG_CONFIG) gio-2.0 --libs`\
 		`$(PKG_CONFIG) gmodule-2.0 --libs`\
 		`$(PKG_CONFIG) json-glib-1.0 --libs`\
 		`$(PKG_CONFIG) libxml-2.0 --libs`\
 		`$(PKG_CONFIG) gee-0.8 --libs`\
-		`$(PKG_CONFIG) libsoup-3.0 --libs`\
+		`$(PKG_CONFIG) $(LIBSOUP) --libs`\
 		`$(PKG_CONFIG) sqlite3 --libs`\
 		`$(PKG_CONFIG) $(MYSQL_LIB) --libs`\
 		`$(PKG_CONFIG) libpq --libs`
