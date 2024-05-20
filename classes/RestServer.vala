@@ -174,13 +174,19 @@ namespace SinticBolivia.Classes
 			#else
 			Soup.ServerMessage message,
 			#endif
-			owned RestResponse? response
+			RestResponse? response
 		)
 		{
 			//this.send_response(message, response);
 			if( response == null )
 			{
-				response = new RestResponse(500, "Invalid response, response is null");
+				#if __SOUP_VERSION_2_70__
+				message.set_status(500);
+				#else
+				message.set_status(500, null);
+				#endif
+				message.set_response("text/html", Soup.MemoryUse.COPY, "Invalid response, response is null".data);
+				return;
 			}
 			//msg.set_response("application/json", Soup.MemoryUse.COPY, json.data);
 			//stdout.printf((string)response.body.data);
@@ -198,6 +204,7 @@ namespace SinticBolivia.Classes
 			message.set_status(response.code, null);
 			#endif
 			message.set_response(response.content_type, Soup.MemoryUse.COPY, response.body.data);
+			response.dispose();
 		}
 		/*
 		public void add_route(string route, string method, WebRouteCallback cb)

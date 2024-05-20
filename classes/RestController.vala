@@ -13,13 +13,17 @@ namespace SinticBolivia.Classes
 		#else
 		protected	Soup.ServerMessage	message {get; set;}
 		#endif
+		protected	HashMap<string, string>	headers {get;set;}
+
 		protected	string				path {get; set;}
 		protected	GLib.HashTable<string, string>?		query {get; set;}
 		protected	ArrayList<SBWebRoute>		_routes;
+		//protected	string _request_bytes;
 
 		construct
 		{
 			this._routes 	= new ArrayList<SBWebRoute>();
+			//this.headers = new HashMap<string, string>();
 		}
 		protected RestController.with_args(Soup.Server srv,
 			#if __SOUP_VERSION_2_70__
@@ -38,7 +42,11 @@ namespace SinticBolivia.Classes
 			this.message 	= msg;
 			this.path 		= spath;
 			this.query 		= (q != null) ? q : new GLib.HashTable<string, string>(str_hash, str_equal);
-
+			debug("RestController.with_args");
+		}
+		public void init()
+		{
+			this.fill_headers();
 		}
 		public
 		#if __SOUP_VERSION_2_70__
@@ -49,6 +57,53 @@ namespace SinticBolivia.Classes
 		get_request_message()
 		{
 			return this.message;
+		}
+		protected void fill_headers()
+		{
+			if( this.headers != null )
+				return;
+			this.headers = new HashMap<string, string>();
+			#if __SOUP_VERSION_2_70__
+			var __headers = this.message.request_headers;
+			#else
+			var __headers = this.message.get_request_headers();
+			#endif
+			__headers.foreach((name, val) =>
+			{
+				this.headers.set(name, val);
+			});
+		}
+		public unowned Soup.MessageHeaders get_request_headers()
+		{
+			//*
+			#if __SOUP_VERSION_2_70__
+			return this.message.request_headers;
+			#else
+			return this.message.get_request_headers();
+			#endif
+			//*/
+			/*
+			if( this.headers == null )
+			{
+				#if __SOUP_VERSION_2_70__
+				__headers = this.message.request_headers;
+				#else
+				this.headers = this.message.get_request_headers();
+				#endif
+			}
+
+			return this.headers;
+			//*/
+		}
+		public string get_header(string name, string defVal = "")
+		{
+			//string? header_val = this.get_request_headers().get_one(name);
+			string? header_val = this.headers.get(name);
+
+			if( header_val == null )
+				return defVal;
+
+			return header_val;
 		}
 		protected string get_remote_address()
 		{
@@ -90,10 +145,6 @@ namespace SinticBolivia.Classes
 		{
 			return this.query.contains(param) ? this.query.get(param) : defVal;
 		}
-		public int getInt(string param, int defVal = 0)
-		{
-			return this.get_int(param, defVal);
-		}
 		public int get_int(string param, int defVal = 0)
 		{
 			return int.parse(this.get(param, defVal.to_string()));
@@ -102,17 +153,22 @@ namespace SinticBolivia.Classes
 		{
 			return long.parse(this.get(param, defVal.to_string()));
 		}
-		protected uint8[] get_body_bytes()
+		public uint8[] get_body_bytes()
 		{
 			#if __SOUP_VERSION_2_70__
 			return this.message.request_body.flatten().data;
 			#else
-			return this.message.get_request_body().data;
+			return this.message.get_request_body().flatten().get_data();
 			#endif
 		}
 		protected string getRawBody()
 		{
-			string raw_body = (string)this.get_body_bytes();
+			#if __SOUP_VERSION_2_70__
+			string raw_body = (string)this.message.request_body.flatten().data;
+			#else
+			string raw_body = (string)this.message.get_request_body().flatten().get_data();
+			#endif
+			//string raw_body = (string)this._request_bytes;
 			debug("\nRAW BODY: %s\n", raw_body);
 			return raw_body;
 		}
@@ -124,7 +180,7 @@ namespace SinticBolivia.Classes
 		protected Json.Node? to_json_node()
 		{
 			string json = this.getRawBody();
-			if( json.length <= 0 )
+			if( json == null || json.length <= 0 )
 				return null;
 			Json.Node? root = Json.from_string(json);
 
@@ -184,19 +240,6 @@ namespace SinticBolivia.Classes
 
 			return for_obj;
 		}
-		public string get_header(string name, string defVal = "")
-		{
-			#if __SOUP_VERSION_2_70__
-			string? header_val = this.message.request_headers.get_one(name);
-			#else
-			string? header_val = this.message.get_request_headers().get_one(name);
-			#endif
-			if( header_val == null )
-				return defVal;
-
-			return header_val;
-		}
-
 		public virtual bool match_route(string method, string route, string pattern, out SBCallbackArgs args = null)
 		{
 			if( this.get_method() != method )
@@ -227,19 +270,38 @@ namespace SinticBolivia.Classes
 			}
 			return false;
 		}
-		public virtual RestController add_route(string method, string pattern, RouteCallback callback)
+		public virtual SBWebRoute add_route(string method, string pattern, RouteCallback callback)
 		{
-			//if( this.match_route(method) )
-			this._routes.add( new SBWebRoute(method, pattern, callback) );
-			return this;
+			var route = new SBWebRoute(method, pattern, callback);
+			this._routes.add( route );
+			return route;
+		}
+		public virtual SBWebRoute? find_webroute(string route, string method)
+		{
+			SBWebRoute? webroute = null;
+			foreach(var __webroute in this._routes)
+			{
+				SBCallbackArgs _args;
+				if( this.match_route(__webroute.method, route, __webroute.route, out _args) )
+				{
+					//webroute = webroute.callback(args);
+					webroute = __webroute;
+					webroute.args = _args;
+					break;
+				}
+			}
+			return webroute;
 		}
 		public virtual void register_routes(){}
-		public virtual RestResponse? before_dispatch(out bool next, RestHandler handler){next = true;return null;}
-		public virtual RestResponse dispatch(string route, string method, RestHandler handler)
+		public virtual RestResponse? before_dispatch(SBWebRoute webroute, RestHandler handler, out bool next){next = true;return null;}
+		//public virtual RestResponse dispatch(string route, string method, RestHandler handler)
+		public virtual RestResponse dispatch(SBWebRoute webroute, RestHandler handler)
 		{
 			var response = new RestResponse(Soup.Status.BAD_REQUEST, "Invalid route");
 			try
 			{
+				response = webroute.execute();
+				/*
 				foreach(var webroute in this._routes)
 				{
 					SBCallbackArgs args;
@@ -249,6 +311,7 @@ namespace SinticBolivia.Classes
 						break;
 					}
 				}
+				*/
 			}
 			catch(SBException e)
 			{
@@ -282,7 +345,9 @@ namespace SinticBolivia.Classes
 		protected virtual string? get_jwt() throws SBException
 		{
 			this.validate_jwt();
+			debug("JWT validated");
 			string raw_token = this.get_header("Authorization", "");
+			debug("JWT %s\n", raw_token);
 			string[] parts = raw_token.strip().split(" ");
 			return parts[1].strip();
 		}

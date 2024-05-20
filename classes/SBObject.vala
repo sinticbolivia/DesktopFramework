@@ -111,10 +111,17 @@ namespace SinticBolivia
 		}
 		public virtual bool setPropertyGValue(string name, Value? val)
 		{
+			if( val == null  )
+				return false;
+
+			string str_contents = val.strdup_contents();
+			debug("BIND PROP: %s => %s\n", name, str_contents);
 			ParamSpec? property;
 			if( !this.propertyExists(name, out property) )
 				return false;
 
+			if( str_contents == "NULL" || str_contents == "(null)" )
+				return false;
 			if( property.value_type == typeof(DateTime) || property.value_type == typeof(SBDateTime) )
 			{
 				string str = (string)val;
@@ -131,7 +138,9 @@ namespace SinticBolivia
 				}
 			}
 			else
+			{
 				this.set_property(name, val);
+			}
 			return true;
 		}
 		public string dump()

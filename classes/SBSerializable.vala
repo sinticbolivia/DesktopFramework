@@ -227,7 +227,12 @@ namespace SinticBolivia.Classes
 		{
 			obj.foreach_member( (_obj, _name, _node) =>
 			{
-				this.setPropertyGValue(_name, _node.get_value());
+				if( !_node.is_null() )
+				{
+					Value theval = _node.get_value();
+					this.setPropertyGValue(_name, theval);
+					theval.unset();
+				}
 			});
 		}
 	}

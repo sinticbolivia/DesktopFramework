@@ -119,7 +119,7 @@ namespace SinticBolivia
 					{
 						debug("Config subclass %s found", class_name);
 						this.parseNodeGroup(iter, class_type);
-						iter = iter->last;
+						iter = iter->next;
 					}
 					else
 						debug("Config subclass %s not found (%s)",

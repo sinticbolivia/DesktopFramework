@@ -10,68 +10,76 @@ namespace SinticBolivia.Classes
 		public	RestController		controller = null;
 		protected	Type			ctrl_type;
 		public	RestServer			rest_server;
-		public	ArrayList<string>	routes;
 
 		public RestHandler(string prefix, Type ctrlType)
 		{
 			this.prefix 	= prefix;
 			this.ctrl_type	= ctrlType;
-			this.routes = new ArrayList<string>();
 		}
 		protected virtual void request_options()
 		{
 			var response = new RestResponse(200, "");
 			response.add_header("Access-Control-Allow-Origin", "*");
 			response.add_header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-			response.add_header("Access-Control-Allow-Headers", "authorization,content-type,accept,origin,x-user-token");
+			response.add_header("Access-Control-Allow-Headers", "authorization,content-type,accept,origin,x-user-token,referer");
 			this.rest_server.send_response(this.controller.get_request_message(), response);
 		}
 		public virtual void handler(
 			Soup.Server server,
 			#if __SOUP_VERSION_2_70__
-			Soup.Message message,
+			Soup.Message srv_message,
 			#else
-			Soup.ServerMessage message,
+			Soup.ServerMessage srv_message,
 			#endif
 			string path,
 			GLib.HashTable? query
 		)
 		{
 			stdout.printf("%s HANDLER\n", this.prefix);
-			if( this.controller == null )
-			{
-				stdout.printf("Creation controller for %s HANDLER\n", this.prefix);
-				this.controller = (RestController)Object.new(this.ctrl_type, null);
-				stdout.printf("CONTROLLER CREATED\n");
-			}
+			stdout.printf("Creation controller for %s HANDLER\n", this.prefix);
+			this.controller = (RestController)Object.new(this.ctrl_type, null);
+			stdout.printf("CONTROLLER CREATED\n");
 			this.controller.set(
 				"server", server,
-				"message", message,
+				"message", srv_message,
 				"path", path,
 				"query", query,
 				//"base_route", this.prefix,
 				null
 			);
+			this.controller.init();
 			this.controller.register_routes();
 			string method = this.controller.get_method();
 			if( method == "OPTIONS" )
-				this.request_options();
-			bool next = true;
-			var before_response = this.controller.before_dispatch(out next, this);
-			if( !next )
 			{
-				this.rest_server.send_response(message, before_response);
+				this.request_options();
 				return;
 			}
-			stdout.printf("CONTROLLER DISPATCH\nPATH: %s (%s)\n", path, method);
-			var response = this.controller.dispatch(path, method, this);
+			bool next = true;
+			SBWebRoute? webroute = this.controller.find_webroute(path, method);
+			if( webroute == null )
+			{
+				this.controller.dispose();
+				this.rest_server.send_response(srv_message, new RestResponse(Soup.Status.BAD_REQUEST, "Invalid route, not found"));
+				return;
+			}
+			var before_response = this.controller.before_dispatch(webroute, this, out next);
+			if( !next )
+			{
+				this.rest_server.send_response(srv_message, before_response);
+				return;
+			}
+			debug ("CONTROLLER DISPATCH\nPATH: %s (%s)\n", path, method);
+			//var response = this.controller.dispatch(path, method, this);
+			var response = this.controller.dispatch(webroute, this);
 			this.controller.after_dispatch(response);
 			response.add_header("Access-Control-Allow-Origin", "*");
 			response.add_header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
 			response.add_header("Access-Control-Allow-Headers", "authorization,content-type,accept,origin,x-user-token");
 			//var dbh = SBFactory.getDbh();
 			//dbh.Close();
-			this.rest_server.send_response(message, response);
+			this.controller.dispose();
+			this.rest_server.send_response(srv_message, response);
 		}
 	}
 }

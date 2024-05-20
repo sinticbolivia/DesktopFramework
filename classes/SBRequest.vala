@@ -19,34 +19,29 @@ namespace SinticBolivia.Classes
             session.ssl_strict = false;
             #endif
 
-            var message = new Message(method, url);
+            var req_message = new Message(method, url);
             if( (method == "POST" || method == "PUT") && data != null )
             {
                 //message.request_body.append(MemoryUse.COPY, data.data);
                 #if __SOUP_VERSION_2_70__
-                message.request_body.append_take(data.data);
+                req_message.request_body.append_take(data.data);
                 #else
-                message.set_request_body_from_bytes(this.content_type, new Bytes(data.data));
+                req_message.set_request_body_from_bytes(this.content_type, new Bytes(data.data));
                 #endif
             }
             foreach(var header in this.headers.entries)
             {
-                #if __SOUP_VERSION_2_70__
-                message.request_headers.append(header.key, header.value);
-                #else
-                message.get_request_headers().append(header.key, header.value);
-                #endif
+                req_message.request_headers.append(header.key, header.value);
             }
             #if __SOUP_VERSION_2_70__
-            session.send_message(message);
-            string raw = (string)message.response_body.data;
+            session.send_message(req_message);
+            string raw = (string)req_message.response_body.data;
             #else
-
-            string raw = (string)session.send_and_read(message).get_data();
+            string raw = (string)session.send_and_read(req_message).get_data();
             #endif
 
-            var response = new SBResponse(raw, message.status_code, "text/html");
-            message.response_headers.foreach( (name, val) =>
+            var response = new SBResponse(raw, req_message.status_code, "text/html");
+            req_message.response_headers.foreach( (name, val) =>
             {
                 response.headers.set(name, val);
             });
