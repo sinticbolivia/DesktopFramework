@@ -115,7 +115,7 @@ namespace SinticBolivia
 				return false;
 
 			string str_contents = val.strdup_contents();
-			debug("BIND PROP: %s => %s\n", name, str_contents);
+			//debug("BIND PROP: %s => %s\n", name, str_contents);
 			ParamSpec? property;
 			if( !this.propertyExists(name, out property) )
 				return false;

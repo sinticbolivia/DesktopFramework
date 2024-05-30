@@ -269,6 +269,11 @@ namespace SinticBolivia.Database
         }
         public virtual T first<T>()
         {
+            var dummy = (Entity)Object.new(typeof(T));
+            if( this._select.size <= 0 )
+                this.select_columns(dummy.get_columns());
+            if( this._from.size <= 0 )
+                this.from(dummy.get_table());
             var dbh = SBFactory.getDbh();
             this.limit(1);
             string sql = this.sql();
