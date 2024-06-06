@@ -223,15 +223,28 @@ namespace SinticBolivia.Classes
 			return json;
 		}
 		public virtual void after_build_json_object(Json.Object obj){}
+		public virtual void deserialize_array_property(string name, Json.Array? data){}
+		public virtual void deserialize_object_property(string name, Json.Object? data){}
 		public virtual void bind_json_object(Json.Object obj)
 		{
 			obj.foreach_member( (_obj, _name, _node) =>
 			{
+				//debug("_name: %s, type: %s", _name, _node.get_value_type().name());
 				if( !_node.is_null() )
 				{
-					Value theval = _node.get_value();
-					this.setPropertyGValue(_name, theval);
-					theval.unset();
+					if( _node.get_value_type() == typeof(Json.Array) )
+						//this.setPropertyGValue(_name, theval);
+						this.deserialize_array_property(_name, _node.get_array());
+					else if( _node.get_value_type() == typeof(Json.Object) )
+						//this.setPropertyGValue(_name, theval);
+						this.deserialize_object_property(_name, _node.get_object());
+					else
+					{
+						Value theval = _node.get_value();
+						this.setPropertyGValue(_name, theval);
+						theval.unset();
+					}
+
 				}
 			});
 		}

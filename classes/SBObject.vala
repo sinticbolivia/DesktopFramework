@@ -114,12 +114,13 @@ namespace SinticBolivia
 			if( val == null  )
 				return false;
 
-			string str_contents = val.strdup_contents();
-			//debug("BIND PROP: %s => %s\n", name, str_contents);
 			ParamSpec? property;
 			if( !this.propertyExists(name, out property) )
 				return false;
+			Type[] _object_types = {typeof(GLib.Object), typeof(Gee.ArrayList), typeof(SBObject)};
 
+			string str_contents = (property.value_type in _object_types) ? "(object)" : val.strdup_contents();
+			debug("BIND PROP: %s => %s\n", name, str_contents);
 			if( str_contents == "NULL" || str_contents == "(null)" )
 				return false;
 			if( property.value_type == typeof(DateTime) || property.value_type == typeof(SBDateTime) )
@@ -136,6 +137,13 @@ namespace SinticBolivia
 				{
 					this.set_property(name, datetime);
 				}
+			}
+			else if( property.value_type == typeof(Gee.ArrayList) )
+			{
+				//debug("PROP: name, %s, %s", property.value_type.name(), property.value_type.to_string());
+				//Value dest_val = Value(property.value_type);
+				//val.transform(ref dest_val);
+				this.set_property(name, val);
 			}
 			else
 			{
@@ -156,6 +164,25 @@ namespace SinticBolivia
 					val_str = (val.type() == typeof(SBDateTime)) ?
 						(val as SBDateTime).format("%Y-%m-%d %H:%M:%S") :
 						(val as DateTime).format("%Y-%m-%d %H:%M:%S");
+				}
+				else if( val.type() == typeof(Gee.ArrayList) )
+				{
+					val_str = "[";
+					Type vtype = (val as Gee.ArrayList).element_type;
+					if( Utils.is_primitive_type(vtype) )
+					{
+						/*
+						(val as Gee.ArrayList).foreach((vvv) =>
+						{
+							dump += (string)vvv; //vv.strdup_contents();
+							return true;
+						});
+						*/
+						val_str += "(elements: %d)".printf((val as Gee.ArrayList).size);
+					}
+					else
+						val_str += "(elements: %d)".printf((val as Gee.ArrayList).size);
+					val_str += "]";
 				}
 				else
 					val_str = val.strdup_contents();
