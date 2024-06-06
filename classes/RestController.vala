@@ -249,9 +249,12 @@ namespace SinticBolivia.Classes
 			MatchInfo pathData;
 			bool found_args = false;
 			debug("\nROUTE: %s\nPATTERN: %s\n", route, pattern);
-			if( new Regex(""".*P<(\w+)>.*""").match(pattern, RegexMatchFlags.ANCHORED, out pathDataArgs) )
+			var regex = new Regex("""[a-zA-Z0-9\/\(]+[\?]{1}P<(\w+)>""");
+			if( regex.match_full(pattern, pattern.length, 0, RegexMatchFlags.PARTIAL, out pathDataArgs) )
+			//if( new Regex("""[a-zA-Z0-9\/\(]+[\?]{1}P<(\w+)>""").match(pattern, RegexMatchFlags.BSR_ANY, out pathDataArgs) )
+			//if( new Regex("""\?P<(\w+)>.*?""").match_all(pattern, RegexMatchFlags.ANCHORED, out pathDataArgs) )
 			{
-				debug("\nMatched args\n");
+				debug("\nMatched args: %d\n", pathDataArgs.get_match_count());
 				found_args = true;
 				//params = pathDataArgs.fetch_all();
 			}
@@ -260,11 +263,13 @@ namespace SinticBolivia.Classes
 				debug("\nROUTE MATCH\n");
 				if( found_args )
 				{
-					foreach(string arg in pathDataArgs.fetch_all())
-					{
-						debug("ROUTE ARG: %s\n", arg);
-						args.set_value(arg, pathData.fetch_named(arg));
-					}
+					do{
+						foreach(string arg in pathDataArgs.fetch_all())
+						{
+							debug("ROUTE ARG: %s\n", arg);
+							args.set_value(arg, pathData.fetch_named(arg));
+						}
+					}while(pathDataArgs.next());
 				}
 				return true;
 			}
