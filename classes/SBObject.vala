@@ -120,7 +120,7 @@ namespace SinticBolivia
 			Type[] _object_types = {typeof(GLib.Object), typeof(Gee.ArrayList), typeof(SBObject)};
 
 			string str_contents = (property.value_type in _object_types) ? "(object)" : val.strdup_contents();
-			debug("BIND PROP: %s => %s\n", name, str_contents);
+			//debug("BIND PROP: %s => %s\n", name, str_contents);
 			if( str_contents == "NULL" || str_contents == "(null)" )
 				return false;
 			if( property.value_type == typeof(DateTime) || property.value_type == typeof(SBDateTime) )

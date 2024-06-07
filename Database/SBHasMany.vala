@@ -33,8 +33,9 @@ namespace SinticBolivia.Database
                 .join("%s mt".printf(master.get_table()), "mt.%s".printf(this._source_key), "dt.%s".printf(this._foreign_key))
                 .where()
                     .equals("mt." + this._source_key, master.get_primary_key_value())
-                .limit(this.per_page)
             ;
+            if( !this.builder.has_limit() )
+                this.builder.limit(this.per_page);
             /*
             var dbh = SBFactory.getDbh();
             string sql = this.builder.sql();

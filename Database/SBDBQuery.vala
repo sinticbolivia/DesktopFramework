@@ -217,6 +217,7 @@ namespace SinticBolivia.Database
                 this._limit = "LIMIT %d,%d".printf(offset, limit);
             return this;
         }
+        public virtual bool has_limit(){ return this._limit.strip().length > 0;}
         public virtual string sql() throws SBException
         {
             if( this._select.size <= 0 )
