@@ -156,5 +156,12 @@ namespace SinticBolivia.Database
             ;
             return builder;
         }
+        public static SBDBQuery in(string column, string vals)
+        {
+            var builder = new SBDBQuery();
+            builder.in(column, vals);
+            
+            return builder;
+        }
     }
 }
