@@ -112,4 +112,5 @@ clean:
 	-rm *.o
 	-rm classes/*.vala.c
 	-rm Database/*.vala.c
+	-rm tests/*.c
 	-rm $(LIBRARY_NAME).vapi

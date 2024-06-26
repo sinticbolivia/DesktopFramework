@@ -224,6 +224,13 @@ namespace SinticBolivia
 				return def_val;
 			return int.parse(val);
 		}
+		public double get_double(string key, double def_val = 0)
+		{
+			string? val = this.get_string(key, def_val.to_string());
+			if( val == null )
+				return def_val;
+			return double.parse(val);
+		}
 		public Json.Node? get_json_value(string key)
 		{
 			string? json = this.get_string(key, null);
