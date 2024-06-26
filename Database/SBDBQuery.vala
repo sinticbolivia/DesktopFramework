@@ -111,10 +111,23 @@ namespace SinticBolivia.Database
             this.where(column, ">", val);
             return this;
         }
+        /**
+        * Query condition for greater than or equals (>=)
+        * @param string column The column name
+        * @param mixed the column value
+        * @return SBDBQuery
+        */
         public SBDBQuery greater_than_or_equals(string column, Value? val)
         {
             this.where(column, ">=", val);
             return this;
+        }
+        /**
+        * Alias for greater_than_or_equals
+        */
+        public SBDBQuery gte(string column, Value? val)
+        {
+            return this.greater_than_or_equals(column, val);
         }
         public SBDBQuery less_than(string column, Value? val)
         {
@@ -125,6 +138,10 @@ namespace SinticBolivia.Database
         {
             this.where(column, "<=", val);
             return this;
+        }
+        public SBDBQuery lte(string column, Value? val)
+        {
+            return this.less_than_or_equals(column, val);
         }
         public SBDBQuery like(string column, Value? val)
         {
@@ -218,6 +235,10 @@ namespace SinticBolivia.Database
             return this;
         }
         public virtual bool has_limit(){ return this._limit.strip().length > 0;}
+        public virtual SBDBQuery having()
+        {
+            return this;
+        }
         public virtual string sql() throws SBException
         {
             if( this._select.size <= 0 )

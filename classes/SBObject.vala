@@ -184,6 +184,22 @@ namespace SinticBolivia
 						val_str += "(elements: %d)".printf((val as Gee.ArrayList).size);
 					val_str += "]";
 				}
+				else if( val.type() == typeof(Gee.HashMap) )
+				{
+					/*
+					Type etype = (val as Gee.HashMap).element_type;
+					if( Utils.is_primitive_type(etype) )
+					{
+						foreach(var entry in (val as Gee.HashMap).entries)
+						{
+							Value eval = Value(etype);
+							eval = entry.value;
+							dump += "\t%s: %s\n".printf(prop.name, eval.strdup_contents());
+						}
+					}
+					else*/
+						val_str = val.strdup_contents();
+				}
 				else
 					val_str = val.strdup_contents();
 				dump += "\t%s: %s\n".printf(prop.name, val_str);

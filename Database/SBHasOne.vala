@@ -27,7 +27,7 @@ namespace SinticBolivia.Database
                 .select_columns(entity.get_columns())
                 .from(entity.get_table())
                 .where()
-                    .equals(this._foreign_key, (long)this._object.getPropertyValue(this._source_key))
+                    .equals(this._foreign_key, this._object.getPropertyValue(this._source_key))
                 .limit(1)
             ;
             message(this.builder.sql());

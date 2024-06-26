@@ -11,6 +11,10 @@ namespace SinticBolivia.Database
         protected   string      _table;
         protected   string      _table_alias;
         protected   string      _primary_key;
+        /**
+         * The primary key type numeric|string|composed
+         */
+        protected   string      _pk_type = "numeric";
         protected   HashMap     _meta_data;
         protected   AfterSaveCallback   _after_save_callback;
 
@@ -30,6 +34,7 @@ namespace SinticBolivia.Database
             Value? val = this.getPropertyValue(this._primary_key);
             return val;
         }
+        public string get_primary_key_type(){return this._pk_type;}
         public string[] get_columns(string? table_alias = null)
         {
             var columns = new ArrayList<string>();
@@ -92,16 +97,30 @@ namespace SinticBolivia.Database
             var relationship = SBBelongsTo.instance<T>(this, foreign_key, source_key);
             return relationship;
         }
-        public static T read<T>(long id) throws SBDatabaseException
+        public static T read<T>(GLib.Value? id) throws SBDatabaseException
         {
             //stdout.printf("Type: %s\n", typeof(T).name());
             T dummy = (T)Object.new(typeof(T));
             //stdout.printf((dummy as Entity).get_table());
-            string query = "SELECT %s FROM %s WHERE %s = %ld LIMIT 1".printf(
+            string pk_type = (dummy as Entity).get_primary_key_type();
+            string pk_value = "";
+            if( pk_type == "string" )
+            {
+                pk_value = "\"%s\"".printf((string)id);
+            }
+            else if( pk_type == "composed" )
+            {
+
+            }
+            else
+            {
+                pk_value = "%ld".printf((long)id);
+            }
+            string query = ("SELECT %s FROM %s WHERE %s = %s LIMIT 1").printf(
                 string.joinv(",", (dummy as Entity).get_columns()),
                 (dummy as Entity).get_table(),
                 (dummy as Entity).get_primary_key(),
-                id
+                pk_value
             );
             //stdout.printf(query);
             //
@@ -160,7 +179,7 @@ namespace SinticBolivia.Database
         {
             var builder = new SBDBQuery();
             builder.in(column, vals);
-            
+
             return builder;
         }
     }
