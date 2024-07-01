@@ -49,7 +49,7 @@ namespace SinticBolivia.Database
         {
             this._after_save_callback = callback;
         }
-        public void save()
+        public virtual void save()
         {
             Value? pk_value = this.getPropertyValue(this._primary_key);
             if( pk_value == null || (pk_value.type() == typeof(long) && pk_value.get_long() <= 0) )
@@ -59,7 +59,7 @@ namespace SinticBolivia.Database
             if( this._after_save_callback != null )
                 this._after_save_callback(this);
         }
-        public void create()
+        public virtual void create()
         {
             var dbh = SBFactory.getDbh();
             this.last_modification_date = new SBDateTime();
@@ -67,7 +67,7 @@ namespace SinticBolivia.Database
             long id = dbh.insertObject(this._table, this);
             this.setPropertyGValue(this._primary_key, id);
         }
-        public void update()
+        public virtual void update()
         {
             var dbh = SBFactory.getDbh();
             this.last_modification_date = new SBDateTime();
@@ -141,6 +141,21 @@ namespace SinticBolivia.Database
             var items = dbh.getObjects<T>(builder.sql());
             return items;
         }
+        public static long count<T>()
+        {
+            var dummy = (Entity)Object.new(typeof(T));
+            var builder = new SBDBQuery();
+            builder
+                //.select(dummy.get_primary_key())
+                .from(dummy.get_table())
+                .count(dummy.get_primary_key())
+            ;
+            var dbh = SBFactory.getDbh();
+            var row = dbh.GetRow(builder.sql());
+            long count = row.get_long("count");
+
+            return count;
+        }
         public static SBDBQuery where(string column, string operator, Value? val)
         {
             //var dummy = (Entity)Object.new(typeof(T));
@@ -162,6 +177,13 @@ namespace SinticBolivia.Database
         {
             var builder = new SBDBQuery();
             builder.ilike(column, val);
+            return builder;
+        }
+        public static SBDBQuery order_by(string column, string order = "DESC")
+        {
+            var builder = new SBDBQuery();
+            builder.order_by(column, order);
+            
             return builder;
         }
         public static SBDBQuery limit(int limit, int offset = 0)

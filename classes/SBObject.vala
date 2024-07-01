@@ -151,7 +151,7 @@ namespace SinticBolivia
 			}
 			return true;
 		}
-		public string dump()
+		public virtual string dump()
 		{
 			Type type = this.get_type();
 			string dump = "%s {\n".printf(type.name());

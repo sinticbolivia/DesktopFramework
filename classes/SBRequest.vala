@@ -29,14 +29,14 @@ namespace SinticBolivia.Classes
                 if( header.key.down() == "content-type" )
                     this.content_type = header.value;
             }
-            if( (method == "POST" || method == "PUT") && data != null )
+            if( (method == "POST" || method == "PUT" || method == "PATCH") && data != null )
             {
                 //message.request_body.append(MemoryUse.COPY, data.data);
                 #if __SOUP_VERSION_2_70__
                 req_message.request_body.append_take(data.data);
                 #else
-                debug("BODY CONTENT TYPE: %s", this.body_mime);
-                req_message.set_request_body_from_bytes(this.body_mime, new Bytes(data.data));
+                //debug("BODY CONTENT TYPE: %s", this.body_mime);
+                req_message.set_request_body_from_bytes(this.content_type, new Bytes(data.data));
                 #endif
             }
 

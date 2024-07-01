@@ -49,7 +49,7 @@ namespace SinticBolivia.Database
 			string? val = this.Get(column_name);
 			return (val == null) ? 0 : int64.parse(val);
 		}
-		public unowned int64 get_long(string column_name)
+		public unowned long get_long(string column_name)
 		{
 			string? val = this.Get(column_name);
 			return (val == null) ? 0 : long.parse(val);

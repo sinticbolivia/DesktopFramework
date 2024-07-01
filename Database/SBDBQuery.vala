@@ -272,6 +272,24 @@ namespace SinticBolivia.Database
             }
             return dml;
         }
+        public virtual SBDBQuery count(string column)
+        {
+            var dbh = SBFactory.getDbh();
+            this._select.clear();
+            this._select.add("COUNT(%s) AS count".printf(dbh.prepare_column(column)));
+
+            return this;
+        }
+        public virtual long get_count<T>(string column)
+        {
+            this.count(column);
+            var dummy = (Entity)Object.new(typeof(T));
+            this.from(dummy.get_table());
+            var dbh = SBFactory.getDbh();
+            var row = dbh.GetRow(this.sql());
+            long count = row.get_long("count");
+            return count;
+        }
         public virtual SBCollection<T> get<T>()
         {
             var dummy = (Entity)Object.new(typeof(T));
