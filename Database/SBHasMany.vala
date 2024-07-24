@@ -85,7 +85,7 @@ namespace SinticBolivia.Database
                 .from(tobj.get_table() + " dt")
                 .join("%s mt".printf(obj.get_table()), "mt.%s".printf(source_key), "dt.%s".printf(foreign_key))
                 .where()
-                    .equals("mt." + foreign_key, obj.get_primary_key_value())
+                    .equals("dt." + foreign_key, obj.get_primary_key_value())
             ;
             return hm;
         }
