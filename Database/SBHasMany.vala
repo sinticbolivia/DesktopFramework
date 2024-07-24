@@ -78,7 +78,7 @@ namespace SinticBolivia.Database
         {
             var hm = new SBHasMany<T>(foreign_key, source_key);
             hm._object = obj;
-            obj.set_after_save_callback(hm.after_save_callback);
+
             var tobj = (Entity)Object.new(typeof(T));
             hm.builder
                 .select_columns(tobj.get_columns("dt"))
@@ -87,6 +87,7 @@ namespace SinticBolivia.Database
                 .where()
                     .equals("dt." + foreign_key, obj.get_primary_key_value())
             ;
+            obj.set_after_save_callback(hm.after_save_callback);
             return hm;
         }
     }
