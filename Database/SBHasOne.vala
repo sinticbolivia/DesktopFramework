@@ -30,7 +30,7 @@ namespace SinticBolivia.Database
                     .equals(this._foreign_key, this._object.getPropertyValue(this._source_key))
                 .limit(1)
             ;
-            message(this.builder.sql());
+            debug(this.builder.sql());
             var item = this.builder.first<E>();
             return item;
         }

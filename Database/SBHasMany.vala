@@ -42,6 +42,7 @@ namespace SinticBolivia.Database
             message(sql);
             var items = dbh.getObjects<D>(sql);
             */
+            debug(this.builder.sql());
             var items = this.builder.get<D>();
             return items;
         }
@@ -62,6 +63,7 @@ namespace SinticBolivia.Database
             message(sql);
             var item = dbh.getObject<D>(sql);
             */
+            debug(this.builder.sql());
             var item = this.builder.first<D>();
             return item;
         }
