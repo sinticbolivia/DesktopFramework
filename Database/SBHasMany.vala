@@ -25,23 +25,17 @@ namespace SinticBolivia.Database
         }
         public SBCollection<D> get()
         {
-            var master = this._object; //(Entity)Object.new(typeof(M));
             var obj = (Entity)Object.new(typeof(D));
-            this.builder
-                .select_columns(obj.get_columns("dt"))
-                .from(obj.get_table() + " dt")
-                .join("%s mt".printf(master.get_table()), "mt.%s".printf(this._source_key), "dt.%s".printf(this._foreign_key))
-                .where()
-                    .equals("mt." + this._source_key, master.get_primary_key_value())
-            ;
+            //this.builder
+                //.select_columns(obj.get_columns("dt"))
+                //.from(obj.get_table() + " dt")
+                //.join("%s mt".printf(master.get_table()), "mt.%s".printf(this._source_key), "dt.%s".printf(this._foreign_key))
+                //.where()
+                //    .equals("mt." + this._foreign_key, master.get_primary_key_value())
+            //;
             if( !this.builder.has_limit() )
                 this.builder.limit(this.per_page);
-            /*
-            var dbh = SBFactory.getDbh();
-            string sql = this.builder.sql();
-            message(sql);
-            var items = dbh.getObjects<D>(sql);
-            */
+
             debug(this.builder.sql());
             var items = this.builder.get<D>();
             return items;
@@ -50,11 +44,11 @@ namespace SinticBolivia.Database
         {
             var obj = (Entity)Object.new(typeof(D));
             this.builder
-                .select_columns(obj.get_columns("dt"))
-                .from(obj.get_table() + " dt")
-                .join("%s mt".printf(this._object.get_table()), "mt.%s".printf(this._source_key), "dt.%s".printf(this._foreign_key))
-                .where()
-                    .equals("mt." + this._source_key, this._object.get_primary_key_value())
+                //.select_columns(obj.get_columns("dt"))
+                //.from(obj.get_table() + " dt")
+                //.join("%s mt".printf(this._object.get_table()), "mt.%s".printf(this._source_key), "dt.%s".printf(this._foreign_key))
+                //.where()
+                //    .equals("mt." + this._foreign_key, this._object.get_primary_key_value())
                 .limit(1)
             ;
             /*
@@ -85,6 +79,13 @@ namespace SinticBolivia.Database
             var hm = new SBHasMany<T>(foreign_key, source_key);
             hm._object = obj;
             obj.set_after_save_callback(hm.after_save_callback);
+            var tobj = (Entity)Object.new(typeof(T));
+            hm.builder
+                .select_columns(tobj.get_columns("dt"))
+                .from(tobj.get_table() + " dt")
+                .join("%s mt".printf(obj.get_table()), "mt.%s".printf(source_key), "dt.%s".printf(foreign_key))
+                .where()
+                    .equals("mt." + foreign_key, obj.get_primary_key_value())
             return hm;
         }
     }
