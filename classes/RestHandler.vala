@@ -63,6 +63,14 @@ namespace SinticBolivia.Classes
 				this.rest_server.send_response(srv_message, new RestResponse(Soup.Status.BAD_REQUEST, "Invalid route, not found"));
 				return;
 			}
+			//##TODO: Here we need to set next code into a thread
+			//var thread = new Thread( () => 
+			//{
+				//dispatch code header ...
+				
+			//});
+			//thread.start();
+			
 			var before_response = this.controller.before_dispatch(webroute, this, out next);
 			if( !next )
 			{
