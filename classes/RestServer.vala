@@ -19,7 +19,7 @@ namespace SinticBolivia.Classes
 			this.port 		= sport;
 			//this.server = new Soup.Server(Soup.SERVER_PORT, this.port);
 			#if __SOUP_VERSION_2_70__
-			this.server		= new Soup.Server();
+			this.server		= new Soup.Server(null);
 			#else
 			this.server		= new Soup.Server(null/*Soup.SOCKET_TIMEOUT, "1000"*/);
 			#endif
