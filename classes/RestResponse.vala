@@ -41,12 +41,12 @@ namespace SinticBolivia.Classes
 			//_body = this.sanitize_json(this.body);
 			this(status_code, _body, "application/json");
 		}
-		public RestResponse add_header(string name, string val)
+		public virtual RestResponse add_header(string name, string val)
 		{
 			this.headers.set(name, val);
 			return this;
 		}
-		public RestResponse set_content_type(string type)
+		public virtual RestResponse set_content_type(string type)
 		{
 			this.content_type = type;
 			return this;

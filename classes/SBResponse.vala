@@ -12,7 +12,7 @@ namespace SinticBolivia.Classes
         public      HashMap<string, string>	headers;
         public      bool ok
         {
-            get { return this.code >= 200 && this.code <= 226;}
+            get { return this.code >= 200 && this.code <= 299;}
         }
         public      string body { get{return this._body;} }
 
@@ -24,7 +24,7 @@ namespace SinticBolivia.Classes
             this.content_type   = ctype;
             this.headers        = new HashMap<string, string>();
         }
-        public Json.Node? to_json_node()
+        public virtual Json.Node? to_json_node()
         {
 			if( this._body == null || this._body.length <= 0 )
 				return null;
@@ -32,7 +32,7 @@ namespace SinticBolivia.Classes
 
 			return root;
         }
-        public Json.Object? to_json_object()
+        public virtual Json.Object? to_json_object()
         {
             Json.Node? root = this.to_json_node();
 			if( root == null )
@@ -40,14 +40,14 @@ namespace SinticBolivia.Classes
 
 			return root.get_object();
         }
-        public Json.Array? to_json_array()
+        public virtual Json.Array? to_json_array()
         {
             Json.Node? root = this.to_json_node();
 			if( root == null )
 				return null;
             return root.get_array();
         }
-        public T to_object<T>()
+        public virtual T to_object<T>()
         {
             Json.Node? _node = this.to_json_node();
 			if( _node == null )
