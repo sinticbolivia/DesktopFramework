@@ -93,18 +93,17 @@ namespace SinticBolivia.Database
                 return this;
 
             var dbh = SBFactory.getDbh();
-            string join = "%s %s %s".printf(
+            string where_cond = "%s %s %s".printf(
                 dbh.prepare_column(col1),
                 cond,
                 dbh.prepare_column_value(col2)
             );
-            this._where.add(join);
+            this._where.add(where_cond);
             return this;
         }
         public SBDBQuery equals(string column, Value? val)
         {
-            this.where(column, "=", val);
-            return this;
+            return this.where(column, "=", val);
         }
         public SBDBQuery greater_than(string column, Value? val)
         {
