@@ -6,7 +6,7 @@ namespace SinticBolivia.Classes
 	{
 		protected	ArrayList<Observer>		observers;
 		public	HashMap<string, Value?>	data;
-		
+
 		protected Observable()
 		{
 			this.data = new HashMap<string, Value?>();
@@ -19,7 +19,7 @@ namespace SinticBolivia.Classes
 		public void unsubscribre()
 		{
 		}
-		public void notify()
+		public new void notify()
 		{
 			foreach(var observer in this.observers)
 			{
