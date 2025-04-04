@@ -27,11 +27,11 @@ namespace SinticBolivia.Classes
 			//this.routes 	= new ArrayList<WebRoute>();
 			this.setEvents();
 		}
-		protected void setEvents()
+		protected virtual void setEvents()
 		{
 
 		}
-		protected void baseHandler(Soup.Server server,
+		protected virtual void baseHandler(Soup.Server server,
 			#if __SOUP_VERSION_2_70__
 			Soup.Message message,
 			#else
@@ -43,7 +43,7 @@ namespace SinticBolivia.Classes
 		{
 
 		}
-		public string getRequestMethod(
+		public virtual string getRequestMethod(
 			#if __SOUP_VERSION_2_70__
 			Soup.Message message
 			#else
@@ -57,23 +57,23 @@ namespace SinticBolivia.Classes
 			return message.get_method();
 			#endif
 		}
-		public void add_handler(RestHandler handler)
+		public virtual void add_handler(RestHandler handler)
 		{
 			handler.rest_server = this;
 			this.server.add_handler(handler.prefix, handler.handler);
 		}
-		public RestHandler add_handler_args(string prefix, Type controller_type)
+		public virtual RestHandler add_handler_args(string prefix, Type controller_type)
 		{
 			var handler = new RestHandler(prefix, controller_type);
 			this.add_handler(handler);
 			return handler;
 		}
-		public void prepare_websocket()
+		public virtual void prepare_websocket()
 		{
 			string[] protocols = {"chat", "data", "ws"};
 			this.server.add_websocket_handler("/", null, protocols, this.websocket_callback);
 		}
-		public void websocket_callback(
+		public virtual void websocket_callback(
 			Soup.Server srv,
 			#if __SOUP_VERSION_2_70__
 			Soup.WebsocketConnection conn,
@@ -147,13 +147,13 @@ namespace SinticBolivia.Classes
 			//conn.send_text(msg);
 			conn.io_stream.output_stream.write_all(msg.data, null, null);
 		}
-		public void websocket_message_received(int id, Bytes buffer)
+		public virtual void websocket_message_received(int id, Bytes buffer)
 		{
 			print("WEBSOCKET MESSAGE RECEIVED\n");
 			string message = (string)buffer.get_data();
 			info(@"Message received! ID: $id Message:\n$message\n");
 		}
-		public void start(bool init_loop = false)
+		public virtual void start(bool init_loop = false)
 		{
 			try
 			{
@@ -172,7 +172,7 @@ namespace SinticBolivia.Classes
 
 			//this.server.run_async();
 		}
-		public void send_response(
+		public virtual void send_response(
 			#if __SOUP_VERSION_2_70__
 			Soup.Message message,
 			#else
@@ -223,7 +223,7 @@ namespace SinticBolivia.Classes
 			this.routes.add(webroute);
 		}
 		*/
-		public bool load_module(string path) throws SBException
+		public virtual bool load_module(string path) throws SBException
 		{
 			if( !FileUtils.test(path, FileTest.IS_REGULAR) )
 			{

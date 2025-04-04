@@ -1,4 +1,4 @@
-VC=/usr/local/bin/valac
+VC=/opt/local/bin/valac
 MACROS=-D __linux__ -D LIBPQ_9_3
 PKG_CONFIG=pkg-config
 # EXPORT_PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig
@@ -78,7 +78,6 @@ OS=WINDOWS_NT
 DEST_LIBRARY=libSinticBolivia.dll
 $(info Windows detected)
 endif
-
 
 LIBRARY_NAME=SinticBolivia
 #include Database/Makefile
