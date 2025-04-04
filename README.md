@@ -20,6 +20,12 @@ ICU_PATH=/usr/local/Cellar/icu4c/74.2/lib/pkgconfig
 LIBPQ_PATH=/usr/local/Cellar/libpq/16.2_1/lib/pkgconfig
 export PKG_CONFIG_PATH=$LIBPQ_PATH:$ICU_PATH
 
-# Compilation
+# Compilation for Make
 
 make
+
+# Compilation for Meson (recommended)
+
+meson setup build --buildtype=release
+cd build
+meson compile

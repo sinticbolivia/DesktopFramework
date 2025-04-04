@@ -1,4 +1,4 @@
-project('libSinticBolivia', 'vala', 'c', version: '1.0.0')
+project('libSinticBolivia', 'vala', 'c', version: '1.0.2')
 # LIBSOUP
 dsoup = dependency('libsoup-3.0', required: false)
 if dsoup.found()
@@ -8,6 +8,7 @@ else
 	add_project_arguments(['-D', '__SOUP_VERSION_2_70__'], language: 'vala')
 	message('LIBSOUP 2 FOUND')
 endif
+
 add_project_arguments(['-DGETTEXT_PACKAGE'], language: 'c')
 dependencies = [
 	dependency('glib-2.0'),
@@ -87,4 +88,20 @@ libsinticbolivia = shared_library(
 libsinticbolivia_dep = declare_dependency(
 	include_directories : include_directories(include_dir),
 	link_with : libsinticbolivia
+)
+api = executable('api',
+  ['tests/api-rest.vala'],
+  dependencies: [
+    dependency('glib-2.0'),
+  	dependency('gobject-2.0'),
+  	dependency('gmodule-2.0'),
+		dependency('gee-0.8'),
+		dependency('json-glib-1.0'),
+		dependency('libxml-2.0'),
+		dependency('sqlite3'),
+		dependency('mysql'),
+		dependency('libpq'),
+		dsoup,
+		libsinticbolivia_dep,
+  ]
 )
