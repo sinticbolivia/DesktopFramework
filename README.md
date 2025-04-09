@@ -29,3 +29,14 @@ make
 meson setup build --buildtype=release
 cd build
 meson compile
+
+
+# Common issues
+
+If you have issues compiling with mysqlclient library, maybe you need to create a symbolic link like this
+
+
+```
+cd vapi
+ln -s /usr/local/share/vala-0.56/vapi/mysql.vapi mysqlclient.vapi
+```
