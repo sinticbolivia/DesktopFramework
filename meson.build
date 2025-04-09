@@ -8,6 +8,16 @@ else
 	add_project_arguments(['-D', '__SOUP_VERSION_2_70__'], language: 'vala')
 	message('LIBSOUP 2 FOUND')
 endif
+mysql = dependency('mysql', required: false)
+if not mysql.found()
+  mysql = dependency('mysqlclient', required: false)
+endif
+if not mysql.found()
+  mysql = dependency('mariadb', required: false)
+endif
+if not mysql.found()
+  error('Unable to find mysql client library')
+endif
 
 add_project_arguments(['-DGETTEXT_PACKAGE'], language: 'c')
 dependencies = [
@@ -19,7 +29,7 @@ dependencies = [
 	dependency('libxml-2.0'),
 	dependency('sqlite3'),
 	# meson.get_compiler('vala').find_library('mysql'),
-	dependency('mysql'),
+	mysql,
 	dependency('libpq'),
 	dsoup,
 ]
