@@ -19,7 +19,7 @@ if not mysql.found()
   error('Unable to find mysql client library')
 endif
 
-add_project_arguments(['-DGETTEXT_PACKAGE'], language: 'c')
+add_project_arguments(['-DGETTEXT_PACKAGE', '--vapidir', './vapi'], language: 'c')
 dependencies = [
 	dependency('glib-2.0'),
 	dependency('gobject-2.0'),
