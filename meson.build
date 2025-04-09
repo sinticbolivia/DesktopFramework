@@ -20,7 +20,7 @@ if not mysql.found()
 endif
 
 add_project_arguments(['-DGETTEXT_PACKAGE'], language: 'c')
-add_project_arguments(['--vapidir', './vapi'], language: 'vala')
+add_project_arguments(['--vapidir', meson.current_source_dir() + '/vapi'], language: 'vala')
 
 dependencies = [
 	dependency('glib-2.0'),
