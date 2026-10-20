@@ -13,6 +13,8 @@ A vala framework to build desktop applications.
 - libxml-2.0
 - json-glib-1.0
 - libsoup-3.0 or libsoup-2.4
+- libcurl
+  - Download from https://curl.se/download.html
 
 # MACOS Environment variables
 
