@@ -22,6 +22,9 @@ if not mysql.found()
   mysql = dependency('mariadb', required: false)
 endif
 if not mysql.found()
+  mysql = dependency('libmariadb', required: false)
+endif
+if not mysql.found()
   error('Unable to find mysql client library')
 endif
 
