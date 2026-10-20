@@ -11,6 +11,7 @@ namespace SinticBolivia.Database
         protected   string      _table;
         protected   string      _table_alias;
         protected   string      _primary_key;
+        protected   bool        _use_timestamp_columns = true;
         /**
          * The primary key type numeric|string|composed
          */
@@ -64,7 +65,13 @@ namespace SinticBolivia.Database
             var dbh = SBFactory.getDbh();
             this.last_modification_date = new SBDateTime();
             this.creation_date = new SBDateTime();
-            long id = dbh.insertObject(this._table, this);
+            string[] exclude = {};
+            if( !this._use_timestamp_columns )
+            {
+                exclude += "last_modification_date";
+                exclude += "creation_date";
+            }
+            long id = dbh.insertObject(this._table, this, exclude);
             this.setPropertyGValue(this._primary_key, id);
         }
         public virtual void update()
@@ -183,7 +190,7 @@ namespace SinticBolivia.Database
         {
             var builder = new SBDBQuery();
             builder.order_by(column, order);
-            
+
             return builder;
         }
         public static SBDBQuery limit(int limit, int offset = 0)

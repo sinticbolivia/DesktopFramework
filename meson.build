@@ -1,4 +1,10 @@
-project('libSinticBolivia', 'vala', 'c', version: '1.0.2')
+project('libSinticBolivia', 'vala', 'c', version: '1.0.2',
+  default_options: [
+    'warning_level=1',
+    'buildtype=debugoptimized',
+    'c_std=gnu11'
+  ]
+)
 # LIBSOUP
 dsoup = dependency('libsoup-3.0', required: false)
 if dsoup.found()
@@ -19,8 +25,12 @@ if not mysql.found()
   error('Unable to find mysql client library')
 endif
 
-add_project_arguments(['-DGETTEXT_PACKAGE'], language: 'c')
-add_project_arguments(['--vapidir', meson.current_source_dir() + '/vapi'], language: 'vala')
+vapi_dir = meson.current_source_dir() + '/vapi'
+add_project_arguments([
+  '-DGETTEXT_PACKAGE',
+  #'-DCURL_NO_OLDIES'
+], language: 'c')
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 
 dependencies = [
 	dependency('glib-2.0'),
@@ -31,6 +41,8 @@ dependencies = [
 	dependency('libxml-2.0'),
 	dependency('sqlite3'),
 	# meson.get_compiler('vala').find_library('mysql'),
+	dependency('libcurl'),
+	meson.get_compiler('c').find_library('curl'),
 	mysql,
 	dependency('libpq'),
 	dsoup,
@@ -74,6 +86,7 @@ sources = [
   'classes/SBSmtpConfig.vala',
   'classes/SBText.vala',
   'classes/SBWebRoute.vala',
+  'classes/EmailChecker.vala',
   'Database/database.vala',
   'Database/Entity.vala',
   'Database/SQLite.vala',
@@ -114,6 +127,28 @@ api = executable('api',
 		mysql,
 		dependency('libpq'),
 		dsoup,
+		#dependency('libcurl'),
+		# meson.get_compiler('vala').find_library('libcurl', dirs: vapi_dir),
+    #meson.get_compiler('c').find_library('curl'),
+		libsinticbolivia_dep,
+  ]
+)
+executable('imap',
+  ['tests/test-imap.vala'],
+  dependencies: [
+    dependency('glib-2.0'),
+  	dependency('gobject-2.0'),
+  	dependency('gmodule-2.0'),
+		dependency('gee-0.8'),
+		dependency('json-glib-1.0'),
+		dependency('libxml-2.0'),
+		dependency('sqlite3'),
+		mysql,
+		dependency('libpq'),
+		dsoup,
+		#dependency('libcurl'),
+		# meson.get_compiler('vala').find_library('libcurl', dirs: vapi_dir),
+    #meson.get_compiler('c').find_library('curl'),
 		libsinticbolivia_dep,
   ]
 )
